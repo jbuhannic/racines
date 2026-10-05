@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Espace HLP</title>
+<meta name="robots" content="noindex">
+<style>
+  :root{
+    --bg:#FAF7F2;
+    --surface:#FFFFFF;
+    --ink:#2B2B28;
+    --ink-soft:#6B6760;
+    --border:#E4DDD0;
+
+    --slate:#3D5A73;
+    --slate-light:#E4EBEF;
+    --slate-dark:#1F2E3B;
+
+    --ok:#2E7D5B;
+    --ok-light:#E3F1EA;
+    --ko:#A63D3D;
+    --ko-light:#F6E4E4;
+
+    --font-title1:Cambria,Georgia,serif;
+    --font-title2:Arial,Helvetica,sans-serif;
+    --font-body:Georgia,'Times New Roman',serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--ink);font-family:var(--font-body);line-height:1.6;}
+  button,input,textarea,select{font:inherit;color:inherit;}
+  a{color:inherit;}
+  :focus-visible{outline:3px solid var(--slate);outline-offset:2px;}
+
+  header{background:var(--surface);border-bottom:1px solid var(--border);}
+  .bar{max-width:760px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+  .bar a.home{font-family:var(--font-title2);font-size:14px;color:var(--ink-soft);text-decoration:none;}
+  .who{display:flex;align-items:center;gap:10px;font-family:var(--font-title2);font-size:13px;color:var(--ink-soft);}
+  .avatar{width:34px;height:34px;border-radius:50%;background:var(--slate-light);color:var(--slate-dark);
+    display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;}
+  .linkbtn{background:none;border:none;cursor:pointer;font-family:var(--font-title2);font-size:13px;color:var(--slate);text-decoration:underline;padding:6px;min-height:44px;}
+
+  .pw{position:relative;}
+  .pw input{padding-right:52px;}
+  .eye{position:absolute;right:2px;top:0;height:100%;width:48px;border:none;background:none;cursor:pointer;
+    color:var(--ink-soft);display:flex;align-items:center;justify-content:center;border-radius:8px;}
+  .eye:hover{color:var(--slate-dark);}
+  .hint.ko{color:var(--ko);}
+
+  main{max-width:760px;margin:0 auto;padding:28px 20px 80px;}
+  h1{font-family:var(--font-title1);font-size:28px;line-height:1.2;margin-bottom:6px;}
+  h2{font-family:var(--font-title2);font-size:17px;margin:28px 0 14px;}
+  .sub{color:var(--ink-soft);font-size:15px;margin-bottom:26px;}
+
+  /* --- cartes / formulaires --- */
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:26px;}
+  .auth{max-width:420px;margin:24px auto;}
+  .tabs{display:flex;gap:6px;margin-bottom:20px;}
+  .tab{flex:1;min-height:44px;border-radius:100px;border:1px solid var(--border);background:transparent;
+    font-family:var(--font-title2);font-size:14px;cursor:pointer;color:var(--ink-soft);}
+  .tab[aria-selected="true"]{background:var(--slate-light);color:var(--slate-dark);border-color:var(--slate-light);font-weight:700;}
+  .field{margin-bottom:14px;}
+  .field label{display:block;font-family:var(--font-title2);font-size:12px;color:var(--ink-soft);margin-bottom:5px;}
+  .field input,.field textarea{width:100%;padding:11px 12px;border-radius:8px;border:1px solid var(--border);
+    background:var(--bg);font-size:16px;}
+  .field textarea{min-height:110px;resize:vertical;line-height:1.5;}
+  .field input:focus,.field textarea:focus{border-color:var(--slate);}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .btn{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 22px;border:none;border-radius:10px;
+    background:var(--slate-dark);color:#fff;font-family:var(--font-title2);font-weight:700;font-size:15px;cursor:pointer;}
+  .btn:disabled{opacity:.45;cursor:not-allowed;}
+  .btn.ghost{background:transparent;color:var(--slate-dark);border:1px solid var(--border);}
+  .btn.full{width:100%;}
+  .msg{font-family:var(--font-title2);font-size:13px;border-radius:10px;padding:11px 14px;margin-bottom:14px;}
+  .msg.err{background:var(--ko-light);color:var(--ko);}
+  .msg.info{background:var(--slate-light);color:var(--slate-dark);}
+  .hint{font-family:var(--font-title2);font-size:12px;color:var(--ink-soft);margin-top:12px;}
+
+  /* --- tableau de bord --- */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:8px;}
+  .stat{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;}
+  .stat .label{display:block;font-family:var(--font-title2);font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:6px;}
+  .stat .value{font-family:var(--font-title1);font-size:24px;color:var(--slate-dark);}
+  .exo{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--surface);
+    border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin-bottom:10px;}
+  .exo-main{display:flex;flex-direction:column;gap:4px;min-width:0;}
+  .tag{align-self:flex-start;font-family:var(--font-title2);font-size:11px;padding:3px 10px;border-radius:100px;background:var(--slate-light);color:var(--slate-dark);}
+  .exo-titre{font-size:15px;}
+  .exo-etat{font-family:var(--font-title2);font-size:12px;color:var(--ink-soft);}
+  .empty{color:var(--ink-soft);font-size:15px;padding:18px 0;}
+  .banner{font-family:var(--font-title2);font-size:13px;background:var(--slate-light);color:var(--slate-dark);border-radius:10px;padding:11px 14px;margin-bottom:20px;}
+
+  /* --- exercice --- */
+  .back{margin-bottom:14px;}
+  .consigne{color:var(--ink-soft);font-size:15px;margin-bottom:20px;}
+  .extrait{background:var(--surface);border-left:4px solid var(--slate);border-radius:0 12px 12px 0;padding:18px 20px;margin-bottom:24px;font-size:16px;}
+  .extrait p{margin-bottom:10px;}
+  .extrait .source{font-family:var(--font-title2);font-size:12px;color:var(--ink-soft);margin:0;}
+  .q{margin-bottom:26px;}
+  .q-titre{font-family:var(--font-title2);font-size:15px;font-weight:700;margin-bottom:12px;}
+  .opt{display:flex;align-items:flex-start;gap:10px;min-height:44px;padding:11px 14px;margin-bottom:8px;
+    border:1px solid var(--border);border-radius:12px;background:var(--surface);cursor:pointer;font-size:15px;}
+  .opt input{margin-top:4px;accent-color:var(--slate);}
+  .opt:has(input:checked){border-color:var(--slate);background:var(--slate-light);}
+  .opt.ok{border-color:var(--ok);background:var(--ok-light);}
+  .opt.ko{border-color:var(--ko);background:var(--ko-light);}
+  .opt .tagres{font-family:var(--font-title2);font-size:12px;font-weight:700;margin-left:auto;white-space:nowrap;padding-left:8px;}
+  .explain{font-size:14px;color:var(--ink-soft);background:var(--slate-light);border-radius:10px;padding:10px 14px;margin-top:8px;}
+  .score{font-family:var(--font-title1);font-size:30px;color:var(--slate-dark);margin-bottom:4px;}
+  .cmp{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .cmp > div{border-radius:12px;padding:12px 14px;font-size:14px;white-space:pre-wrap;}
+  .cmp .mine{background:var(--surface);border:1px solid var(--border);}
+  .cmp .ref{background:var(--slate-light);color:var(--slate-dark);}
+  .cmp .lbl{display:block;font-family:var(--font-title2);font-size:11px;letter-spacing:.04em;text-transform:uppercase;opacity:.7;margin-bottom:6px;}
+  .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;}
+
+  @media(max-width:600px){
+    .stats{grid-template-columns:1fr;}
+    .cmp{grid-template-columns:1fr;}
+    .row2{grid-template-columns:1fr;}
+    .exo{flex-wrap:wrap;}
+    h1{font-size:24px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="bar">
+    <a class="home" id="homeLink" href="index.html">← Retour au site</a>
+    <div class="who" id="who"></div>
+  </div>
+</header>
+
+<main id="app"><p class="empty">Chargement…</p></main>
+
+<script src="config.js"></script>
+<script src="supabase.js"></script>
+<script>
+/* =====================================================================
+   CONFIGURATION — lue dans le fichier config.js (le seul à modifier)
+   ===================================================================== */
+const CONFIG = window.HLP_CONFIG || {};        // défini dans le fichier config.js
+const SUPABASE_URL = CONFIG.url || '';
+const SUPABASE_KEY = CONFIG.key || '';
+/* ===================================================================== */
+
+const MIN_CARACTERES_ANALYSE = 15;
+
+/* ---------- petits outils ---------- */
+function h(tag, props, ...kids){
+  const e = document.createElement(tag);
+  for(const [k,v] of Object.entries(props || {})){
+    if(k === 'class') e.className = v;
+    else if(k.startsWith('on')) e.addEventListener(k.slice(2), v);
+    else if(v === true) e.setAttribute(k, '');
+    else if(v !== false && v != null) e.setAttribute(k, v);
+  }
+  for(const c of kids.flat()){
+    if(c == null || c === false) continue;
+    e.append(c.nodeType ? c : document.createTextNode(String(c)));
+  }
+  return e;
+}
+const app = document.getElementById('app');
+const who = document.getElementById('who');
+function show(...nodes){ app.replaceChildren(...nodes.flat().filter(Boolean)); window.scrollTo(0,0); }
+function shuffle(a){ a = a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function fmtDate(iso){ try{ return new Date(iso).toLocaleDateString('fr-FR',{day:'numeric',month:'long'}); }catch(e){ return ''; } }
+function paragraphes(texte){ return String(texte||'').split(/\n+/).filter(Boolean); }
+
+function messageErreur(err){
+  const m = (err && err.message || '').toLowerCase();
+  if(m.includes('invalid login')) return 'Email ou mot de passe incorrect.';
+  if(m.includes('email not confirmed')) return 'Adresse email non confirmée : vérifie ta boîte mail.';
+  if(m.includes('already registered')) return 'Un compte existe déjà avec cet email : connecte-toi.';
+  if(m.includes('different from the old')) return 'Choisis un mot de passe différent de l’ancien.';
+  if(m.includes('session missing') || m.includes('expired')) return 'Le lien a expiré. Demande-en un nouveau depuis « Mot de passe oublié ? ».';
+  if(m.includes('after') && m.includes('second')) return 'Patiente une minute avant de redemander un lien.';
+  if(m.includes('email rate limit')) return 'Trop de demandes d’email pour le moment. Réessaie plus tard ou préviens ton enseignante.';
+  if(m.includes('password')) return 'Mot de passe trop court (8 caractères minimum).';
+  if(m.includes('rate limit') || m.includes('too many')) return 'Trop de tentatives. Patiente quelques minutes.';
+  if(m.includes('fetch') || m.includes('network')) return 'Connexion impossible. Vérifie ta connexion internet et réessaie.';
+  return 'Une erreur est survenue. Réessaie dans un instant.';
+}
+
+/* ---------- garde-fou : jamais une clé secrète dans cette page ---------- */
+function cleDangereuse(key){
+  if(/^sb_secret_/.test(key)) return true;
+  const parts = key.split('.');
+  if(parts.length === 3){
+    try{
+      const payload = JSON.parse(atob(parts[1].replace(/-/g,'+').replace(/_/g,'/')));
+      if(payload.role === 'service_role') return true;
+    }catch(e){}
+  }
+  return false;
+}
+
+/* ---------- champ mot de passe avec œil (barré = masqué, ouvert = visible) ---------- */
+const SVG_NS = 'http://www.w3.org/2000/svg';
+function icone(visible){
+  const s = document.createElementNS(SVG_NS,'svg');
+  [['viewBox','0 0 24 24'],['width','22'],['height','22'],['fill','none'],['stroke','currentColor'],
+   ['stroke-width','2'],['stroke-linecap','round'],['stroke-linejoin','round'],['aria-hidden','true']]
+    .forEach(([k,v])=>s.setAttribute(k,v));
+  const p = d => { const e = document.createElementNS(SVG_NS,'path'); e.setAttribute('d',d); s.append(e); };
+  p('M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z');
+  const c = document.createElementNS(SVG_NS,'circle');
+  c.setAttribute('cx','12'); c.setAttribute('cy','12'); c.setAttribute('r','3'); s.append(c);
+  if(!visible) p('M3 3l18 18');
+  return s;
+}
+function champMotDePasse({id, label, autocomplete, minlength}){
+  const input = h('input',{id, type:'password', autocomplete, required:true, minlength});
+  const btn = h('button',{type:'button', class:'eye', 'aria-pressed':'false',
+                          'aria-label':'Afficher le mot de passe', title:'Afficher le mot de passe'}, icone(false));
+  btn.addEventListener('click', ()=>{
+    const voir = input.type === 'password';
+    input.type = voir ? 'text' : 'password';
+    btn.replaceChildren(icone(voir));
+    btn.setAttribute('aria-pressed', String(voir));
+    const l = voir ? 'Masquer le mot de passe' : 'Afficher le mot de passe';
+    btn.setAttribute('aria-label', l); btn.setAttribute('title', l);
+  });
+  return { input, champ: h('div',{class:'field'}, h('label',{for:id}, label), h('div',{class:'pw'}, input, btn)) };
+}
+
+/* ---------- arrivée par un lien reçu par email (réinitialisation) ---------- */
+const params = new URLSearchParams(location.hash.replace(/^#/,''));
+const modeRecup = params.get('type') === 'recovery' && !!params.get('access_token');
+const erreurLien = !!(params.get('error') || params.get('error_code'));
+let enRecuperation = false;
+function nettoyerUrl(){ try{ history.replaceState(null,'', location.pathname + location.search); }catch(e){} }
+
+let sb = null;
+let session = null;
+let profil = null;
+
+/* =====================================================================
+   DÉMARRAGE
+   ===================================================================== */
+async function demarrer(){
+  if(!SUPABASE_URL || !SUPABASE_KEY || SUPABASE_KEY.startsWith('COLLE_ICI')){
+    return show(h('div',{class:'card auth'},
+      h('h1',{},'Configuration manquante'),
+      h('p',{class:'sub'},'La clé publique Supabase n’a pas encore été renseignée dans le fichier config.js (ou ce fichier est absent du dossier).')));
+  }
+  if(cleDangereuse(SUPABASE_KEY)){
+    return show(h('div',{class:'card auth'},
+      h('h1',{},'Clé non autorisée'),
+      h('p',{class:'sub'},'La clé fournie donne un accès total à la base : elle ne doit jamais figurer dans une page web. Utilise la clé « anon » ou « Publishable ».')));
+  }
+  if(!window.supabase || typeof window.supabase.createClient !== 'function'){
+    return show(h('div',{class:'card auth'},
+      h('h1',{},'Fichier manquant'),
+      h('p',{class:'sub'},'Le fichier supabase.js est introuvable. Il doit se trouver dans le même dossier que espace-hlp.html.')));
+  }
+  try{
+    sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, { auth:{ flowType:'implicit' } });
+    sb.auth.onAuthStateChange((event)=>{
+      if(event === 'PASSWORD_RECOVERY'){ enRecuperation = true; if(!app.querySelector('#np1')) vueNouveauMotDePasse(); }
+    });
+    if(erreurLien){
+      nettoyerUrl();
+      return vueMotDePasseOublie({type:'err', texte:'Ce lien a expiré ou a déjà été utilisé. Demande-en un nouveau ci-dessous.'});
+    }
+    const { data } = await sb.auth.getSession();
+    session = data && data.session;
+    if(modeRecup || enRecuperation){
+      if(session){ enRecuperation = true; if(!app.querySelector('#np1')) vueNouveauMotDePasse(); return; }
+      nettoyerUrl();
+      return vueMotDePasseOublie({type:'err', texte:'Ce lien n’est plus valide. Demande-en un nouveau ci-dessous.'});
+    }
+    if(session) await chargerProfil(); else vueConnexion();
+  }catch(e){
+    show(h('div',{class:'card auth'},
+      h('h1',{},'Connexion impossible'),
+      h('p',{class:'sub'},'La page n’arrive pas à joindre le serveur. Vérifie ta connexion internet, puis réessaie.'),
+      h('button',{class:'btn',onclick:()=>location.reload()},'Réessayer')));
+  }
+}
+
+// Si l'écran reste bloqué sur « Chargement… », on explique quoi faire.
+setTimeout(()=>{
+  if(app.textContent.trim() === 'Chargement…'){
+    show(h('div',{class:'card auth'},
+      h('h1',{},'Le chargement est long'),
+      h('p',{class:'sub'},'Le serveur met du temps à répondre. Attends une minute puis réessaie : après quelques jours d’inactivité, la base peut mettre un moment à se réveiller.'),
+      h('button',{class:'btn',onclick:()=>location.reload()},'Réessayer')));
+  }
+}, 10000);
+
+async function chargerProfil(){
+  const { data, error } = await sb.from('profiles').select('id, prenom, nom, classe, role, hlp').eq('id', session.user.id).single();
+  if(error || !data){
+    who.replaceChildren();
+    return show(h('div',{class:'card auth'},
+      h('h1',{},'Profil introuvable'),
+      h('p',{class:'sub'},'Ton compte existe mais ton profil n’a pas été créé. Préviens ton enseignante.'),
+      h('button',{class:'btn ghost',onclick:deconnexion},'Se déconnecter')));
+  }
+  profil = data;
+  entete();
+  if(profil.role === 'prof' || profil.hlp) return vueTableauDeBord();
+  vueEnAttente();
+}
+
+function entete(){
+  const ini = ((profil.prenom||'?').charAt(0) + (profil.nom||'').charAt(0)).toUpperCase();
+  who.replaceChildren(
+    h('span',{class:'avatar','aria-hidden':'true'}, ini),
+    h('span',{}, profil.prenom + (profil.classe ? ' · ' + profil.classe : '')),
+    h('button',{class:'linkbtn',onclick:deconnexion},'Se déconnecter'));
+}
+
+async function deconnexion(){
+  await sb.auth.signOut();
+  session = null; profil = null;
+  who.replaceChildren();
+  vueConnexion();
+}
+
+/* =====================================================================
+   VUE : CONNEXION / INSCRIPTION
+   ===================================================================== */
+function vueConnexion(mode = 'connexion', message = null){
+  const insc = mode === 'inscription';
+  const zoneMsg = h('div',{});
+  if(message) zoneMsg.append(h('div',{class:'msg ' + (message.type||'err'), role:'alert'}, message.texte));
+
+  const f = {
+    prenom: h('input',{id:'f-prenom',autocomplete:'given-name',required:true}),
+    nom:    h('input',{id:'f-nom',autocomplete:'family-name',required:true}),
+    classe: h('input',{id:'f-classe',placeholder:'ex. Terminale',autocomplete:'off'}),
+    email:  h('input',{id:'f-email',type:'email',autocomplete:'email',required:true}),
+  };
+  const pwc = champMotDePasse({ id:'f-pw', label: 'Mot de passe' + (insc ? ' (8 caractères minimum)' : ''),
+                                autocomplete: insc ? 'new-password' : 'current-password', minlength: insc ? 8 : undefined });
+  f.pw = pwc.input;
+  const bouton = h('button',{class:'btn full',type:'submit'}, insc ? 'Créer mon compte' : 'Se connecter');
+
+  const form = h('form',{onsubmit: async (ev)=>{
+      ev.preventDefault();
+      bouton.disabled = true;
+      try{
+        if(insc) await inscription(f); else await connexion(f);
+      }catch(e){
+        vueConnexion(mode, {type:'err', texte: messageErreur(e)});
+      }
+    }},
+    insc && h('div',{class:'row2'},
+      h('div',{class:'field'}, h('label',{for:'f-prenom'},'Prénom'), f.prenom),
+      h('div',{class:'field'}, h('label',{for:'f-nom'},'Nom'), f.nom)),
+    insc && h('div',{class:'field'}, h('label',{for:'f-classe'},'Classe'), f.classe),
+    h('div',{class:'field'}, h('label',{for:'f-email'},'Adresse email'), f.email),
+    pwc.champ,
+    bouton);
+
+  show(h('div',{class:'card auth'},
+    h('h1',{}, 'Espace HLP'),
+    h('p',{class:'sub'}, 'Entraînement et vérification des acquis.'),
+    h('div',{class:'tabs',role:'tablist'},
+      h('button',{class:'tab',role:'tab','aria-selected':String(!insc),onclick:()=>vueConnexion('connexion')},'Se connecter'),
+      h('button',{class:'tab',role:'tab','aria-selected':String(insc),onclick:()=>vueConnexion('inscription')},'Créer un compte')),
+    zoneMsg, form,
+    insc
+      ? h('p',{class:'hint'}, 'Après ton inscription, ton enseignante doit activer ton accès HLP.')
+      : h('button',{class:'linkbtn',type:'button',onclick:()=>vueMotDePasseOublie()}, 'Mot de passe oublié ?')));
+}
+
+async function connexion(f){
+  const { data, error } = await sb.auth.signInWithPassword({ email: f.email.value.trim(), password: f.pw.value });
+  if(error) throw error;
+  session = data.session;
+  await chargerProfil();
+}
+
+async function inscription(f){
+  const prenom = f.prenom.value.trim(), nom = f.nom.value.trim();
+  if(!prenom || !nom) return vueConnexion('inscription', {type:'err', texte:'Prénom et nom sont obligatoires.'});
+  const { data, error } = await sb.auth.signUp({
+    email: f.email.value.trim(), password: f.pw.value,
+    options: { data: { prenom, nom, classe: f.classe.value.trim() } }
+  });
+  if(error) throw error;
+  if(data.user && data.user.identities && data.user.identities.length === 0){
+    return vueConnexion('connexion', {type:'info', texte:'Un compte existe peut-être déjà avec cet email : essaie de te connecter.'});
+  }
+  if(!data.session){
+    return vueConnexion('connexion', {type:'info', texte:'Compte créé. Vérifie ta boîte mail pour confirmer ton adresse, puis connecte-toi.'});
+  }
+  session = data.session;
+  await chargerProfil();
+}
+
+/* =====================================================================
+   VUES : MOT DE PASSE OUBLIÉ / NOUVEAU MOT DE PASSE
+   ===================================================================== */
+function vueMotDePasseOublie(message = null){
+  const email = h('input',{id:'f-email',type:'email',autocomplete:'email',required:true});
+  const bouton = h('button',{class:'btn full',type:'submit'},'Envoyer le lien');
+  const zoneMsg = h('div',{});
+  if(message) zoneMsg.append(h('div',{class:'msg ' + (message.type||'err'), role:'alert'}, message.texte));
+
+  const form = h('form',{onsubmit: async (ev)=>{
+      ev.preventDefault();
+      if(location.protocol === 'file:'){
+        zoneMsg.replaceChildren(h('div',{class:'msg err',role:'alert'},
+          'L’envoi du lien ne fonctionne que depuis le site en ligne, pas depuis un fichier ouvert sur l’ordinateur.'));
+        return;
+      }
+      bouton.disabled = true;
+      try{
+        const { error } = await sb.auth.resetPasswordForEmail(email.value.trim(), { redirectTo: location.origin + location.pathname });
+        if(error) throw error;
+        // Message volontairement identique que l'adresse existe ou non.
+        show(h('div',{class:'card auth'},
+          h('h1',{},'Vérifie ta boîte mail'),
+          h('p',{class:'sub'},'Si un compte existe avec cette adresse, un email contenant un lien vient d’être envoyé. Pense à regarder dans les courriers indésirables.'),
+          h('p',{class:'hint'},'Le lien ne fonctionne qu’une fois, et pendant un temps limité.'),
+          h('button',{class:'btn ghost',onclick:()=>vueConnexion()},'Retour à la connexion')));
+      }catch(e){
+        zoneMsg.replaceChildren(h('div',{class:'msg err',role:'alert'}, messageErreur(e)));
+        bouton.disabled = false;
+      }
+    }},
+    h('div',{class:'field'}, h('label',{for:'f-email'},'Adresse email de ton compte'), email),
+    bouton);
+
+  show(h('div',{class:'card auth'},
+    h('h1',{},'Mot de passe oublié'),
+    h('p',{class:'sub'},'Indique ton adresse email : nous t’envoyons un lien pour choisir un nouveau mot de passe.'),
+    zoneMsg, form,
+    h('button',{class:'linkbtn',type:'button',onclick:()=>vueConnexion()},'← Retour à la connexion')));
+}
+
+function vueNouveauMotDePasse(){
+  const a = champMotDePasse({ id:'np1', label:'Nouveau mot de passe', autocomplete:'new-password', minlength:8 });
+  const b = champMotDePasse({ id:'np2', label:'Saisis-le une seconde fois', autocomplete:'new-password', minlength:8 });
+  const aide = h('p',{class:'hint',role:'status','aria-live':'polite'},'8 caractères minimum.');
+  const zoneMsg = h('div',{});
+  const bouton = h('button',{class:'btn full',type:'submit',disabled:true},'Enregistrer le mot de passe');
+
+  function maj(){
+    const v1 = a.input.value, v2 = b.input.value;
+    let texte = '8 caractères minimum.', ok = false, erreur = false;
+    if(v1.length > 0 && v1.length < 8){ const n = 8 - v1.length; texte = 'Encore ' + n + ' caractère' + (n>1?'s':'') + ' au minimum.'; }
+    else if(v2.length > 0 && v1 !== v2){ texte = 'Les deux mots de passe ne sont pas identiques.'; erreur = true; }
+    else if(v1.length >= 8 && v1 === v2){ texte = 'Les deux mots de passe sont identiques ✓'; ok = true; }
+    aide.textContent = texte;
+    aide.className = 'hint' + (erreur ? ' ko' : '');
+    bouton.disabled = !ok;
+  }
+  a.input.addEventListener('input', maj);
+  b.input.addEventListener('input', maj);
+
+  const form = h('form',{onsubmit: async (ev)=>{
+      ev.preventDefault();
+      if(a.input.value.length < 8 || a.input.value !== b.input.value) return maj();
+      bouton.disabled = true;
+      zoneMsg.replaceChildren();
+      try{
+        const { error } = await sb.auth.updateUser({ password: a.input.value });
+        if(error) throw error;
+        enRecuperation = false;
+        nettoyerUrl();
+        show(h('div',{class:'card auth'},
+          h('h1',{},'Mot de passe modifié'),
+          h('p',{class:'sub'},'Ton nouveau mot de passe est enregistré.'),
+          h('button',{class:'btn full',onclick:()=>chargerProfil()},'Accéder à mon espace')));
+      }catch(e){
+        zoneMsg.replaceChildren(h('div',{class:'msg err',role:'alert'}, messageErreur(e)));
+        maj();
+      }
+    }}, a.champ, b.champ, aide, bouton);
+
+  show(h('div',{class:'card auth'},
+    h('h1',{},'Nouveau mot de passe'),
+    h('p',{class:'sub'},'Choisis un nouveau mot de passe, puis saisis-le une seconde fois pour vérifier.'),
+    zoneMsg, form,
+    h('button',{class:'linkbtn',type:'button',onclick:()=>{ enRecuperation = false; nettoyerUrl(); deconnexion(); }},'Annuler')));
+}
+
+/* =====================================================================
+   VUE : COMPTE EN ATTENTE D'ACTIVATION
+   ===================================================================== */
+function vueEnAttente(){
+  show(h('div',{class:'card auth'},
+    h('h1',{},'Bienvenue ' + profil.prenom),
+    h('p',{class:'sub'},'Ton compte est créé, mais ton accès à l’espace HLP n’est pas encore activé. Ton enseignante va le faire : reviens un peu plus tard.'),
+    h('button',{class:'btn ghost',onclick:deconnexion},'Se déconnecter')));
+}
+
+/* =====================================================================
+   DONNÉES
+   ===================================================================== */
+function estApercu(){ return profil.role === 'prof'; }
+
+async function chargerDonnees(){
+  const [ex, te, co] = await Promise.all([
+    sb.from('hlp_exercices').select('*').order('ordre', {ascending:true}),
+    estApercu() ? Promise.resolve({data:[]}) : sb.from('hlp_tentatives').select('*').eq('eleve_id', profil.id).order('created_at', {ascending:false}),
+    sb.from('hlp_corriges').select('exercice_id, corrige')
+  ]);
+  if(ex.error || te.error || co.error) throw (ex.error || te.error || co.error);
+  return { exercices: ex.data || [], tentatives: te.data || [], corriges: co.data || [] };
+}
+
+function scoreQuiz(corrige, reponses){
+  const bonnes = Array.isArray(corrige && corrige.bonnes) ? corrige.bonnes : [];
+  let ok = 0;
+  bonnes.forEach((b,i)=>{ if(reponses && reponses[i] != null && Number(reponses[i]) === Number(b)) ok++; });
+  return { ok, total: bonnes.length };
+}
+
+/* =====================================================================
+   VUE : TABLEAU DE BORD
+   ===================================================================== */
+async function vueTableauDeBord(){
+  show(h('p',{class:'empty'},'Chargement…'));
+  let d;
+  try{ d = await chargerDonnees(); }
+  catch(e){
+    return show(h('div',{class:'msg err',role:'alert'},'Impossible de charger les exercices. Réessaie dans un instant.'),
+                h('button',{class:'btn ghost',onclick:vueTableauDeBord},'Réessayer'));
+  }
+  const corrigeDe = {}; d.corriges.forEach(c => corrigeDe[c.exercice_id] = c.corrige);
+
+  // état par exercice
+  const etat = {};
+  d.tentatives.forEach(t=>{
+    const e = etat[t.exercice_id] || (etat[t.exercice_id] = {essais:0, dernier:t.created_at, meilleur:null});
+    e.essais++;
+    const ex = d.exercices.find(x=>x.id===t.exercice_id);
+    if(ex && ex.type==='quiz' && corrigeDe[ex.id]){
+      const s = scoreQuiz(corrigeDe[ex.id], t.reponses);
+      if(!e.meilleur || s.ok > e.meilleur.ok) e.meilleur = s;
+    }
+  });
+
+  const faits = d.exercices.filter(e=>etat[e.id]).length;
+  const quizScores = d.exercices.filter(e=>e.type==='quiz' && etat[e.id] && etat[e.id].meilleur).map(e=>etat[e.id].meilleur);
+  const pct = quizScores.length ? Math.round(100 * quizScores.reduce((a,s)=>a+s.ok,0) / Math.max(1,quizScores.reduce((a,s)=>a+s.total,0))) : null;
+  const derniere = d.tentatives.length ? fmtDate(d.tentatives[0].created_at) : '—';
+
+  const liste = d.exercices.length
+    ? d.exercices.map(ex=>{
+        const e = etat[ex.id];
+        let texteEtat = 'Pas encore fait';
+        if(e){
+          texteEtat = 'Fait ' + (e.essais>1 ? e.essais+' fois' : '1 fois') + ' · dernière séance : ' + fmtDate(e.dernier);
+          if(e.meilleur) texteEtat += ' · meilleur score ' + e.meilleur.ok + '/' + e.meilleur.total;
+        }
+        return h('div',{class:'exo'},
+          h('div',{class:'exo-main'},
+            h('span',{class:'tag'}, (ex.type==='quiz' ? 'Quiz' : 'Analyse') + (ex.axe ? ' · ' + ex.axe : '')),
+            h('span',{class:'exo-titre'}, ex.titre),
+            h('span',{class:'exo-etat'}, texteEtat)),
+          h('button',{class:'btn ' + (e ? 'ghost' : ''),onclick:()=>vueExercice(ex)}, e ? 'Refaire' : 'Commencer'));
+      })
+    : [h('p',{class:'empty'},'Aucun exercice n’est disponible pour le moment.')];
+
+  show(
+    h('h1',{},'Bonjour ' + profil.prenom),
+    h('p',{class:'sub'}, estApercu() ? 'Aperçu enseignante de l’espace HLP.' : 'Voici où tu en es.'),
+    estApercu() && h('div',{class:'banner'},'Mode aperçu : avec un compte enseignante, tes réponses ne sont pas enregistrées et les corrigés sont visibles d’emblée.'),
+    !estApercu() && h('div',{class:'stats'},
+      h('div',{class:'stat'}, h('span',{class:'label'},'Exercices faits'), h('div',{class:'value'}, faits + ' / ' + d.exercices.length)),
+      h('div',{class:'stat'}, h('span',{class:'label'},'Réussite aux quiz'), h('div',{class:'value'}, pct == null ? '—' : pct + ' %')),
+      h('div',{class:'stat'}, h('span',{class:'label'},'Dernière séance'), h('div',{class:'value'}, derniere))),
+    h('h2',{},'Exercices'),
+    liste);
+}
+
+/* =====================================================================
+   VUE : EXERCICE
+   ===================================================================== */
+function vueExercice(ex){
+  const questions = Array.isArray(ex.questions) ? ex.questions : [];
+  const reponses = {};
+  const bouton = h('button',{class:'btn',type:'button',disabled:true}, ex.type==='quiz' ? 'Valider mes réponses' : 'Valider et voir le corrigé type');
+  const zoneErreur = h('div',{});
+
+  function pret(){
+    if(ex.type==='quiz') return questions.every((_,i)=> reponses[i] != null);
+    return questions.every((_,i)=> (reponses[i]||'').trim().length >= MIN_CARACTERES_ANALYSE);
+  }
+  function maj(){ bouton.disabled = !pret(); }
+
+  const blocs = questions.map((q,i)=>{
+    if(ex.type==='quiz'){
+      const ordre = shuffle((q.options||[]).map((_,k)=>k));
+      return h('fieldset',{class:'q',style:'border:none'},
+        h('legend',{class:'q-titre'}, (i+1) + '. ' + q.q),
+        ordre.map(k=> h('label',{class:'opt'},
+          h('input',{type:'radio',name:'q'+i,value:String(k),onchange:()=>{ reponses[i]=k; maj(); }}),
+          h('span',{}, q.options[k]))));
+    }
+    return h('div',{class:'q'},
+      h('div',{class:'q-titre'}, (i+1) + '. ' + q.q),
+      h('div',{class:'field'},
+        h('label',{for:'r'+i},'Ta réponse (' + MIN_CARACTERES_ANALYSE + ' caractères minimum)'),
+        h('textarea',{id:'r'+i,oninput:(ev)=>{ reponses[i]=ev.target.value; maj(); }})));
+  });
+
+  bouton.addEventListener('click', async ()=>{
+    bouton.disabled = true;
+    zoneErreur.replaceChildren();
+    try{
+      if(!estApercu()){
+        const { error } = await sb.from('hlp_tentatives').insert({ eleve_id: profil.id, exercice_id: ex.id, reponses });
+        if(error) throw error;
+      }
+      const { data, error } = await sb.from('hlp_corriges').select('exercice_id, corrige').eq('exercice_id', ex.id);
+      if(error) throw error;
+      const corrige = data && data[0] ? data[0].corrige : null;
+      vueResultat(ex, reponses, corrige);
+    }catch(e){
+      zoneErreur.replaceChildren(h('div',{class:'msg err',role:'alert'}, 'Tes réponses n’ont pas pu être enregistrées. Réessaie dans un instant.'));
+      maj();
+    }
+  });
+
+  show(
+    h('button',{class:'linkbtn back',onclick:vueTableauDeBord},'← Retour aux exercices'),
+    h('h1',{}, ex.titre),
+    h('p',{class:'sub'}, (ex.type==='quiz' ? 'Quiz' : 'Analyse guidée') + (ex.axe ? ' · ' + ex.axe : '')),
+    ex.consigne && h('p',{class:'consigne'}, ex.consigne),
+    ex.extrait && h('div',{class:'extrait'},
+      paragraphes(ex.extrait).map(p=>h('p',{},p)),
+      ex.source && h('p',{class:'source'}, ex.source)),
+    blocs, zoneErreur, bouton);
+}
+
+function vueResultat(ex, reponses, corrige){
+  const questions = Array.isArray(ex.questions) ? ex.questions : [];
+  const retour = h('div',{class:'actions'},
+    h('button',{class:'btn',onclick:vueTableauDeBord},'Retour aux exercices'),
+    h('button',{class:'btn ghost',onclick:()=>vueExercice(ex)},'Refaire'));
+
+  if(!corrige){
+    return show(h('h1',{},'Réponses enregistrées'),
+      h('p',{class:'sub'},'Le corrigé de cet exercice n’est pas disponible pour l’instant.'), retour);
+  }
+
+  if(ex.type==='quiz'){
+    const s = scoreQuiz(corrige, reponses);
+    const bonnes = corrige.bonnes || [], expl = corrige.explications || [];
+    return show(
+      h('h1',{}, ex.titre),
+      h('div',{class:'score',role:'status'}, s.ok + ' / ' + s.total),
+      h('p',{class:'sub'}, s.ok === s.total ? 'Sans faute !' : 'Relis les explications ci-dessous.'),
+      questions.map((q,i)=> h('div',{class:'q'},
+        h('div',{class:'q-titre'}, (i+1) + '. ' + q.q),
+        (q.options||[]).map((o,k)=>{
+          const choisie = Number(reponses[i]) === k, juste = Number(bonnes[i]) === k;
+          return h('div',{class:'opt ' + (juste ? 'ok' : (choisie ? 'ko' : ''))},
+            h('span',{}, o),
+            juste && h('span',{class:'tagres'}, '✓ Bonne réponse'),
+            (!juste && choisie) && h('span',{class:'tagres'}, '✗ Ta réponse'));
+        }),
+        expl[i] && h('div',{class:'explain'}, expl[i]))),
+      retour);
+  }
+
+  const cor = corrige.corriges || [];
+  show(
+    h('h1',{}, ex.titre),
+    h('p',{class:'sub'},'Compare ta réponse au corrigé type, puis corrige-toi.'),
+    questions.map((q,i)=> h('div',{class:'q'},
+      h('div',{class:'q-titre'}, (i+1) + '. ' + q.q),
+      h('div',{class:'cmp'},
+        h('div',{class:'mine'}, h('span',{class:'lbl'},'Ta réponse'), reponses[i] || ''),
+        h('div',{class:'ref'}, h('span',{class:'lbl'},'Corrigé type'), cor[i] || '—')))),
+    retour);
+}
+
+demarrer();
+</script>
+</body>
+</html>

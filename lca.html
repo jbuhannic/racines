@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Option latin et grec (LCA) au lycée Saint-Martin, Rennes — projets et présentation</title>
+<meta name="description" content="Option Langues et cultures de l'Antiquité (latin, grec) au lycée Saint-Martin de Rennes : présentation, horaires, atouts pour la scolarité et projets d'élèves (stèles funéraires, entretiens de philosophes, mariages antiques, intervention sur Prométhée).">
+<link rel="canonical" href="https://jbuhannic.github.io/racines/lca.html">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:title" content="Option latin et grec (LCA) au lycée Saint-Martin, Rennes">
+<meta property="og:description" content="Langues et culture de l'Antiquité, une porte vers le futur : présentation de l'option et projets d'élèves.">
+<meta property="og:url" content="https://jbuhannic.github.io/racines/lca.html">
+<meta property="og:image" content="https://jbuhannic.github.io/racines/img/atelier-groupe-toges.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  :root{
+    --bg:#FAF7F2;
+    --surface:#FFFFFF;
+    --ink:#2B2B28;
+    --ink-soft:#6B6760;
+    --border:#E4DDD0;
+
+    --terracotta:#B5502E;
+    --terracotta-light:#F3E3D3;
+    --terracotta-dark:#7A3319;
+
+    --postit:#F0DFA0;
+
+    --font-title1:Cambria,Georgia,serif;
+    --font-title2:Arial,Helvetica,sans-serif;
+    --font-body:Georgia,'Times New Roman',serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--ink);font-family:var(--font-body);line-height:1.65;}
+  a{color:inherit;}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 32px;}
+
+  header{border-bottom:1px solid var(--border);background:var(--surface);}
+  .nav{display:flex;align-items:center;justify-content:space-between;padding:20px 0;}
+  .nav-links{display:flex;align-items:center;gap:32px;}
+  .nav-links a{font-family:var(--font-title2);font-size:14px;font-weight:500;color:var(--ink-soft);text-decoration:none;}
+  .nav-links a.active{color:var(--terracotta-dark);}
+
+  /* --- Bandeau photo --- */
+  .photo-hero{position:relative;height:420px;overflow:hidden;background:#3A2A20;}
+  .photo-hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 30%;}
+  .photo-hero .overlay{
+    position:absolute;inset:0;
+    background:linear-gradient(90deg, rgba(31,20,14,0.75) 0%, rgba(31,20,14,0.5) 45%, rgba(31,20,14,0.18) 100%);
+  }
+  .photo-hero .hero-content{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;justify-content:center;max-width:620px;padding:0 32px;}
+  .photo-hero .eyebrow{color:#F0D9C4;}
+  .photo-hero h1{color:#FFF8F0;font-size:32px;}
+  .photo-hero p{color:#EADFD2;font-size:16px;max-width:560px;}
+
+  .eyebrow{
+    font-family:var(--font-title2);font-size:12px;color:var(--terracotta-dark);
+    text-transform:uppercase;letter-spacing:0.06em;margin-bottom:14px;
+  }
+  h1{font-family:var(--font-title1);font-size:32px;line-height:1.18;margin-bottom:18px;max-width:700px;}
+
+  section{padding:8px 0 60px;}
+  h2{font-family:var(--font-title2);font-size:18px;margin-bottom:16px;color:var(--ink);}
+  .section-sub{font-size:14px;color:var(--ink-soft);margin-bottom:28px;max-width:600px;}
+
+  /* --- Et concretement (horizontal) --- */
+  .concret-list{display:flex;flex-direction:row;flex-wrap:wrap;gap:14px;}
+  .concret-item{
+    flex:1;min-width:200px;
+    font-family:var(--font-title2);font-size:14px;font-weight:700;color:white;
+    background:var(--terracotta);border-radius:10px;padding:16px 18px;
+    opacity:0;transform:translateY(10px);transition:opacity 0.6s ease,transform 0.6s ease;
+  }
+  .concret-list.in-view .concret-item{opacity:1;transform:none;}
+
+  /* --- Le latin, c'est : grille de cartes --- */
+  .benefit-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+  .benefit-card{
+    background:var(--surface);border:1px solid var(--border);border-radius:14px;
+    padding:22px;font-size:14px;color:var(--ink-soft);text-align:center;
+    opacity:0;transform:translateY(14px);transition:opacity 0.5s ease,transform 0.5s ease;
+  }
+  .benefit-grid.in-view .benefit-card{opacity:1;transform:none;}
+  .benefit-card a{color:var(--terracotta-dark);text-decoration:underline;}
+
+  /* --- Atout scolarite : accordeon FAQ --- */
+  .atout-list{display:flex;flex-direction:column;gap:10px;}
+  .atout-item{
+    border:1px solid var(--border);border-radius:12px;background:var(--surface);
+    opacity:0;transform:translateY(10px);transition:opacity 0.5s ease,transform 0.5s ease;
+    overflow:hidden;
+  }
+  .atout-list.in-view .atout-item{opacity:1;transform:none;}
+  .atout-head{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:16px 20px;cursor:pointer;
+  }
+  .atout-head strong{font-family:var(--font-title2);font-size:14px;color:var(--ink);font-weight:700;}
+  .atout-chevron{font-family:var(--font-title2);font-size:16px;color:var(--terracotta);transition:transform 0.3s ease;flex-shrink:0;margin-left:12px;}
+  .atout-item.open .atout-chevron{transform:rotate(180deg);}
+  .atout-body{max-height:0;overflow:hidden;transition:max-height 0.35s ease;}
+  .atout-body p{font-size:14px;color:var(--ink-soft);padding:0 20px 18px;}
+  .atout-item.open .atout-body{max-height:160px;}
+
+  /* --- Deux cartes parents/eleves --- */
+  .choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px;}
+  .choice-card{background:var(--terracotta-light);border-radius:16px;padding:26px;}
+  .choice-card h3{font-family:var(--font-title2);font-size:15px;margin-bottom:14px;color:var(--terracotta-dark);}
+  .choice-card ul{list-style:none;}
+  .choice-card li{font-size:14px;color:var(--terracotta-dark);padding:8px 0 8px 18px;position:relative;}
+  .choice-card li::before{content:'—';position:absolute;left:0;}
+  .choice-tagline{
+    text-align:center;font-family:var(--font-title1);font-size:19px;color:var(--ink);
+    max-width:600px;margin:0 auto;padding-top:8px;
+  }
+
+  /* --- Frise horizontale defilante --- */
+  .timeline-outer{
+    overflow-x:auto;overflow-y:hidden;padding:8px 0 12px;margin:0 -32px;padding-left:32px;
+    cursor:grab;scrollbar-width:none;-ms-overflow-style:none;
+  }
+  .timeline-outer::-webkit-scrollbar{display:none;}
+  .timeline-outer.dragging{cursor:grabbing;}
+  .timeline-track{display:flex;gap:20px;width:max-content;}
+  .tl-card{
+    width:300px;flex-shrink:0;background:var(--surface);
+    border:1px solid var(--border);border-radius:16px;padding:20px;
+  }
+  .tl-date{font-family:var(--font-title2);font-size:12px;color:var(--terracotta-dark);margin-bottom:6px;}
+  .tl-title{font-family:var(--font-title1);font-size:17px;margin-bottom:10px;}
+  .tl-text{font-size:13px;color:var(--ink-soft);margin-bottom:14px;}
+  .photo-frame{width:100%;height:150px;background:var(--terracotta-light);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:8px;}
+  .photo-frame img,.photo-frame video{width:100%;height:100%;object-fit:cover;display:block;}
+  .postit a{color:#5B4A1F;text-decoration:underline;}
+  .photo-caption{font-family:var(--font-title2);font-size:11px;color:var(--ink-soft);margin-bottom:14px;font-style:italic;}
+  .postit{
+    background:var(--postit);padding:12px;font-family:var(--font-title2);font-size:12px;color:#5B4A1F;
+    transform:rotate(-1.5deg);border-radius:2px;
+  }
+  .postit .label{font-size:10px;text-transform:uppercase;letter-spacing:0.04em;opacity:0.7;margin-bottom:6px;display:block;}
+  .tl-next{color:var(--ink-soft);font-family:var(--font-title2);font-size:13px;font-style:italic;padding-top:16px;text-align:center;}
+
+  footer{border-top:1px solid var(--border);padding:28px 0;font-family:var(--font-title2);font-size:12px;color:var(--ink-soft);}
+
+  @media(max-width:700px){
+    .tl-media{flex-direction:column;}
+    .choice-grid{grid-template-columns:1fr;}
+    .benefit-grid{grid-template-columns:1fr;}
+    .photo-hero{height:360px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <div></div>
+    <div class="nav-links">
+      <a href="index.html">Accueil</a>
+      <a href="#">HLP</a>
+      <a href="lca.html" class="active">LCA</a>
+    </div>
+  </div>
+</header>
+
+<section class="photo-hero">
+  <img src="img/atelier-groupe-toges.jpg" alt="Élèves de latin et de grec en costumes antiques, lors d'un projet de classe au lycée Saint-Martin de Rennes">
+  <div class="overlay"></div>
+  <div class="hero-content">
+    <div class="eyebrow">LCA · Latin, grec, civilisations antiques</div>
+    <h1>Langues et culture de l'Antiquité, une porte vers le futur !</h1>
+    <p>L'étude des langues et des cultures antiques, c'est bien plus qu'apprendre une langue. C'est un voyage dans un monde qui continue de façonner le nôtre.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p style="font-size:15px;color:var(--ink-soft);max-width:680px;">Vous explorez les grandes idées des écrivains, philosophes et savants de l'Antiquité, tout en développant votre réflexion personnelle et votre curiosité intellectuelle. Il s'agit de voir le monde sous différents angles et d'apprendre à argumenter avec finesse.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Et concrètement ?</h2>
+    <div class="concret-list" id="concretList">
+      <div class="concret-item">2h par semaine, jusqu'en terminale</div>
+      <div class="concret-item">Contrôle continu du baccalauréat, coefficient 4 en première et terminale</div>
+      <div class="concret-item emphasis">Cumulable avec une autre option</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Le latin, c'est</h2>
+    <div class="section-sub">Cinq bonnes raisons de s'y mettre.</div>
+    <div class="benefit-grid" id="benefitGrid">
+      <div class="benefit-card">Une voie d'accès pour comprendre l'histoire des mots et de la langue française.</div>
+      <div class="benefit-card">Comprendre et mieux retenir les <a href="http://biologie.fr.free.fr/racines.htm">nouveaux termes scientifiques</a>.</div>
+      <div class="benefit-card">Le dénominateur commun à la plupart des langues parlées aujourd'hui en <a href="http://www.tlfq.ulaval.ca/axl/francophonie/HIST_FR_s1_Expansion-romaine.htm">Europe</a>.</div>
+      <div class="benefit-card">Une source d'inspiration artistique dans tous les arts.</div>
+      <div class="benefit-card">De la culture générale.</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Un atout pour réussir sa scolarité</h2>
+    <div class="atout-list" id="atoutList">
+      <div class="atout-item">
+        <div class="atout-head"><strong>Pour aborder des matières scientifiques</strong><span class="atout-chevron">⌄</span></div>
+        <div class="atout-body"><p>Déchiffrer les termes techniques grâce à la maîtrise des racines grecques et latines.</p></div>
+      </div>
+      <div class="atout-item">
+        <div class="atout-head"><strong>Pour progresser en français</strong><span class="atout-chevron">⌄</span></div>
+        <div class="atout-body"><p>Comprendre les mots, leur histoire, leur construction, et améliorer son orthographe et sa grammaire.</p></div>
+      </div>
+      <div class="atout-item">
+        <div class="atout-head"><strong>Pour apprendre d'autres langues</strong><span class="atout-chevron">⌄</span></div>
+        <div class="atout-body"><p>Le Latin et le Grec sont de merveilleux tremplins pour les langues vivantes.</p></div>
+      </div>
+      <div class="atout-item">
+        <div class="atout-head"><strong>Pour les passionnés d'art et de culture</strong><span class="atout-chevron">⌄</span></div>
+        <div class="atout-body"><p>Explorez l'univers de la tragédie, de la comédie, de la poésie, et du théâtre, là où tout a commencé.</p></div>
+      </div>
+      <div class="atout-item">
+        <div class="atout-head"><strong>Pour gagner en méthode et en rigueur</strong><span class="atout-chevron">⌄</span></div>
+        <div class="atout-body"><p>Ces cours vous donneront des bases solides pour organiser vos idées et travailler efficacement.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Un choix qui fait la différence</h2>
+    <div class="choice-grid">
+      <div class="choice-card">
+        <h3>Pour les parents : un investissement pour l'avenir de votre enfant</h3>
+        <ul>
+          <li>Offrir à votre enfant une formation solide, qui renforce ses compétences dans toutes les disciplines.</li>
+          <li>L'aider à développer des qualités recherchées dans le monde universitaire et professionnel : curiosité, rigueur, et polyvalence.</li>
+          <li>L'initier à une culture qui lui servira toute sa vie, aussi bien dans ses études que dans ses loisirs.</li>
+        </ul>
+      </div>
+      <div class="choice-card">
+        <h3>Pour les élèves : un voyage dans le temps et dans les idées</h3>
+        <ul>
+          <li>Si vous aimez les histoires captivantes, les défis intellectuels, et comprendre ce qui se cache derrière les mots et les idées, alors le Latin ou le Grec est fait pour vous !</li>
+          <li>Vous rejoindrez une communauté d'apprenants passionnés, avec qui vous partagerez des moments de découvertes, de réflexion, et même de créativité.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="choice-tagline">Alors, prêt(e) à nous rejoindre pour relever le défi et devenir un véritable explorateur des temps anciens ?</div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>La frise de l'année</h2>
+    <div class="section-sub">Mise à jour au fil de l'année, à mesure que les projets avancent. Survolez pour mettre en pause.</div>
+  </div>
+  <div class="timeline-outer">
+    <div class="timeline-track" id="timelineTrack"></div>
+  </div>
+  <div class="wrap">
+    <div class="tl-next">↳ la suite s'écrit au fil de l'année…</div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">LCA — Lycée Saint-Martin, Rennes · Contenus pédagogiques · Aucune connexion requise</div>
+</footer>
+
+<script>
+/* Frise horizontale : donnees + rendu duplique pour boucle continue */
+const tlEntries = [
+  {
+    date:'Octobre — Terminale',
+    title:"Projet « Entretien d'embauche de philosophes »",
+    media:'<div class="photo-frame"><img src="img/philosophes-entretien.jpg" alt="Élèves en toge jouant un entretien d\'embauche de philosophes antiques"></div><div class="photo-caption">Photo de leçon : projet « entretien d\'embauche de philosophes », terminale, octobre.</div>',
+    postit:"Les élèves ont dû défendre leur philosophe face à un jury — beaucoup d'arguments inattendus."
+  },
+  {
+    date:'Novembre — Première',
+    title:'Projet « Mariages »',
+    media:'<div class="photo-frame"><img src="img/projet-mariages.jpg" alt="Élèves en costumes colorés, mains jointes, projet mariages"></div><div class="photo-caption">Photo d\'élèves : projet « mariages », premières, novembre.</div>',
+    postit:'Chaque costume devait correspondre à une coutume matrimoniale antique précise.'
+  },
+  {
+    date:'Décembre',
+    title:'Atelier archéologie : reconstituer une poterie',
+    media:'<div class="photo-frame"><img src="img/poterie-puzzle.jpg" alt="Élèves reconstituant des tessons de poterie antique"></div><div class="photo-caption">Reconstitution de tessons — travail d\'équipe autour du questionnaire de fouille.</div>',
+    postit:"À refaire en début d'année prochaine : très bon accroche pour parler de méthode archéologique."
+  },
+  {
+    date:'Janvier — Terminale',
+    title:'Graver la mémoire',
+    text:"Les musées en regorgent : les stèles funéraires font l'objet d'un soin particulier qui leur permet de traverser les siècles.<br><br>En Terminale, les élèves ont étudié de vraies épitaphes romaines avant d'inventer et de graver la leur, en latin, dans l'argile.",
+    media:'<div class="photo-frame"><img src="img/stele-terminee.jpg" alt="Stèle funéraire en terre cuite avec épitaphe latine gravée, dédiée à Elisabeth II"></div><div class="photo-caption">Stèle achevée — épitaphe dédiée à « Elisabetha Secunda, Regina Britanniae ».</div>',
+    postit:"Les personnages choisis allaient de la reine d'Angleterre à des figures bien plus inattendues."
+  },
+  {
+    date:'Terminale HLP & LCA',
+    title:'Prométhée, ou la révolte qui n\'en finit pas',
+    text:"Voler le feu des dieux, le donner aux hommes, en payer le prix pour l'éternité : peu de figures antiques ont autant voyagé à travers les siècles que Prométhée.<br><br>Dans le cadre des Journées Découvrir l'Antiquité et de leur programme « Horizons antiques », nous avons accueilli deux jeunes chercheuses venues retracer avec nous cette figure, d'Eschyle jusqu'à Frankenstein. Une manière de voir comment un mythe grec continue, aujourd'hui encore, à nourrir notre imaginaire.",
+    media:'<div class="photo-frame"><img src="img/promethee-1.jpg" alt="Intervention Horizons antiques, échange en petits groupes"></div>'+
+          '<div class="photo-frame"><img src="img/promethee-2.jpg" alt="Les deux intervenantes présentent Prométhée à la classe"></div>'+
+          '<div class="photo-caption">Intervention « Horizons antiques » — Journées Découvrir l\'Antiquité.</div>',
+    postit:'Intervention gratuite, proposée par des étudiant·e·s et jeunes chercheur·e·s de l\'ENS. <a href="https://sites.google.com/site/lesitejda/" target="_blank" rel="noopener">En savoir plus sur l\'association →</a>'
+  }
+];
+
+function renderCard(e){
+  const card = document.createElement('div');
+  card.className = 'tl-card';
+  card.innerHTML =
+    (e.date ? '<div class="tl-date">'+e.date+'</div>' : '') +
+    '<div class="tl-title">'+e.title+'</div>' +
+    (e.media || '') +
+    (e.text ? '<div class="tl-text">'+e.text+'</div>' : '') +
+    (e.postit ? '<div class="postit"><span class="label">Nota bene</span>'+e.postit+'</div>' : '');
+  return card;
+}
+
+const track = document.getElementById('timelineTrack');
+// deux passages identiques, pour permettre une boucle infinie en scroll manuel
+for(let pass=0; pass<2; pass++){
+  tlEntries.forEach(e=>{ track.appendChild(renderCard(e)); });
+}
+
+/* Defilement auto + glisser a la souris + boucle infinie */
+const outer = document.querySelector('.timeline-outer');
+let autoSpeed = 0.6; // px par frame
+let isHover = false;
+let isDown = false;
+let dragMoved = false;
+let startX = 0;
+let startScroll = 0;
+
+function halfWidth(){ return track.scrollWidth / 2; }
+
+// place le scroll un peu apres 0 pour pouvoir aussi glisser vers l'arriere des le debut
+outer.scrollLeft = 1;
+
+function tick(){
+  if(!isHover && !isDown){
+    outer.scrollLeft += autoSpeed;
+  }
+  // boucle infinie : on recale sans que ce soit visible
+  const half = halfWidth();
+  if(outer.scrollLeft >= half){
+    outer.scrollLeft -= half;
+  } else if(outer.scrollLeft <= 0){
+    outer.scrollLeft += half;
+  }
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+
+outer.addEventListener('mouseenter', ()=>{ isHover = true; });
+outer.addEventListener('mouseleave', ()=>{ isHover = false; isDown = false; outer.classList.remove('dragging'); });
+
+outer.addEventListener('mousedown', (e)=>{
+  isDown = true; dragMoved = false;
+  outer.classList.add('dragging');
+  startX = e.pageX;
+  startScroll = outer.scrollLeft;
+});
+window.addEventListener('mouseup', ()=>{
+  isDown = false;
+  outer.classList.remove('dragging');
+});
+outer.addEventListener('mousemove', (e)=>{
+  if(!isDown) return;
+  e.preventDefault();
+  const delta = e.pageX - startX;
+  if(Math.abs(delta) > 3) dragMoved = true;
+  outer.scrollLeft = startScroll - delta;
+});
+// empeche les clics sur les liens de declencher une navigation juste apres un glisser
+outer.addEventListener('click', (e)=>{
+  if(dragMoved){ e.preventDefault(); e.stopPropagation(); }
+}, true);
+</script>
+
+<script>
+/* Staggered reveal on scroll into view */
+function setupReveal(id, itemClass, delayStep){
+  const container = document.getElementById(id);
+  const items = container.querySelectorAll('.'+itemClass);
+  items.forEach((it,i)=>{ it.style.transitionDelay = (i*delayStep)+'ms'; });
+  const obs = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){ container.classList.add('in-view'); obs.unobserve(container); }
+    });
+  }, {threshold:0.3});
+  obs.observe(container);
+}
+setupReveal('concretList','concret-item',250);
+setupReveal('benefitGrid','benefit-card',180);
+setupReveal('atoutList','atout-item',130);
+
+/* Accordeon atouts */
+document.querySelectorAll('.atout-item').forEach(item=>{
+  item.querySelector('.atout-head').addEventListener('click', ()=>{
+    item.classList.toggle('open');
+  });
+});
+</script>
+
+</body>
+</html>
