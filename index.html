@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Latin, grec et HLP au lycée Saint-Martin, Rennes — 2000 ans d'avance</title>
-<meta name="description" content="Mme Buhannic, professeure de lettres au lycée Saint-Martin de Rennes : option latin et grec (LCA) et spécialité HLP (Humanités, littérature et philosophie). Projets d'élèves, ressources et entraînement.">
+<meta name="description" content="Mme Buhannic, professeure de lettres au lycée Saint-Martin de Rennes : option latin et grec (LCA) et spécialité HLP (Humanités, littérature et philosophie). Présentation des enseignements, activités menées en classe et entraînement en ligne.">
 <link rel="canonical" href="https://jbuhannic.github.io/racines/">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="fr_FR">
@@ -16,195 +16,69 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Latin, grec et HLP — Lycée Saint-Martin, Rennes","url":"https://jbuhannic.github.io/racines/","inLanguage":"fr"}</script>
 <style>
   :root{
-    --bg:#FAF7F2;
-    --surface:#FFFFFF;
-    --ink:#2B2B28;
-    --ink-soft:#6B6760;
-    --border:#E4DDD0;
-
-    /* LCA — racines, terre, chaud */
-    --terracotta:#B5502E;
-    --terracotta-light:#F3E3D3;
-    --terracotta-dark:#7A3319;
-
-    /* HLP — ce qui pousse vers le ciel, froid, parfois nuageux */
-    --slate:#3D5A73;
-    --slate-light:#E4EBEF;
-    --slate-dark:#1F2E3B;
-
-    --font-title1:Cambria,Georgia,serif;
-    --font-title2:Arial,Helvetica,sans-serif;
-    --font-body:Georgia,'Times New Roman',serif;
+    --bg:#FAF7F2; --surface:#FFFFFF; --ink:#2B2B28; --ink-soft:#6B6760; --border:#E4DDD0;
+    --terracotta:#B5502E; --terracotta-light:#F3E3D3; --terracotta-dark:#7A3319;
+    --slate:#3D5A73; --slate-light:#E4EBEF; --slate-dark:#1F2E3B;
+    --font-title1:Cambria,Georgia,serif; --font-title2:Arial,Helvetica,sans-serif; --font-body:Georgia,'Times New Roman',serif;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
-  body{
-    background:var(--bg);
-    color:var(--ink);
-    font-family:var(--font-body);
-    line-height:1.6;
-  }
+  body{background:var(--bg);color:var(--ink);font-family:var(--font-body);line-height:1.6;}
   a{color:inherit;text-decoration:none;}
   .wrap{max-width:1100px;margin:0 auto;padding:0 32px;}
 
-  header{
-    border-bottom:1px solid var(--border);
-    background:var(--surface);
-  }
-  .nav{
-    display:flex;align-items:center;justify-content:space-between;
-    padding:20px 0;
-  }
-  .logo{
-    font-family:var(--font-title2);
-    font-weight:700;font-size:20px;
-    letter-spacing:-0.02em;
-  }
-  .logo span{color:var(--slate);}
+  header{border-bottom:1px solid var(--border);background:var(--surface);}
+  .nav{display:flex;align-items:center;justify-content:space-between;padding:20px 0;}
   .nav-links{display:flex;align-items:center;gap:32px;}
-  .nav-links a{font-size:14px;font-weight:500;color:var(--ink-soft);}
-  .nav-links a:hover{color:var(--ink);}
-  .btn-connexion{
-    background:var(--ink);color:white;
-    padding:10px 20px;border-radius:100px;
-    font-size:14px;font-weight:500;
-    display:inline-flex;align-items:center;gap:6px;
-  }
-  .btn-connexion:hover{background:var(--ink);}
+  .nav-links a{font-family:var(--font-title2);font-size:14px;font-weight:500;color:var(--ink-soft);}
+  .nav-links a:hover,.nav-links a.active{color:var(--ink);}
+  .btn-connexion{background:var(--ink);color:#fff;padding:10px 20px;border-radius:100px;font-family:var(--font-title2);font-size:14px;font-weight:500;display:inline-flex;align-items:center;gap:6px;}
 
-  /* --- Bandeau anime (statues) --- */
-  .hero-banner{
-    position:relative;
-    height:520px;
-    overflow:hidden;
-    background:linear-gradient(180deg,#3A2A20 0%,#5C4130 55%,#7A5A3E 100%);
-  }
-  .hero-banner .colonnade{
-    position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
-  }
-  .hero-banner .overlay{
-    position:absolute;inset:0;
-    background:linear-gradient(90deg, rgba(31,20,14,0.72) 0%, rgba(31,20,14,0.45) 45%, rgba(31,20,14,0.15) 100%);
-  }
-  .hero-content{
-    position:relative;z-index:2;
-    height:100%;display:flex;flex-direction:column;justify-content:center;
-    max-width:560px;padding:0 32px;
-  }
-  .hero-content .eyebrow{color:#F0D9C4;}
-  .hero-content .eyebrow.dim{color:#D8C3AE;opacity:0.85;}
-  .hero-content h1{color:#FFF8F0;}
-  .hero-content p{color:#EADFD2;font-size:19px;font-family:var(--font-title2);font-weight:500;max-width:440px;margin-bottom:28px;}
-  .hero-ctas{display:flex;gap:12px;}
-  .btn-primary{
-    background:var(--terracotta);color:white;
-    padding:13px 24px;border-radius:10px;
-    font-size:15px;font-weight:500;
-  }
-  .btn-secondary{
-    background:rgba(255,255,255,0.08);color:white;
-    padding:13px 24px;border-radius:10px;
-    font-size:15px;font-weight:500;
-    border:1px solid rgba(255,255,255,0.35);
-  }
+  /* --- bandeau d'accueil : texte centré sur la vidéo, apparition ligne par ligne --- */
+  .hero-banner{position:relative;height:580px;overflow:hidden;background:#3A2A20;}
+  .hero-banner video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+  .hero-banner .overlay{position:absolute;inset:0;background:radial-gradient(ellipse at center, rgba(31,20,14,0.42) 0%, rgba(31,20,14,0.68) 100%);}
+  .hero-centre{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 24px;}
+  .hero-ecole{font-family:var(--font-title2);font-size:clamp(14px,2vw,20px);letter-spacing:.08em;text-transform:uppercase;color:#F0D9C4;margin-bottom:18px;}
+  .hero-centre h1{font-family:var(--font-title1);font-weight:700;color:#FFF8F0;font-size:clamp(46px,9vw,104px);line-height:1.02;letter-spacing:-0.02em;margin-bottom:22px;}
+  .hero-sous{font-family:var(--font-title2);font-weight:500;color:#EADFD2;font-size:clamp(20px,3.4vw,38px);line-height:1.25;max-width:900px;margin-bottom:34px;}
+  .btn-secondary{background:rgba(255,255,255,0.1);color:#fff;padding:13px 26px;border-radius:10px;font-family:var(--font-title2);font-size:15px;font-weight:500;border:1px solid rgba(255,255,255,0.4);}
+  @keyframes fondu{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:none;}}
+  .fl{opacity:0;animation:fondu 1.3s ease forwards;}
+  .l1{animation-delay:.4s;} .l2{animation-delay:1.9s;} .l3{animation-delay:3.4s;} .l4{animation-delay:5s;}
+  @media (prefers-reduced-motion: reduce){ .fl{opacity:1;animation:none;} }
 
-  h1{
-    font-family:var(--font-title1);font-weight:700;
-    font-size:42px;line-height:1.1;letter-spacing:-0.02em;
-    margin-bottom:18px;
-  }
-  .eyebrow{
-    font-family:var(--font-title2);font-size:13px;
-    color:var(--slate-dark);
-    text-transform:uppercase;letter-spacing:0.06em;
-    margin-bottom:6px;
-  }
-
-  /* --- Etymologie (deplacee sous le bandeau) --- */
-  .etymo{padding:56px 0;}
-  .etymo-grid{display:grid;grid-template-columns:0.9fr 1.1fr;gap:48px;align-items:center;}
-  .etymo h2{font-family:var(--font-title2);font-size:20px;margin-bottom:10px;}
-  .etymo-sub{color:var(--ink-soft);font-size:14px;max-width:380px;}
-  .word-box{
-    background:var(--surface);
-    border:1px solid var(--border);
-    border-radius:20px;
-    padding:40px 32px;
-    min-height:220px;
-    display:flex;flex-direction:column;
-    align-items:center;justify-content:center;
-    position:relative;
-    overflow:hidden;
-  }
-  .word-label{
-    font-family:var(--font-title2);font-size:12px;color:var(--ink-soft);
-    position:absolute;top:20px;left:24px;
-  }
-  .word-display{
-    font-family:var(--font-title1);font-weight:700;
-    font-size:32px;display:flex;gap:4px;margin-bottom:20px;
-    min-height:44px;align-items:center;
-  }
-  .morph{padding:4px 10px;border-radius:8px;transition:all 0.4s ease;}
-  .morph.root{background:var(--terracotta-light);color:var(--terracotta-dark);}
-  .morph.affix{background:var(--slate-light);color:var(--slate-dark);}
-  .morph-meanings{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;min-height:40px;}
-  .meaning-chip{
-    font-family:var(--font-title2);font-size:12px;
-    padding:6px 12px;border-radius:100px;
-    border:1px solid var(--border);color:var(--ink-soft);
-    opacity:0;transform:translateY(6px);transition:all 0.4s ease;
-  }
-  .meaning-chip.show{opacity:1;transform:translateY(0);}
-
-  .disciplines{padding:8px 0 80px;}
-  .disc-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
-  .disc-card{border-radius:20px;padding:36px;position:relative;overflow:hidden;}
+  /* --- les deux enseignements --- */
+  .disciplines{padding:56px 0 80px;}
+  .disc-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start;}
+  .disc-card{border-radius:20px;overflow:hidden;}
   .disc-card.hlp{background:var(--slate-light);}
   .disc-card.lca{background:var(--terracotta-light);}
-  .disc-tag{font-family:var(--font-title2);font-size:12px;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:12px;display:block;}
-  .disc-card.hlp .disc-tag{color:var(--slate-dark);}
-  .disc-card.lca .disc-tag{color:var(--terracotta-dark);}
-  .disc-card h2{font-family:var(--font-title2);font-weight:700;font-size:24px;margin-bottom:12px;}
-  .disc-card p{font-size:14px;color:var(--ink-soft);margin-bottom:24px;max-width:320px;}
-  .disc-link{font-size:14px;font-weight:500;display:inline-flex;align-items:center;gap:6px;}
-  .disc-card.hlp .disc-link{color:var(--slate-dark);}
-  .disc-card.lca .disc-link{color:var(--terracotta-dark);}
+  .diapo{position:relative;aspect-ratio:4/3;background:var(--border);overflow:hidden;}
+  .diapo-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 22%;opacity:0;transition:opacity 1.1s ease;}
+  .diapo-img.on{opacity:1;}
+  .diapo-points{position:absolute;left:0;right:0;bottom:10px;display:flex;justify-content:center;gap:6px;}
+  .diapo-points span{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.55);}
+  .diapo-points span.on{background:#fff;}
+  .diapo.vide{display:flex;align-items:center;justify-content:center;background:var(--slate-dark);color:#E4EBEF;font-family:var(--font-title1);font-weight:700;font-size:clamp(34px,5vw,54px);letter-spacing:.06em;}
+  .disc-body{padding:28px 32px 32px;}
+  .disc-tag{font-family:var(--font-title2);font-size:12px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;display:block;}
+  .disc-card.hlp .disc-tag{color:var(--slate-dark);} .disc-card.lca .disc-tag{color:var(--terracotta-dark);}
+  .disc-card h2{font-family:var(--font-title2);font-weight:700;font-size:24px;margin-bottom:12px;line-height:1.25;}
+  .disc-card p{font-size:15px;color:var(--ink-soft);margin-bottom:20px;}
+  .disc-link{font-family:var(--font-title2);font-size:15px;font-weight:700;display:inline-flex;align-items:center;gap:6px;}
+  .disc-card.hlp .disc-link{color:var(--slate-dark);} .disc-card.lca .disc-link{color:var(--terracotta-dark);}
+  .entrainement{margin-top:26px;background:var(--surface);border-radius:14px;padding:20px 22px;}
+  .entrainement h3{font-family:var(--font-title2);font-size:16px;margin-bottom:6px;color:var(--slate-dark);}
+  .entrainement p{font-size:14px;margin-bottom:14px;}
+  .entrainement .btn-connexion{background:var(--slate-dark);}
 
-  .vitrine{padding:0 0 80px;}
-  .section-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:28px;}
-  .section-head h3{font-family:var(--font-title2);font-weight:700;font-size:22px;}
-  .section-head a{font-size:14px;color:var(--ink-soft);font-weight:500;}
-  .prod-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
-  .prod-card{display:block;background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;}
-  .prod-thumb{
-    height:120px;background:var(--bg);
-    display:flex;align-items:center;justify-content:center;
-    font-family:var(--font-title2);font-size:12px;color:var(--ink-soft);
-    border-bottom:1px solid var(--border);
-  }
-  .prod-body{padding:16px;}
-  .prod-body .cat{font-family:var(--font-title2);font-size:11px;color:var(--slate-dark);text-transform:uppercase;margin-bottom:6px;display:block;}
-  .prod-body h4{font-size:15px;font-weight:500;margin-bottom:4px;}
-  .prod-body p{font-size:13px;color:var(--ink-soft);}
-
-  .banner{
-    background:var(--ink);border-radius:24px;
-    padding:48px;display:flex;align-items:center;justify-content:space-between;
-    margin:0 32px 80px;
-  }
-  .banner-text h3{font-family:var(--font-title2);font-weight:700;color:white;font-size:24px;margin-bottom:8px;}
-  .banner-text p{color:#C9C4B8;font-size:14px;max-width:420px;}
-  .banner .btn-connexion{background:var(--terracotta);}
-
-  footer{border-top:1px solid var(--border);padding:32px 0;font-size:13px;color:var(--ink-soft);}
+  footer{border-top:1px solid var(--border);padding:32px 0;font-family:var(--font-title2);font-size:13px;color:var(--ink-soft);}
+  footer a{text-decoration:underline;}
 
   @media(max-width:800px){
-    .etymo-grid{grid-template-columns:1fr;}
     .disc-grid{grid-template-columns:1fr;}
-    .prod-grid{grid-template-columns:1fr;}
-    .banner{flex-direction:column;gap:20px;text-align:center;margin:0 16px 60px;}
-    h1{font-size:30px;}
-    .hero-banner{height:460px;}
+    .hero-banner{height:520px;}
+    .nav-links{gap:18px;}
   }
 </style>
 </head>
@@ -212,10 +86,10 @@
 
 <header>
   <div class="wrap nav">
-    <div class="logo"></div>
+    <div></div>
     <div class="nav-links">
-      <a href="index.html">Accueil</a>
-      <a href="#">HLP</a>
+      <a href="index.html" class="active">Accueil</a>
+      <a href="hlp.html">HLP</a>
       <a href="lca.html">LCA</a>
     </div>
     <a href="espace-hlp.html" class="btn-connexion">Connexion HLP →</a>
@@ -223,145 +97,96 @@
 </header>
 
 <section class="hero-banner">
-  <video class="colonnade" autoplay muted loop playsinline>
+  <video autoplay muted loop playsinline>
     <source src="hero-statues.mp4" type="video/mp4">
   </video>
   <div class="overlay"></div>
-  <div class="hero-content">
-    <div class="eyebrow dim">Mme Buhannic · Lycée Saint-Martin · Rennes</div>
-    <div class="eyebrow">HLP · Latin · Grec</div>
-    <h1>2000 ans d'avance.</h1>
-    <p>On n'apprend pas le passé. On apprend à penser.</p>
-    <div class="hero-ctas">
-      <a href="#disciplines" class="btn-primary">Explorer le site</a>
-      <a href="espace-hlp.html" class="btn-secondary">S'entraîner (HLP)</a>
-    </div>
-  </div>
-</section>
-
-<section class="etymo">
-  <div class="wrap etymo-grid">
-    <div>
-      <h2>Étymologie en direct</h2>
-      <p class="etymo-sub">Chaque mot cache une histoire — regardez-le se décomposer sous vos yeux.</p>
-    </div>
-    <div class="word-box">
-      <span class="word-label">étymologie en direct</span>
-      <div class="word-display" id="wordDisplay"></div>
-      <div class="morph-meanings" id="meanings"></div>
-    </div>
+  <div class="hero-centre">
+    <p class="fl l1 hero-ecole">Mme Buhannic · Lycée Saint-Martin · Rennes</p>
+    <h1 class="fl l2">2000 ans d'avance.</h1>
+    <p class="fl l3 hero-sous">On n'apprend pas le passé. On apprend à penser.</p>
+    <a href="espace-hlp.html" class="fl l4 btn-secondary">S'entraîner (HLP)</a>
   </div>
 </section>
 
 <section class="disciplines" id="disciplines">
   <div class="wrap disc-grid">
-    <div class="disc-card hlp">
-      <span class="disc-tag">HLP</span>
-      <h2>Humanités, littérature, philosophie</h2>
-      <p>Axes de programme, corpus, méthodologies et préparation au grand oral.</p>
-      <a href="#" class="disc-link">Voir les documents →</a>
-    </div>
-    <div class="disc-card lca">
-      <span class="disc-tag">LCA</span>
-      <h2>Latin & grec</h2>
-      <p>Textes traduits et annotés, civilisation antique, ateliers d'étymologie.</p>
-      <a href="lca.html" class="disc-link">Voir les textes →</a>
-    </div>
+
+    <article class="disc-card hlp">
+      <div class="diapo" id="diapo-hlp" role="img" aria-label="Photos de la spécialité HLP"></div>
+      <div class="disc-body">
+        <span class="disc-tag">HLP</span>
+        <h2>Humanités, littérature, philosophie</h2>
+        <p>Les atouts de cet enseignement, ses débouchés, le programme, des articles sur les activités menées en classe et l'accès à l'espace d'entraînement.</p>
+        <a href="hlp.html" class="disc-link">Découvrir la HLP →</a>
+        <div class="entrainement">
+          <h3>Élèves de HLP : vérifiez vos acquis</h3>
+          <p>Entraînez-vous à l'analyse, suivez votre progression, retrouvez vos corrections. (Réservé aux élèves de HLP.)</p>
+          <a href="espace-hlp.html" class="btn-connexion">Connexion HLP →</a>
+        </div>
+      </div>
+    </article>
+
+    <article class="disc-card lca">
+      <div class="diapo" id="diapo-lca" role="img" aria-label="Photos des élèves de latin et de grec"></div>
+      <div class="disc-body">
+        <span class="disc-tag">LCA</span>
+        <h2>Latin &amp; grec</h2>
+        <p>Une présentation de l'enseignement, ses atouts, le programme, et des articles sur les activités menées en classe.</p>
+        <a href="lca.html" class="disc-link">Découvrir le latin et le grec →</a>
+      </div>
+    </article>
+
   </div>
 </section>
-
-<section class="vitrine">
-  <div class="wrap">
-    <div class="section-head">
-      <h3>Ce qui se passe en classe</h3>
-    </div>
-    <div class="prod-grid">
-      <a href="lca.html" class="prod-card">
-        <div class="prod-thumb">podcast</div>
-        <div class="prod-body">
-          <span class="cat">LCA · Terminale</span>
-          <h4>Métamorphoses, un podcast</h4>
-          <p>Ovide raconté par les élèves de LCA. Voir la frise LCA →</p>
-        </div>
-      </a>
-      <a href="#hlp" class="prod-card">
-        <div class="prod-thumb">sortie EAC</div>
-        <div class="prod-body">
-          <span class="cat">HLP · Première</span>
-          <h4>Retour sur le TNB</h4>
-          <p>Ce qu'on retient du spectacle. Voir la frise HLP →</p>
-        </div>
-      </a>
-      <a href="#hlp" class="prod-card">
-        <div class="prod-thumb">exposition</div>
-        <div class="prod-body">
-          <span class="cat">HLP · Terminale</span>
-          <h4>L'humanité en question</h4>
-          <p>Travaux de la classe sur la création. Voir la frise HLP →</p>
-        </div>
-      </a>
-    </div>
-  </div>
-</section>
-
-<div class="banner">
-  <div class="banner-text">
-    <h3>Élèves de HLP : vérifiez vos acquis</h3>
-    <p>Entraînez-vous à l'analyse, suivez votre progression, retrouvez vos corrections. (Réservé aux élèves de HLP.)</p>
-  </div>
-  <a href="espace-hlp.html" class="btn-connexion">Connexion HLP →</a>
-</div>
 
 <footer>
-  <div class="wrap">Mme Buhannic · Latin, grec et HLP · Lycée Saint-Martin, Rennes · <a href="mentions.html" style="text-decoration:underline;">Mentions légales et données personnelles</a></div>
+  <div class="wrap">Mme Buhannic · Latin, grec et HLP · Lycée Saint-Martin, Rennes · <a href="mentions.html">Mentions légales et données personnelles</a></div>
 </footer>
 
 <script>
-/* ---------- Etymologie ---------- */
-const words = [
-  { word: [
-      {t:'trans', type:'affix', meaning:'à travers'},
-      {t:'form', type:'root', meaning:'forme'},
-      {t:'ation', type:'affix', meaning:'action de'}
-    ]},
-  { word: [
-      {t:'sym', type:'affix', meaning:'avec'},
-      {t:'pathie', type:'root', meaning:'ce qu\'on ressent'}
-    ]},
-  { word: [
-      {t:'bio', type:'root', meaning:'vie'},
-      {t:'graphie', type:'root', meaning:'écriture'}
-    ]},
-  { word: [
-      {t:'dé', type:'affix', meaning:'inverse'},
-      {t:'compos', type:'root', meaning:'mettre ensemble'},
-      {t:'er', type:'affix', meaning:'action'}
-    ]}
+/* ---------------------------------------------------------------------
+   PHOTOS QUI DÉFILENT DANS LES DEUX ENCADRÉS
+   Pour ajouter une photo : ajoute une ligne { fichier: `img/ma-photo.jpg`, alt: `description` },
+   dans la liste voulue. Pense à envoyer la photo dans le dossier img du site.
+   --------------------------------------------------------------------- */
+const PHOTOS_LCA = [
+  { fichier: `img/atelier-groupe-toges.jpg`, alt: `Élèves de latin et de grec en costumes antiques` },
+  { fichier: `img/projet-mariages.jpg`, alt: `Projet « mariages » : élèves en costumes colorés, mains jointes` },
+  { fichier: `img/poterie-puzzle.jpg`, alt: `Atelier d'archéologie : reconstitution d'une poterie` },
+  { fichier: `img/stele-terminee.jpg`, alt: `Stèle funéraire en terre cuite, gravée par un élève` },
+  { fichier: `img/philosophes-entretien.jpg`, alt: `Entretien d'embauche de philosophes antiques, joué en classe` },
+  { fichier: `img/promethee-1.jpg`, alt: `Intervention sur Prométhée : travail en petits groupes` },
+  { fichier: `img/promethee-2.jpg`, alt: `Intervention sur Prométhée : présentation à la classe` }
 ];
-let idx = 0;
-const displayEl = document.getElementById('wordDisplay');
-const meaningsEl = document.getElementById('meanings');
-function render(){
-  const entry = words[idx];
-  displayEl.innerHTML = '';
-  meaningsEl.innerHTML = '';
-  entry.word.forEach((part, i)=>{
-    const span = document.createElement('span');
-    span.className = 'morph ' + part.type;
-    span.textContent = part.t;
-    span.style.opacity = 0;
-    displayEl.appendChild(span);
-    setTimeout(()=>{ span.style.opacity = 1; }, i*180);
-    const chip = document.createElement('span');
-    chip.className = 'meaning-chip';
-    chip.textContent = part.t + ' → ' + part.meaning;
-    meaningsEl.appendChild(chip);
-    setTimeout(()=>{ chip.classList.add('show'); }, 500 + i*180);
+const PHOTOS_HLP = [
+  // Ajoute ici tes photos de HLP (visages remplacés par des smileys), par exemple :
+  // { fichier: `img/hlp-seance.jpg`, alt: `Séance d'analyse de texte en HLP` },
+];
+
+function diapo(id, photos){
+  const el = document.getElementById(id);
+  if(!el) return;
+  if(!photos.length){ el.classList.add('vide'); el.textContent = el.id === 'diapo-hlp' ? 'HLP' : ''; return; }
+  const imgs = photos.map((p,i)=>{
+    const im = new Image(); im.src = p.fichier; im.alt = ''; im.className = 'diapo-img' + (i === 0 ? ' on' : '');
+    if(i > 0) im.loading = 'lazy'; im.decoding = 'async'; el.appendChild(im); return im;
   });
-  idx = (idx+1) % words.length;
+  el.setAttribute('aria-label', photos.map(p => p.alt).join(' ; '));
+  if(photos.length < 2) return;
+  const points = document.createElement('div'); points.className = 'diapo-points';
+  const pts = photos.map((_,i)=>{ const s = document.createElement('span'); if(i === 0) s.className = 'on'; points.appendChild(s); return s; });
+  el.appendChild(points);
+  let i = 0, timer = null;
+  const suivante = ()=>{ imgs[i].classList.remove('on'); pts[i].classList.remove('on'); i = (i + 1) % imgs.length; imgs[i].classList.add('on'); pts[i].classList.add('on'); };
+  const lancer = ()=>{ if(!timer) timer = setInterval(suivante, 4500); };
+  const arreter = ()=>{ clearInterval(timer); timer = null; };
+  if(!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)){
+    lancer(); el.addEventListener('mouseenter', arreter); el.addEventListener('mouseleave', lancer);
+  }
 }
-render();
-setInterval(render, 3400);
+diapo('diapo-hlp', PHOTOS_HLP);
+diapo('diapo-lca', PHOTOS_LCA);
 </script>
 
 </body>

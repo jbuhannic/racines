@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spécialité HLP (humanités, littérature et philosophie) au lycée Saint-Martin, Rennes</title>
+<meta name="description" content="Spécialité Humanités, littérature et philosophie (HLP) au lycée Saint-Martin de Rennes : atouts, programme de Première et de Terminale, débouchés, activités menées en classe et espace d'entraînement en ligne.">
+<link rel="canonical" href="https://jbuhannic.github.io/racines/hlp.html">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:title" content="Spécialité HLP au lycée Saint-Martin, Rennes">
+<meta property="og:description" content="Penser le monde par les textes : la littérature et la philosophie, de l'Antiquité à aujourd'hui.">
+<meta property="og:url" content="https://jbuhannic.github.io/racines/hlp.html">
+<meta property="og:image" content="https://jbuhannic.github.io/racines/img/atelier-groupe-toges.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  :root{
+    --bg:#FAF7F2; --surface:#FFFFFF; --ink:#2B2B28; --ink-soft:#6B6760; --border:#E4DDD0;
+    --slate:#3D5A73; --slate-light:#E4EBEF; --slate-dark:#1F2E3B;
+    --font-title1:Cambria,Georgia,serif; --font-title2:Arial,Helvetica,sans-serif; --font-body:Georgia,'Times New Roman',serif;
+    --act-accent:#3D5A73; --act-accent-dark:#1F2E3B; --act-accent-light:#E4EBEF;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--ink);font-family:var(--font-body);line-height:1.65;}
+  a{color:inherit;}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 32px;}
+
+  header{border-bottom:1px solid var(--border);background:var(--surface);}
+  .nav{display:flex;align-items:center;justify-content:space-between;padding:20px 0;}
+  .nav-links{display:flex;align-items:center;gap:32px;}
+  .nav-links a{font-family:var(--font-title2);font-size:14px;font-weight:500;color:var(--ink-soft);text-decoration:none;}
+  .nav-links a.active{color:var(--slate-dark);}
+  .btn-connexion{background:var(--slate-dark);color:#fff;padding:11px 22px;border-radius:100px;font-family:var(--font-title2);font-size:14px;font-weight:700;display:inline-flex;align-items:center;gap:6px;text-decoration:none;}
+
+  .hero{position:relative;height:400px;background:var(--slate-dark);overflow:hidden;}
+  .hero-centre{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 24px;}
+  .eyebrow{font-family:var(--font-title2);font-size:clamp(12px,1.6vw,15px);color:#B9CAD6;text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px;}
+  .hero-centre h1{font-family:var(--font-title1);font-size:clamp(32px,5.4vw,60px);line-height:1.12;color:#F4F8FA;margin-bottom:18px;max-width:900px;}
+  .hero-sous{font-size:clamp(16px,2.2vw,23px);color:#D3DFE7;max-width:780px;line-height:1.5;}
+  @keyframes fondu{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:none;}}
+  .fl{opacity:0;animation:fondu 1.3s ease forwards;}
+  .l1{animation-delay:.4s;} .l2{animation-delay:1.9s;} .l3{animation-delay:3.4s;}
+  @media (prefers-reduced-motion: reduce){ .fl{opacity:1;animation:none;} }
+
+  section{padding:8px 0 60px;}
+  h2{font-family:var(--font-title2);font-size:18px;margin-bottom:16px;color:var(--ink);}
+  h3{font-family:var(--font-title2);font-size:15px;}
+  .section-sub{font-size:14px;color:var(--ink-soft);margin:-8px 0 24px;max-width:660px;}
+  .intro{font-size:16px;color:var(--ink-soft);max-width:720px;margin:0 auto;text-align:center;padding-top:36px;}
+
+  .concret-list{display:flex;flex-wrap:wrap;gap:14px;}
+  .concret-item{flex:1;min-width:200px;font-family:var(--font-title2);font-size:14px;font-weight:700;color:#fff;background:var(--slate-dark);border-radius:10px;padding:16px 18px;
+    opacity:0;transform:translateY(10px);transition:opacity .6s ease,transform .6s ease;}
+  .concret-list.in-view .concret-item{opacity:1;transform:none;}
+
+  .atout-box{background:var(--slate-light);border:1px solid #CBD8E0;border-radius:22px;padding:28px 28px 24px;}
+  .atout-box h2{margin-bottom:6px;font-size:20px;color:var(--slate-dark);}
+  .atout-box .section-sub{margin:0 0 20px;color:var(--slate-dark);opacity:.8;}
+  .atout-list{display:flex;flex-direction:column;gap:10px;}
+  .atout-item{border:1px solid #CBD8E0;border-radius:12px;background:var(--surface);opacity:0;transform:translateY(10px);transition:opacity .5s ease,transform .5s ease;overflow:hidden;}
+  .atout-list.in-view .atout-item{opacity:1;transform:none;}
+  .atout-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;cursor:pointer;}
+  .atout-head strong{font-family:var(--font-title2);font-size:14px;color:var(--ink);font-weight:700;}
+  .atout-chevron{font-family:var(--font-title2);font-size:16px;color:var(--slate);transition:transform .3s ease;flex-shrink:0;margin-left:12px;}
+  .atout-item.open .atout-chevron{transform:rotate(180deg);}
+  .atout-body{max-height:0;overflow:hidden;transition:max-height .35s ease;}
+  .atout-body p{font-size:14px;color:var(--ink-soft);padding:0 20px 18px;}
+  .atout-item.open .atout-body{max-height:160px;}
+
+  .niveau{margin-bottom:26px;}
+  .niveau-titre{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:12px;}
+  .niveau-titre h3{font-size:17px;color:var(--slate-dark);}
+  .niveau-titre span{font-family:var(--font-title2);font-size:13px;color:var(--ink-soft);}
+  .prog-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
+  .prog-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px;}
+  .prog-card .sem{font-family:var(--font-title2);font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--slate);display:block;margin-bottom:6px;}
+  .prog-card h4{font-family:var(--font-title1);font-size:18px;margin-bottom:4px;}
+  .prog-card .periode{font-family:var(--font-title2);font-size:12px;color:var(--ink-soft);margin-bottom:10px;display:block;}
+  .prog-card ul{list-style:none;}
+  .prog-card li{font-size:14px;color:var(--ink-soft);padding:4px 0 4px 16px;position:relative;}
+  .prog-card li::before{content:'—';position:absolute;left:0;color:var(--slate);}
+
+  .debouches{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px;}
+  .debouche{font-family:var(--font-title2);font-size:14px;background:var(--slate-light);color:var(--slate-dark);border-radius:100px;padding:9px 18px;}
+  .debouches-note{font-size:14px;color:var(--ink-soft);max-width:680px;}
+
+  .tl-next{color:var(--ink-soft);font-family:var(--font-title2);font-size:13px;font-style:italic;padding-top:14px;text-align:center;}
+
+  .entrainement-box{background:var(--slate-dark);color:#E4EBEF;border-radius:22px;padding:32px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;}
+  .entrainement-box h2{color:#fff;font-size:21px;margin-bottom:8px;}
+  .entrainement-box p{font-size:15px;max-width:560px;color:#C9D7E0;}
+  .entrainement-box small{display:block;margin-top:10px;font-family:var(--font-title2);font-size:12px;color:#9FB4C2;}
+  .entrainement-box .btn-connexion{background:#fff;color:var(--slate-dark);}
+
+  footer{border-top:1px solid var(--border);padding:28px 0;font-family:var(--font-title2);font-size:12px;color:var(--ink-soft);}
+  footer a{text-decoration:underline;}
+
+  @media(max-width:700px){
+    .prog-grid{grid-template-columns:1fr;}
+    .hero{height:420px;}
+    .atout-box{padding:20px 16px;}
+    .nav-links{gap:18px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <div></div>
+    <div class="nav-links">
+      <a href="index.html">Accueil</a>
+      <a href="hlp.html" class="active">HLP</a>
+      <a href="lca.html">LCA</a>
+    </div>
+  </div>
+</header>
+
+<section class="hero" style="padding:0;">
+  <div class="hero-centre">
+    <div class="fl l1 eyebrow">HLP · Humanités, littérature et philosophie</div>
+    <h1 class="fl l2">Penser le monde par les textes</h1>
+    <p class="fl l3 hero-sous">Une spécialité qui croise la littérature et la philosophie, de l'Antiquité à aujourd'hui, pour apprendre à lire, à argumenter et à se situer dans le monde.</p>
+  </div>
+</section>
+
+<section style="padding-bottom:40px;">
+  <div class="wrap">
+    <p class="intro">Deux disciplines qui se complètent : la littérature donne à voir et à ressentir, la philosophie aide à interroger et à comprendre. Ensemble, elles apprennent à penser par soi-même.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Et concrètement ?</h2>
+    <div class="concret-list" id="concretList">
+      <div class="concret-item">4 heures par semaine en Première</div>
+      <div class="concret-item">6 heures par semaine en Terminale</div>
+      <div class="concret-item">Une spécialité du baccalauréat général</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="atout-box">
+      <h2>Les atouts de la HLP</h2>
+      <div class="section-sub">Touche un titre pour lire l'explication.</div>
+      <div class="atout-list" id="atoutList">
+        <div class="atout-item">
+          <div class="atout-head"><strong>Lire et comprendre des textes exigeants</strong><span class="atout-chevron">⌄</span></div>
+          <div class="atout-body"><p>Des textes littéraires et philosophiques, de l'Antiquité à nos jours, abordés avec des outils d'analyse précis.</p></div>
+        </div>
+        <div class="atout-item">
+          <div class="atout-head"><strong>Argumenter à l'écrit et à l'oral</strong><span class="atout-chevron">⌄</span></div>
+          <div class="atout-body"><p>On apprend à construire un raisonnement et à le défendre : une très bonne préparation à la dissertation comme au Grand oral.</p></div>
+        </div>
+        <div class="atout-item">
+          <div class="atout-head"><strong>Développer son esprit critique</strong><span class="atout-chevron">⌄</span></div>
+          <div class="atout-body"><p>Confronter des points de vue, interroger les évidences, nuancer sa pensée.</p></div>
+        </div>
+        <div class="atout-item">
+          <div class="atout-head"><strong>Se construire une culture commune</strong><span class="atout-chevron">⌄</span></div>
+          <div class="atout-body"><p>Histoire des idées, des arts et des sociétés : des repères solides pour comprendre le monde d'aujourd'hui.</p></div>
+        </div>
+        <div class="atout-item">
+          <div class="atout-head"><strong>Préparer l'enseignement supérieur</strong><span class="atout-chevron">⌄</span></div>
+          <div class="atout-body"><p>Rigueur de travail, aisance à l'écrit et culture générale : des qualités recherchées dans de très nombreuses filières.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Le programme</h2>
+    <div class="section-sub">Quatre semestres, chacun construit autour d'une grande question, abordée par des textes littéraires et philosophiques.</div>
+
+    <div class="niveau">
+      <div class="niveau-titre"><h3>En Première</h3><span>4 heures par semaine</span></div>
+      <div class="prog-grid">
+        <div class="prog-card">
+          <span class="sem">Semestre 1</span>
+          <h4>Les pouvoirs de la parole</h4>
+          <span class="periode">De l'Antiquité à l'âge classique</span>
+          <ul><li>L'art de la parole</li><li>L'autorité de la parole</li><li>Les séductions de la parole</li></ul>
+        </div>
+        <div class="prog-card">
+          <span class="sem">Semestre 2</span>
+          <h4>Les représentations du monde</h4>
+          <span class="periode">De la Renaissance aux Lumières</span>
+          <ul><li>Découverte du monde et pluralité des cultures</li><li>Décrire, figurer, imaginer</li><li>L'homme et l'animal</li></ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="niveau">
+      <div class="niveau-titre"><h3>En Terminale</h3><span>6 heures par semaine</span></div>
+      <div class="prog-grid">
+        <div class="prog-card">
+          <span class="sem">Semestre 1</span>
+          <h4>La recherche de soi</h4>
+          <span class="periode">Du romantisme au XXe siècle</span>
+          <ul><li>Éducation, transmission, émancipation</li><li>Les expressions de la sensibilité</li><li>Les métamorphoses du moi</li></ul>
+        </div>
+        <div class="prog-card">
+          <span class="sem">Semestre 2</span>
+          <h4>L'humanité en question</h4>
+          <span class="periode">XXe et XXIe siècles</span>
+          <ul><li>Création, continuités et ruptures</li><li>Histoire et violence</li><li>L'humain et ses limites</li></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Les débouchés</h2>
+    <div class="debouches">
+      <span class="debouche">Classes préparatoires littéraires</span>
+      <span class="debouche">Lettres, philosophie, langues</span>
+      <span class="debouche">Sciences humaines et sociales</span>
+      <span class="debouche">Droit et sciences politiques</span>
+      <span class="debouche">Journalisme, communication, édition</span>
+      <span class="debouche">Enseignement, culture, patrimoine</span>
+    </div>
+    <p class="debouches-note">La HLP se combine avec les autres spécialités : ce choix, avec celui de tes autres enseignements, oriente aussi tes poursuites d'études.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Activités</h2>
+    <div class="section-sub">Les activités menées en classe, ajoutées au fil de l'année. Survole le défilement pour le mettre en pause, ou utilise les flèches pour revenir sur un article.</div>
+    <div id="activites"></div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="entrainement-box">
+      <div>
+        <h2>Élèves de HLP : vérifiez vos acquis</h2>
+        <p>Entraînez-vous à l'analyse, suivez votre progression, retrouvez vos corrections.</p>
+        <small>Réservé aux élèves de HLP. Crée ton compte en indiquant ta classe : ton accès est ensuite activé par ton enseignante.</small>
+      </div>
+      <a href="espace-hlp.html" class="btn-connexion">Connexion HLP →</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">HLP — Lycée Saint-Martin, Rennes · <a href="mentions.html">Mentions légales et données personnelles</a></div>
+</footer>
+
+<script src="articles-hlp.js"></script>
+<script src="activites.js"></script>
+<script>
+function setupReveal(id, itemClass, delayStep){
+  const container = document.getElementById(id);
+  if(!container) return;
+  container.querySelectorAll('.'+itemClass).forEach((it,i)=>{ it.style.transitionDelay = (i*delayStep)+'ms'; });
+  if(!('IntersectionObserver' in window)){ container.classList.add('in-view'); return; }
+  const obs = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ container.classList.add('in-view'); obs.unobserve(container); } });
+  }, {threshold:0.3});
+  obs.observe(container);
+}
+setupReveal('concretList','concret-item',250);
+setupReveal('atoutList','atout-item',130);
+document.querySelectorAll('.atout-item').forEach(item=>{
+  item.querySelector('.atout-head').addEventListener('click', ()=>{ item.classList.toggle('open'); });
+});
+</script>
+
+</body>
+</html>
