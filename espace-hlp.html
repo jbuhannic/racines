@@ -68,7 +68,10 @@
   .field input:disabled{opacity:.7;}
 
   /* --- espace enseignante --- */
-  .toolbar{margin-bottom:16px;}
+  .toolbar{margin:14px 0 16px;}
+  main > h1 + .field, main > h1 + .row2{margin-top:18px;}
+  .defs{margin:10px 0 22px;}
+  .actions{margin-top:20px;}
   .exo-actions{display:flex;gap:8px;flex-wrap:wrap;}
   .btn.small{min-height:38px;padding:0 14px;font-size:13px;}
   .btn.danger{background:var(--ko);}
@@ -94,7 +97,7 @@
   .msg{font-family:var(--font-title2);font-size:13px;border-radius:10px;padding:11px 14px;margin-bottom:14px;}
   .msg.err{background:var(--ko-light);color:var(--ko);}
   .msg.info{background:var(--slate-light);color:var(--slate-dark);}
-  .hint{font-family:var(--font-title2);font-size:12px;color:var(--ink-soft);margin-top:12px;}
+  .hint{font-family:var(--font-title2);font-size:12px;color:var(--ink-soft);margin:8px 0 14px;}
 
   /* --- tableau de bord --- */
   .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:8px;}
@@ -141,6 +144,47 @@
     .exo{flex-wrap:wrap;}
     h1{font-size:24px;}
   }
+
+  /* --- nouveaux types d'exercices --- */
+  .relier{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px;}
+  .rcol{display:flex;flex-direction:column;gap:8px;}
+  .ritem{display:block;width:100%;text-align:left;min-height:44px;padding:10px 12px;border:1px solid var(--border);border-radius:12px;background:var(--surface);font-size:15px;cursor:pointer;}
+  .ritem.sel{border-color:var(--slate);background:var(--slate-light);}
+  .ritem.lie{border-color:var(--slate);}
+  .ritem.utilise{opacity:.6;}
+  .ritem .lien{display:block;font-family:var(--font-title2);font-size:12px;color:var(--slate);margin-top:2px;}
+  .ritem .num{float:right;font-family:var(--font-title2);font-size:12px;font-weight:700;color:var(--slate);margin-left:8px;}
+  .texte-trous{white-space:pre-wrap;font-size:17px;line-height:2.2;margin-bottom:16px;}
+  .trou{width:9ch;min-width:7ch;max-width:100%;padding:2px 6px;border:none;border-bottom:2px solid var(--slate);background:var(--slate-light);font:inherit;text-align:center;border-radius:6px 6px 0 0;}
+  .trou-res{border-radius:6px;padding:1px 6px;font-family:var(--font-title2);font-size:15px;}
+  .trou-res.ok{background:var(--ok-light);color:var(--ok);} .trou-res.ko{background:var(--ko-light);color:var(--ko);}
+  .banque{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;}
+  .chip{padding:8px 14px;min-height:40px;border-radius:100px;border:1px solid var(--border);background:var(--surface);cursor:pointer;font-size:15px;}
+  .chip.utilise{opacity:.4;text-decoration:line-through;}
+  .mm-wrap{display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start;margin-bottom:20px;}
+  .grille{display:grid;gap:2px;user-select:none;width:100%;}
+  .cell{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);background:var(--surface);
+    font-family:var(--font-title2);font-weight:700;font-size:clamp(11px,3.2vw,18px);cursor:pointer;padding:0;border-radius:4px;color:var(--ink);}
+  .cell.sel{background:#F0DFA0;} .cell.trouve{background:var(--ok-light);border-color:var(--ok);} .cell.rate{background:#FBE7D3;border-color:#D98F3D;}
+  .mots{list-style:none;columns:2;column-gap:20px;font-family:var(--font-title2);font-size:14px;}
+  .mots li{padding:3px 0;} .mots li.trouve{text-decoration:line-through;color:var(--ok);} .mots li.rate{color:var(--ko);}
+  .fleches-wrap{overflow-x:auto;margin-bottom:20px;padding-bottom:6px;}
+  .fleches{--fc:46px;display:grid;gap:2px;width:max-content;}
+  .fcell{width:var(--fc);height:var(--fc);display:flex;align-items:center;justify-content:center;border-radius:3px;}
+  .fcell.vide{background:var(--slate-dark);opacity:.12;}
+  .fcell.indice{background:var(--slate-light);color:var(--slate-dark);flex-direction:column;align-items:stretch;justify-content:stretch;padding:0;overflow:hidden;}
+  .fcell .ind{position:relative;flex:1;min-height:0;overflow:hidden;font-family:var(--font-title2);font-size:8.5px;line-height:1.1;padding:2px 9px 2px 2px;border-bottom:1px solid #fff;}
+  .fcell .ind:last-child{border-bottom:none;}
+  .fcell .ft{display:block;overflow:hidden;max-height:100%;}
+  .fcell .fa{position:absolute;right:1px;bottom:0;font-size:11px;font-weight:700;color:var(--slate);}
+  .flet{width:100%;height:100%;text-align:center;font:700 19px var(--font-title2);text-transform:uppercase;border:1px solid var(--border);background:var(--surface);padding:0;border-radius:3px;}
+  .flet.actif{background:#FFF4C2;border-color:#D9B84A;}
+  .fcell.sol{background:var(--surface);border:1px solid var(--border);font:700 19px var(--font-title2);}
+  .fcell.res{font:700 19px var(--font-title2);border:1px solid var(--border);} .fcell.res.ok{background:var(--ok-light);color:var(--ok);} .fcell.res.ko{background:var(--ko-light);color:var(--ko);}
+  .defs ul{list-style:none;font-size:14px;} .defs li{padding:3px 0;}
+  .charade p{margin-bottom:6px;font-size:16px;}
+  .astuce-mobile{display:none;}
+  @media(max-width:600px){ .fleches{--fc:40px;} .ritem{font-size:14px;padding:10px;} .mots{columns:1;} .astuce-mobile{display:block;} }
 </style>
 </head>
 <body>
@@ -510,6 +554,762 @@ function vueNouveauMotDePasse(){
 }
 
 /* =====================================================================
+   OUTILS DE TEXTE ET GÉNÉRATEURS DE GRILLES
+   ===================================================================== */
+// Lettres seules, sans accents, en majuscules (pour les grilles) : « Été » -> « ETE ».
+function normLettres(s){
+  return String(s || '').normalize('NFD').replace(/\p{M}/gu,'').replace(/[œŒ]/g,'oe').replace(/[æÆ]/g,'ae')
+    .toUpperCase().replace(/[^\p{L}]/gu,'');
+}
+// Texte comparé pour corriger une réponse : sans majuscules ni espaces en trop ; sans accents sauf demande contraire.
+function normReponse(s, accents){
+  let t = String(s || '').trim().toLowerCase().replace(/\s+/g,' ').replace(/[’‘]/g,"'").replace(/ς/g,'σ');
+  if(accents) return t.normalize('NFC');
+  return t.normalize('NFD').replace(/\p{M}/gu,'').replace(/œ/g,'oe').replace(/æ/g,'ae');
+}
+function reponseJuste(saisie, alternatives, accents){
+  const x = normReponse(saisie, accents);
+  return x !== '' && (alternatives || []).some(a => normReponse(a, accents) === x);
+}
+function melanger(a, rng){ rng = rng || Math.random; a = a.slice(); for(let i = a.length - 1; i > 0; i--){ const j = Math.floor(rng() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+
+/* ---------- Mots mêlés ---------- */
+const DIRS_MELES = {
+  facile:    [[0,1],[1,0]],
+  moyen:     [[0,1],[1,0],[1,1],[-1,1]],
+  difficile: [[0,1],[1,0],[1,1],[-1,1],[0,-1],[-1,0],[-1,-1],[1,-1]]
+};
+
+// motsAff : mots tels que saisis (avec accents) ; taille : 'auto' ou un nombre ; difficulte : facile | moyen | difficile
+function genererMeles(motsAff, taille, difficulte, rng){
+  rng = rng || Math.random;
+  const mots = [], vus = new Set();
+  for(const aff of motsAff){
+    const lettres = normLettres(aff);
+    if(lettres.length < 2) return { erreur: 'Le mot « ' + aff + ' » est trop court (2 lettres minimum).' };
+    if(vus.has(lettres)) return { erreur: 'Le mot « ' + aff + ' » est en double.' };
+    vus.add(lettres); mots.push({ aff, lettres });
+  }
+  if(mots.length < 2) return { erreur: 'Saisis au moins deux mots.' };
+  if(mots.length > 30) return { erreur: '30 mots au maximum.' };
+  const dirs = DIRS_MELES[difficulte] || DIRS_MELES.moyen;
+  const total = mots.reduce((a,m) => a + m.lettres.length, 0);
+  const plusLong = Math.max(...mots.map(m => m.lettres.length));
+  const auto = !taille || taille === 'auto';
+  let N = auto ? Math.max(plusLong + 2, Math.ceil(Math.sqrt(total * 2.4)), 8) : Number(taille);
+  if(plusLong > N) return { erreur: 'Le mot le plus long (' + plusLong + ' lettres) ne tient pas dans une grille de ' + N + '. Choisis une grille plus grande.' };
+  const ordre = mots.slice().sort((a,b) => b.lettres.length - a.lettres.length);
+
+  for(; N <= (auto ? 22 : N); N++){
+    for(let essai = 0; essai < 40; essai++){
+      const g = Array.from({length:N}, () => Array(N).fill(null));
+      const positions = [];
+      let ok = true;
+      for(const m of ordre){
+        let place = false;
+        for(let k = 0; k < 250 && !place; k++){
+          const [dr, dc] = dirs[Math.floor(rng() * dirs.length)];
+          const r0 = Math.floor(rng() * N), c0 = Math.floor(rng() * N);
+          const r1 = r0 + dr * (m.lettres.length - 1), c1 = c0 + dc * (m.lettres.length - 1);
+          if(r1 < 0 || r1 >= N || c1 < 0 || c1 >= N) continue;
+          let libre = true;
+          for(let i = 0; i < m.lettres.length; i++){
+            const v = g[r0 + dr*i][c0 + dc*i];
+            if(v !== null && v !== m.lettres[i]){ libre = false; break; }
+          }
+          if(!libre) continue;
+          for(let i = 0; i < m.lettres.length; i++) g[r0 + dr*i][c0 + dc*i] = m.lettres[i];
+          positions.push({ mot: m.aff, r: r0, c: c0, dr, dc });
+          place = true;
+        }
+        if(!place){ ok = false; break; }
+      }
+      if(!ok) continue;
+      // lettres de remplissage : tirées des mots eux-mêmes (le camouflage est meilleur) et de l'alphabet latin si les mots sont latins
+      const pool = mots.flatMap(m => m.lettres.split(''));
+      if(mots.every(m => /^[A-Z]+$/.test(m.lettres))) for(const l of 'ABCDEFGHIJKLMNOPQRSTUVWXYZ') pool.push(l);
+      for(let r = 0; r < N; r++) for(let c = 0; c < N; c++) if(g[r][c] === null) g[r][c] = pool[Math.floor(rng() * pool.length)];
+      // l'ordre d'origine de la liste est conservé pour les positions
+      const ordreOrig = mots.map(m => positions.find(p => p.mot === m.aff));
+      return { grille: g.map(row => row.join('')), positions: ordreOrig, mots: mots.map(m => m.aff), taille: N };
+    }
+  }
+  return { erreur: 'Impossible de placer tous les mots : augmente la taille de la grille ou raccourcis la liste.' };
+}
+
+/* ---------- Mots fléchés ---------- */
+// entrees : [{mot, def}] ; retourne {lignes, colonnes, indices:[{r,c,dir:'h'|'v',texte,n}], lettres:[rangées]} ou {erreur}
+function genererFleches(entrees, taille, rng){
+  rng = rng || Math.random;
+  const items = [], vus = new Set();
+  for(const e of entrees){
+    const lettres = normLettres(e.mot);
+    if(lettres.length < 2) return { erreur: 'Le mot « ' + e.mot + ' » est trop court (2 lettres minimum).' };
+    if(!String(e.def || '').trim()) return { erreur: 'Le mot « ' + e.mot + ' » n’a pas de définition.' };
+    if(vus.has(lettres)) return { erreur: 'Le mot « ' + e.mot + ' » est en double.' };
+    vus.add(lettres); items.push({ aff: e.mot, mot: lettres, def: String(e.def).trim() });
+  }
+  if(items.length < 3) return { erreur: 'Saisis au moins trois mots avec leur définition.' };
+  if(items.length > 20) return { erreur: '20 mots au maximum.' };
+  const total = items.reduce((a,i) => a + i.mot.length, 0);
+  const plusLong = Math.max(...items.map(i => i.mot.length));
+  const auto = !taille || taille === 'auto';
+  let N = auto ? Math.max(plusLong + 3, Math.ceil(Math.sqrt(total * 2.8)) + 2, 9) : Number(taille);
+  if(plusLong + 1 > N) return { erreur: 'Le mot le plus long (' + plusLong + ' lettres) ne tient pas dans une grille de ' + N + '.' };
+
+  let meilleur = null;
+  for(; N <= (auto ? 18 : N); N += (auto ? 1 : 1)){
+    for(let essai = 0; essai < 300; essai++){
+      const res = tenterFleches(items, N, rng);
+      if(!meilleur || res.places.length > meilleur.places.length || (res.places.length === meilleur.places.length && res.croisements > meilleur.croisements)) meilleur = res;
+      if(meilleur.places.length === items.length) break;
+    }
+    if(meilleur && meilleur.places.length === items.length) break;
+    if(!auto) break;
+  }
+  if(!meilleur || meilleur.places.length < items.length){
+    const places = new Set((meilleur ? meilleur.places : []).map(p => p.idx));
+    const manquants = items.filter((_, i) => !places.has(i)).map(i => i.aff);
+    return { erreur: 'Impossible de croiser tous les mots (' + manquants.join(', ') + '). Ajoute des mots qui partagent des lettres, ou agrandis la grille.' };
+  }
+  return meilleur.sortie;
+}
+
+function tenterFleches(items, N, rng){
+  const lettre = Array.from({length:N}, () => Array(N).fill(null));
+  const dirs   = Array.from({length:N}, () => Array.from({length:N}, () => ({h:false, v:false})));
+  const indice = Array.from({length:N}, () => Array.from({length:N}, () => ({h:null, v:null})));
+  const dedans = (r,c) => r >= 0 && r < N && c >= 0 && c < N;
+  const places = []; let croisements = 0;
+  const aUnIndice = (r,c) => indice[r][c].h !== null || indice[r][c].v !== null;
+
+  function evaluer(it, r0, c0, d){
+    const dr = d === 'v' ? 1 : 0, dc = d === 'h' ? 1 : 0, n = it.mot.length;
+    const cr = r0 - dr, cc = c0 - dc;
+    if(!dedans(cr,cc) || lettre[cr][cc] !== null) return -1;
+    if(indice[cr][cc][d] !== null) return -1;
+    let cross = 0;
+    for(let i = 0; i < n; i++){
+      const r = r0 + dr*i, c = c0 + dc*i;
+      if(!dedans(r,c) || aUnIndice(r,c)) return -1;
+      if(lettre[r][c] !== null){
+        if(lettre[r][c] !== it.mot[i] || dirs[r][c][d]) return -1;
+        cross++;
+      } else {
+        const p1r = r + dc, p1c = c + dr, p2r = r - dc, p2c = c - dr;
+        if(dedans(p1r,p1c) && lettre[p1r][p1c] !== null) return -1;
+        if(dedans(p2r,p2c) && lettre[p2r][p2c] !== null) return -1;
+      }
+    }
+    const er = r0 + dr*n, ec = c0 + dc*n;
+    if(dedans(er,ec) && lettre[er][ec] !== null) return -1;
+    return cross;
+  }
+  function poser(it, idx, r0, c0, d, cross){
+    const dr = d === 'v' ? 1 : 0, dc = d === 'h' ? 1 : 0;
+    for(let i = 0; i < it.mot.length; i++){ lettre[r0+dr*i][c0+dc*i] = it.mot[i]; dirs[r0+dr*i][c0+dc*i][d] = true; }
+    indice[r0-dr][c0-dc][d] = idx;
+    places.push({ idx, r0, c0, d }); croisements += cross;
+  }
+
+  const ordre = melanger(items.map((it,i) => i), rng).sort((a,b) => items[b].mot.length - items[a].mot.length);
+  // premier mot : horizontal, près du centre
+  const premier = ordre[0], it0 = items[premier];
+  const r0 = Math.max(1, Math.floor(N/2) + Math.floor(rng()*3) - 1);
+  const c0 = 1 + Math.floor(rng() * Math.max(1, N - it0.mot.length));
+  if(evaluer(it0, r0, c0, 'h') < 0) return { places: [], croisements: 0 };
+  poser(it0, premier, r0, c0, 'h', 0);
+
+  let restants = ordre.slice(1);
+  for(let passe = 0; passe < 3 && restants.length; passe++){
+    const encore = [];
+    for(const idx of restants){
+      const it = items[idx]; const cand = [];
+      for(let r = 0; r < N; r++) for(let c = 0; c < N; c++){
+        if(lettre[r][c] === null) continue;
+        for(let i = 0; i < it.mot.length; i++){
+          if(it.mot[i] !== lettre[r][c]) continue;
+          for(const d of ['h','v']){
+            if(dirs[r][c][d]) continue;
+            const rs = d === 'v' ? r - i : r, cs = d === 'h' ? c - i : c;
+            const sc = evaluer(it, rs, cs, d);
+            if(sc >= 1) cand.push({ rs, cs, d, sc });
+          }
+        }
+      }
+      if(!cand.length){ encore.push(idx); continue; }
+      const maxSc = Math.max(...cand.map(x => x.sc));
+      const bons = cand.filter(x => x.sc >= Math.max(1, maxSc - (rng() < 0.5 ? 1 : 0)));
+      const ch = bons[Math.floor(rng() * bons.length)];
+      poser(it, idx, ch.rs, ch.cs, ch.d, ch.sc);
+    }
+    restants = encore;
+  }
+  if(restants.length) return { places, croisements, sortie: null };
+
+  // recadrage sur les cases utiles (lettres + cases d'indices)
+  let minR = N, minC = N, maxR = -1, maxC = -1;
+  for(let r = 0; r < N; r++) for(let c = 0; c < N; c++){
+    if(lettre[r][c] !== null || aUnIndice(r,c)){ minR = Math.min(minR,r); maxR = Math.max(maxR,r); minC = Math.min(minC,c); maxC = Math.max(maxC,c); }
+  }
+  const lignes = maxR - minR + 1, colonnes = maxC - minC + 1;
+  const indices = [];
+  for(const p of places){
+    const it = items[p.idx];
+    const cr = p.d === 'v' ? p.r0 - 1 : p.r0, cc = p.d === 'h' ? p.c0 - 1 : p.c0;
+    indices.push({ r: cr - minR, c: cc - minC, dir: p.d, texte: it.def, n: it.mot.length });
+  }
+  indices.sort((a,b) => a.r - b.r || a.c - b.c || (a.dir < b.dir ? -1 : 1));
+  const rangees = [];
+  for(let r = minR; r <= maxR; r++){ let s = ''; for(let c = minC; c <= maxC; c++) s += lettre[r][c] !== null ? lettre[r][c] : '.'; rangees.push(s); }
+  return { places, croisements, sortie: { lignes, colonnes, indices, lettres: rangees, mots: items.map(i => i.aff) } };
+}
+
+/* =====================================================================
+   TYPES D'EXERCICES : côté élève
+   Chaque type sait : se dessiner (creer), se corriger (score), montrer la solution (resultat).
+   ===================================================================== */
+const TYPES = {};
+
+function scoreQuiz(corrige, reponses){
+  const bonnes = Array.isArray(corrige && corrige.bonnes) ? corrige.bonnes : [];
+  let ok = 0;
+  bonnes.forEach((b,i)=>{ if(reponses && reponses[i] != null && Number(reponses[i]) === Number(b)) ok++; });
+  return { ok, total: bonnes.length };
+}
+function scoreExercice(ex, corrige, reponses){
+  const T = TYPES[ex.type];
+  return (T && T.auto && corrige) ? T.score(ex, corrige, reponses || {}) : null;
+}
+const motsDe = (ex) => (ex.questions && !Array.isArray(ex.questions)) ? ex.questions : {};
+
+/* ---------- Quiz (QCM) ---------- */
+TYPES.quiz = {
+  libelle:'Quiz (QCM)', court:'Quiz', sousTitre:'Quiz', auto:true, bouton:'Valider mes réponses',
+  creer(ex, maj){
+    const questions = Array.isArray(ex.questions) ? ex.questions : [];
+    const reponses = {};
+    const noeuds = questions.map((q,i)=>{
+      const ordre = shuffle((q.options||[]).map((_,k)=>k));
+      return h('fieldset',{class:'q',style:'border:none'},
+        h('legend',{class:'q-titre'}, (i+1) + '. ' + q.q),
+        ordre.map(k=> h('label',{class:'opt'},
+          h('input',{type:'radio',name:'q'+i,value:String(k),onchange:()=>{ reponses[i]=k; maj(); }}),
+          h('span',{}, q.options[k]))));
+    });
+    return { noeuds, pret:()=> questions.every((_,i)=> reponses[i] != null), reponses:()=>reponses };
+  },
+  score(ex, corrige, reponses){ return scoreQuiz(corrige, reponses); },
+  resultat(ex, corrige, reponses){
+    const questions = Array.isArray(ex.questions) ? ex.questions : [];
+    const s = scoreQuiz(corrige, reponses);
+    const bonnes = corrige.bonnes || [], expl = corrige.explications || [];
+    return {
+      sous: s.ok === s.total ? 'Sans faute !' : 'Relis les explications ci-dessous.',
+      noeuds: questions.map((q,i)=> h('div',{class:'q'},
+        h('div',{class:'q-titre'}, (i+1) + '. ' + q.q),
+        (q.options||[]).map((o,k)=>{
+          const choisie = Number(reponses[i]) === k, juste = Number(bonnes[i]) === k;
+          return h('div',{class:'opt ' + (juste ? 'ok' : (choisie ? 'ko' : ''))},
+            h('span',{}, o),
+            juste && h('span',{class:'tagres'}, '✓ Bonne réponse'),
+            (!juste && choisie) && h('span',{class:'tagres'}, '✗ Ta réponse'));
+        }),
+        expl[i] && h('div',{class:'explain'}, expl[i])))
+    };
+  }
+};
+
+/* ---------- Analyse guidée ---------- */
+TYPES.analyse = {
+  libelle:'Analyse guidée d’un extrait', court:'Analyse', sousTitre:'Analyse guidée', auto:false, bouton:'Valider et voir le corrigé type',
+  creer(ex, maj){
+    const questions = Array.isArray(ex.questions) ? ex.questions : [];
+    const reponses = {};
+    const noeuds = questions.map((q,i)=> h('div',{class:'q'},
+      h('div',{class:'q-titre'}, (i+1) + '. ' + q.q),
+      h('div',{class:'field'},
+        h('label',{for:'r'+i},'Ta réponse (' + MIN_CARACTERES_ANALYSE + ' caractères minimum)'),
+        h('textarea',{id:'r'+i,oninput:(ev)=>{ reponses[i]=ev.target.value; maj(); }}))));
+    return { noeuds, pret:()=> questions.every((_,i)=> (reponses[i]||'').trim().length >= MIN_CARACTERES_ANALYSE), reponses:()=>reponses };
+  },
+  score(){ return null; },
+  resultat(ex, corrige, reponses){
+    const questions = Array.isArray(ex.questions) ? ex.questions : [];
+    const cor = corrige.corriges || [];
+    return {
+      sous: 'Compare ta réponse au corrigé type, puis corrige-toi.',
+      noeuds: questions.map((q,i)=> h('div',{class:'q'},
+        h('div',{class:'q-titre'}, (i+1) + '. ' + q.q),
+        h('div',{class:'cmp'},
+          h('div',{class:'mine'}, h('span',{class:'lbl'},'Ta réponse'), reponses[i] || ''),
+          h('div',{class:'ref'}, h('span',{class:'lbl'},'Corrigé type'), cor[i] || '—'))))
+    };
+  }
+};
+
+/* ---------- Liste à relier ---------- */
+TYPES.relier = {
+  libelle:'Liste à relier', court:'À relier', sousTitre:'Liste à relier', auto:true, bouton:'Valider mes liens',
+  creer(ex, maj){
+    const q = motsDe(ex), G = q.gauche || [], D = q.droite || [];
+    const liens = G.map(()=>null);
+    let sel = null;
+    const zone = h('div',{class:'relier'});
+    function dessiner(){
+      zone.replaceChildren(
+        h('div',{class:'rcol'}, G.map((g,i)=> h('button',{type:'button',
+          class:'ritem' + (sel === i ? ' sel' : '') + (liens[i] != null ? ' lie' : ''),
+          'aria-pressed':String(sel === i), onclick:()=>clicGauche(i)},
+          h('span',{}, (i+1) + '. ' + g),
+          liens[i] != null ? h('span',{class:'lien'}, '→ ' + D[liens[i]]) : null))),
+        h('div',{class:'rcol'}, D.map((d,j)=>{
+          const k = liens.indexOf(j);
+          return h('button',{type:'button',class:'ritem' + (k >= 0 ? ' lie utilise' : ''),onclick:()=>clicDroite(j)},
+            k >= 0 ? h('span',{class:'num'}, '(' + (k+1) + ')') : null, h('span',{}, d));
+        })));
+    }
+    function clicGauche(i){
+      if(liens[i] != null){ liens[i] = null; sel = i; } else sel = (sel === i ? null : i);
+      dessiner(); maj();
+    }
+    function clicDroite(j){
+      const k = liens.indexOf(j);
+      if(sel == null){ if(k >= 0){ liens[k] = null; sel = k; } }
+      else { if(k >= 0) liens[k] = null; liens[sel] = j; sel = null; }
+      dessiner(); maj();
+    }
+    dessiner();
+    return {
+      noeuds:[h('p',{class:'consigne'},'Touche un élément de gauche, puis l’élément de droite qui lui correspond. Touche un lien pour le défaire.'), zone],
+      pret:()=> G.length > 0 && liens.every(x => x != null),
+      reponses:()=>({ liens: liens.map(j => j == null ? null : D[j]) })
+    };
+  },
+  score(ex, corrige, reponses){
+    const attendu = corrige.paires || [], liens = reponses.liens || [];
+    return { ok: attendu.filter((texte,i)=> liens[i] != null && normReponse(liens[i], true) === normReponse(texte, true)).length, total: attendu.length };
+  },
+  resultat(ex, corrige, reponses){
+    const q = motsDe(ex), G = q.gauche || [], attendu = corrige.paires || [], liens = reponses.liens || [];
+    const s = this.score(ex, corrige, reponses);
+    return {
+      sous: s.ok === s.total ? 'Tous les liens sont justes !' : 'Regarde les liens à corriger.',
+      noeuds: [h('div',{class:'q'}, G.map((g,i)=>{
+        const juste = liens[i] != null && normReponse(liens[i], true) === normReponse(attendu[i], true);
+        return h('div',{class:'opt ' + (juste ? 'ok' : 'ko')},
+          h('span',{}, (i+1) + '. ' + g + ' → ' + (liens[i] != null ? liens[i] : '(pas de lien)') + (juste ? '' : '   ·   attendu : ' + attendu[i])),
+          h('span',{class:'tagres'}, juste ? '✓' : '✗'));
+      }))]
+    };
+  }
+};
+
+/* ---------- Texte à trous ---------- */
+TYPES.trous = {
+  libelle:'Texte à trous', court:'Texte à trous', sousTitre:'Texte à trous', auto:true, bouton:'Valider mes réponses',
+  creer(ex, maj){
+    const q = motsDe(ex), seg = q.segments || [], banque = q.banque || null;
+    const champs = []; let dernier = null;
+    const chips = banque ? banque.map(m => h('button',{type:'button',class:'chip',onclick:()=>{
+      const cible = (dernier && !dernier.value.trim()) ? dernier : champs.find(c => !c.value.trim());
+      if(cible){ cible.value = m; cible.dispatchEvent(new Event('input',{bubbles:true})); cible.focus(); }
+    }}, m)) : [];
+    function majChips(){
+      if(!banque) return;
+      const vals = champs.map(c => normReponse(c.value, true));
+      chips.forEach((b,i)=> b.classList.toggle('utilise', vals.includes(normReponse(banque[i], true))));
+    }
+    const texte = h('div',{class:'texte-trous'}, seg.map(s=>{
+      if(s.b == null) return s.t;
+      const inp = h('input',{type:'text',class:'trou',autocomplete:'off',autocapitalize:'off',spellcheck:'false','aria-label':'Trou ' + (s.b+1),
+        oninput:()=>{ maj(); majChips(); }, onfocus:()=>{ dernier = inp; }});
+      champs[s.b] = inp;
+      return inp;
+    }));
+    return {
+      noeuds:[banque ? h('div',{class:'banque',role:'group','aria-label':'Banque de mots'}, chips) : null, texte],
+      pret:()=> champs.length > 0 && champs.every(c => c.value.trim() !== ''),
+      reponses:()=>({ mots: champs.map(c => c.value.trim()) })
+    };
+  },
+  score(ex, corrige, reponses){
+    const alts = corrige.reponses || [], acc = !!motsDe(ex).accents, mots = reponses.mots || [];
+    return { ok: alts.filter((a,k)=> reponseJuste(mots[k], a, acc)).length, total: alts.length };
+  },
+  resultat(ex, corrige, reponses){
+    const q = motsDe(ex), seg = q.segments || [], alts = corrige.reponses || [], acc = !!q.accents, mots = reponses.mots || [];
+    const s = this.score(ex, corrige, reponses);
+    return {
+      sous: s.ok === s.total ? 'Aucune erreur !' : 'Les trous manqués sont indiqués avec la réponse attendue.',
+      noeuds:[h('div',{class:'texte-trous'}, seg.map(x=>{
+        if(x.b == null) return x.t;
+        const juste = reponseJuste(mots[x.b], alts[x.b], acc);
+        return juste
+          ? h('span',{class:'trou-res ok'}, '✓ ' + mots[x.b])
+          : h('span',{class:'trou-res ko'}, h('s',{}, mots[x.b] || '—'), ' → ' + (alts[x.b] || [])[0]);
+      }))]
+    };
+  }
+};
+
+/* ---------- Mots mêlés ---------- */
+TYPES.meles = {
+  libelle:'Mots mêlés', court:'Mots mêlés', sousTitre:'Mots mêlés', auto:true, bouton:'Terminer et voir la solution',
+  creer(ex, maj){
+    const q = motsDe(ex), grille = q.grille || [], mots = q.mots || [];
+    const R = grille.length, C = R ? grille[0].length : 0;
+    const cibles = mots.map(normLettres);
+    const trouves = mots.map(()=>false);
+    let debut = null;
+    const info = h('p',{class:'hint',role:'status','aria-live':'polite'},'Touche la première lettre d’un mot, puis sa dernière lettre.');
+    const cellules = grille.map(()=>[]);
+    const grilleEl = h('div',{class:'grille',style:'grid-template-columns:repeat(' + C + ',1fr);max-width:' + (C * 42) + 'px'});
+    for(let r = 0; r < R; r++) for(let c = 0; c < C; c++){
+      const b = h('button',{type:'button',class:'cell','aria-label':'Ligne ' + (r+1) + ', colonne ' + (c+1) + ' : ' + grille[r][c],onclick:()=>clic(r,c)}, grille[r][c]);
+      cellules[r][c] = b; grilleEl.append(b);
+    }
+    const liste = h('ul',{class:'mots'}, mots.map(m => h('li',{}, m)));
+    function clic(r, c){
+      if(!debut){ debut = [r,c]; cellules[r][c].classList.add('sel'); return; }
+      const [r0,c0] = debut; cellules[r0][c0].classList.remove('sel'); debut = null;
+      if(r0 === r && c0 === c) return;
+      if(!(r === r0 || c === c0 || Math.abs(r-r0) === Math.abs(c-c0))){ info.textContent = 'Les lettres d’un mot sont alignées : réessaie.'; return; }
+      const dr = Math.sign(r-r0), dc = Math.sign(c-c0), L = Math.max(Math.abs(r-r0), Math.abs(c-c0)) + 1;
+      let s = ''; const cases = [];
+      for(let i = 0; i < L; i++){ const rr = r0 + dr*i, cc = c0 + dc*i; s += normLettres(grille[rr][cc]); cases.push([rr,cc]); }
+      const inv = s.split('').reverse().join('');
+      const idx = cibles.findIndex((m,i)=> !trouves[i] && (m === s || m === inv));
+      if(idx < 0){
+        info.textContent = cibles.some((m,i)=> trouves[i] && (m === s || m === inv)) ? 'Ce mot est déjà trouvé.' : 'Ce n’est pas un mot de la liste.';
+        return;
+      }
+      trouves[idx] = true;
+      cases.forEach(([a,b]) => cellules[a][b].classList.add('trouve'));
+      liste.children[idx].classList.add('trouve');
+      info.textContent = '« ' + mots[idx] + ' » trouvé (' + trouves.filter(Boolean).length + ' sur ' + mots.length + ').';
+      maj();
+    }
+    return {
+      noeuds:[info, h('div',{class:'mm-wrap'}, grilleEl, h('div',{}, h('h2',{style:'margin-top:0'},'Mots à trouver'), liste))],
+      pret:()=> true,
+      reponses:()=>({ trouves: mots.filter((_,i)=> trouves[i]) })
+    };
+  },
+  score(ex, corrige, reponses){
+    const mots = motsDe(ex).mots || [];
+    return { ok: new Set((reponses.trouves || []).filter(m => mots.includes(m))).size, total: mots.length };
+  },
+  resultat(ex, corrige, reponses){
+    const q = motsDe(ex), grille = q.grille || [], mots = q.mots || [], pos = corrige.positions || [], trouves = reponses.trouves || [];
+    const R = grille.length, C = R ? grille[0].length : 0;
+    const statut = {};
+    pos.forEach(p => { for(let i = 0; i < normLettres(p.mot).length; i++){
+      const k = (p.r + p.dr*i) + ',' + (p.c + p.dc*i);
+      if(trouves.includes(p.mot)) statut[k] = 'trouve'; else if(!statut[k]) statut[k] = 'rate';
+    } });
+    const s = this.score(ex, corrige, reponses);
+    const cells = [];
+    for(let r = 0; r < R; r++) for(let c = 0; c < C; c++) cells.push(h('div',{class:'cell ' + (statut[r + ',' + c] || '')}, grille[r][c]));
+    return {
+      sous: s.ok === s.total ? 'Tous les mots sont trouvés !' : 'En orange : les mots que tu n’as pas trouvés.',
+      noeuds:[h('div',{class:'mm-wrap'},
+        h('div',{class:'grille',style:'grid-template-columns:repeat(' + C + ',1fr);max-width:' + (C * 42) + 'px'}, cells),
+        h('ul',{class:'mots'}, mots.map(m => h('li',{class:trouves.includes(m) ? 'trouve' : 'rate'}, (trouves.includes(m) ? '✓ ' : '✗ ') + m))))]
+    };
+  }
+};
+
+/* ---------- Mots fléchés ---------- */
+function rendreIndices(liste){
+  return liste.map(ix => h('div',{class:'ind',title:ix.texte},
+    h('span',{class:'ft'}, ix.texte), h('span',{class:'fa','aria-hidden':'true'}, ix.dir === 'h' ? '→' : '↓')));
+}
+function structureFleches(q){
+  const indices = q.indices || [];
+  const mots = indices.map(ix => {
+    const dr = ix.dir === 'v' ? 1 : 0, dc = ix.dir === 'h' ? 1 : 0, cases = [];
+    for(let i = 1; i <= ix.n; i++) cases.push([ix.r + dr*i, ix.c + dc*i]);
+    return Object.assign({}, ix, { cases });
+  });
+  const motsDeCase = {}, indicesDeCase = {};
+  mots.forEach((m,idx)=> m.cases.forEach(([r,c])=>{ const k = r + ',' + c; (motsDeCase[k] = motsDeCase[k] || []).push(idx); }));
+  indices.forEach(ix => { const k = ix.r + ',' + ix.c; (indicesDeCase[k] = indicesDeCase[k] || []).push(ix); });
+  return { indices, mots, motsDeCase, indicesDeCase };
+}
+function listeDefinitions(indices){
+  return h('div',{class:'defs'}, h('h2',{},'Définitions'),
+    h('ul',{}, indices.map(ix => h('li',{}, (ix.dir === 'h' ? '→ ' : '↓ ') + ix.texte + ' (' + ix.n + ' lettres)'))));
+}
+TYPES.fleches = {
+  libelle:'Mots fléchés', court:'Mots fléchés', sousTitre:'Mots fléchés', auto:true, bouton:'Valider ma grille',
+  creer(ex, maj){
+    const q = motsDe(ex), R = q.lignes || 0, C = q.colonnes || 0;
+    const { indices, mots, motsDeCase, indicesDeCase } = structureFleches(q);
+    const champs = {};
+    let actif = -1, derniere = null;
+    const cle = (r,c) => r + ',' + c;
+    function colorer(){
+      const dans = new Set(actif >= 0 ? mots[actif].cases.map(([r,c]) => cle(r,c)) : []);
+      Object.keys(champs).forEach(k => champs[k].classList.toggle('actif', dans.has(k)));
+    }
+    function motPour(k, suivant){
+      const l = motsDeCase[k] || [];
+      if(!l.length) return -1;
+      if(l.includes(actif)) return (suivant && l.length > 1) ? l.find(i => i !== actif) : actif;
+      return l[0];
+    }
+    function aller(k){ if(champs[k]){ champs[k].focus(); champs[k].select && champs[k].select(); } }
+    function avancer(k, sens){
+      if(actif < 0) return;
+      const cases = mots[actif].cases, i = cases.findIndex(([r,c]) => cle(r,c) === k);
+      const cible = cases[i + sens];
+      if(cible) aller(cle(cible[0], cible[1]));
+    }
+    const grilleEl = h('div',{class:'fleches',style:'grid-template-columns:repeat(' + C + ',var(--fc))'});
+    for(let r = 0; r < R; r++) for(let c = 0; c < C; c++){
+      const k = cle(r,c);
+      if(motsDeCase[k]){
+        const inp = h('input',{type:'text',class:'flet',maxlength:'2',autocomplete:'off',autocapitalize:'characters',spellcheck:'false',
+          'aria-label':'Ligne ' + (r+1) + ', colonne ' + (c+1)});
+        inp.addEventListener('input', ()=>{
+          const v = normLettres(inp.value).slice(-1);
+          inp.value = v; maj();
+          if(v) avancer(k, +1);
+        });
+        inp.addEventListener('focus', ()=>{ if(!(motsDeCase[k] || []).includes(actif)) actif = motPour(k); colorer(); });
+        inp.addEventListener('click', ()=>{ if(derniere === k && (motsDeCase[k] || []).length > 1) actif = motPour(k, true); derniere = k; colorer(); });
+        inp.addEventListener('keydown', (ev)=>{
+          if(ev.key === 'Backspace' && inp.value === ''){ ev.preventDefault(); avancer(k, -1); const cases = actif >= 0 ? mots[actif].cases : []; const i = cases.findIndex(([a,b]) => cle(a,b) === k); if(i > 0) champs[cle(cases[i-1][0], cases[i-1][1])].value = ''; maj(); }
+          const fl = { ArrowRight:[0,1], ArrowLeft:[0,-1], ArrowDown:[1,0], ArrowUp:[-1,0] }[ev.key];
+          if(fl){ const n = cle(r + fl[0], c + fl[1]); if(champs[n]){ ev.preventDefault(); const d = fl[0] ? 'v' : 'h'; const m = (motsDeCase[n] || []).find(i => mots[i].dir === d); if(m !== undefined) actif = m; aller(n); colorer(); } }
+        });
+        champs[k] = inp;
+        grilleEl.append(h('div',{class:'fcell'}, inp));
+      } else if(indicesDeCase[k]){
+        grilleEl.append(h('div',{class:'fcell indice'}, rendreIndices(indicesDeCase[k])));
+      } else grilleEl.append(h('div',{class:'fcell vide'}));
+    }
+    return {
+      noeuds:[h('p',{class:'consigne'},'Touche une case, tape les lettres : la flèche indique le sens du mot. Touche une case de croisement une seconde fois pour changer de sens.'),
+              h('p',{class:'hint astuce-mobile'},'La grille est plus large que l’écran : fais-la glisser sur le côté.'),
+              h('div',{class:'fleches-wrap'}, grilleEl), listeDefinitions(indices)],
+      pret:()=> Object.values(champs).some(i => i.value !== ''),
+      reponses:()=>{
+        const lignes = [];
+        for(let r = 0; r < R; r++){ let s = ''; for(let c = 0; c < C; c++){ const i = champs[cle(r,c)]; s += i ? (i.value || '.') : '.'; } lignes.push(s); }
+        return { lettres: lignes };
+      }
+    };
+  },
+  score(ex, corrige, reponses){
+    const sol = corrige.lettres || [], rep = reponses.lettres || [];
+    let ok = 0, total = 0;
+    sol.forEach((ligne, r) => ligne.split('').forEach((ch, c) => { if(ch !== '.'){ total++; if(rep[r] && rep[r][c] === ch) ok++; } }));
+    return { ok, total };
+  },
+  resultat(ex, corrige, reponses){
+    const q = motsDe(ex), R = q.lignes || 0, C = q.colonnes || 0, { indices, indicesDeCase } = structureFleches(q);
+    const sol = corrige.lettres || [], rep = reponses.lettres || [];
+    const s = this.score(ex, corrige, reponses);
+    const g = h('div',{class:'fleches',style:'grid-template-columns:repeat(' + C + ',var(--fc))'});
+    for(let r = 0; r < R; r++) for(let c = 0; c < C; c++){
+      const ch = sol[r] ? sol[r][c] : '.', k = r + ',' + c;
+      if(ch && ch !== '.'){
+        const juste = rep[r] && rep[r][c] === ch;
+        g.append(h('div',{class:'fcell res ' + (juste ? 'ok' : 'ko'),title: juste ? '' : 'Ta lettre : ' + ((rep[r] && rep[r][c] !== '.') ? rep[r][c] : 'aucune')}, ch));
+      } else if(indicesDeCase[k]) g.append(h('div',{class:'fcell indice'}, rendreIndices(indicesDeCase[k])));
+      else g.append(h('div',{class:'fcell vide'}));
+    }
+    return {
+      sous: s.ok === s.total ? 'Grille parfaite !' : 'En rouge : les lettres à corriger (survole-les pour voir ta réponse). ' + s.ok + ' lettres justes sur ' + s.total + '.',
+      noeuds:[h('div',{class:'fleches-wrap'}, g), listeDefinitions(indices)]
+    };
+  }
+};
+
+/* ---------- Charades ---------- */
+TYPES.charades = {
+  libelle:'Charades', court:'Charades', sousTitre:'Charades', auto:true, bouton:'Valider mes réponses',
+  creer(ex, maj){
+    const q = motsDe(ex), items = q.items || [];
+    const champs = [];
+    const noeuds = items.map((it,i)=>{
+      const inp = h('input',{type:'text',id:'ch'+i,autocomplete:'off',autocapitalize:'off',spellcheck:'false',oninput:()=>maj()});
+      champs[i] = inp;
+      return h('div',{class:'q charade'},
+        h('div',{class:'q-titre'},'Charade ' + (i+1)),
+        h('p',{}, h('strong',{},'Mon premier '), it.premier),
+        h('p',{}, h('strong',{},'Mon second '), it.second),
+        it.troisieme ? h('p',{}, h('strong',{},'Mon troisième '), it.troisieme) : null,
+        h('p',{}, h('strong',{},'Mon tout '), it.tout),
+        h('div',{class:'field'}, h('label',{for:'ch'+i},'Ta réponse'), inp));
+    });
+    return { noeuds, pret:()=> champs.length > 0 && champs.every(c => c.value.trim() !== ''), reponses:()=>({ mots: champs.map(c => c.value.trim()) }) };
+  },
+  score(ex, corrige, reponses){
+    const alts = corrige.reponses || [], acc = !!motsDe(ex).accents, mots = reponses.mots || [];
+    return { ok: alts.filter((a,i)=> reponseJuste(mots[i], a, acc)).length, total: alts.length };
+  },
+  resultat(ex, corrige, reponses){
+    const items = motsDe(ex).items || [], alts = corrige.reponses || [], acc = !!motsDe(ex).accents, mots = reponses.mots || [];
+    const s = this.score(ex, corrige, reponses);
+    return {
+      sous: s.ok === s.total ? 'Toutes les charades sont résolues !' : 'Regarde les réponses attendues ci-dessous.',
+      noeuds: items.map((it,i)=>{
+        const juste = reponseJuste(mots[i], alts[i], acc);
+        return h('div',{class:'opt ' + (juste ? 'ok' : 'ko')},
+          h('span',{}, 'Charade ' + (i+1) + ' : ' + (mots[i] || '—') + (juste ? '' : '   ·   attendu : ' + (alts[i] || [])[0])),
+          h('span',{class:'tagres'}, juste ? '✓' : '✗'));
+      })
+    };
+  }
+};
+
+/* =====================================================================
+   VUE : COMPTE EN ATTENTE D'ACTIVATION
+   ===================================================================== */
+function vueEnAttente(){
+  show(h('div',{class:'card auth'},
+    h('h1',{},'Bienvenue ' + profil.prenom),
+    h('p',{class:'sub'},'Ton compte est créé, mais ton accès à l’espace HLP n’est pas encore activé. Ton enseignante va le faire : reviens un peu plus tard.'),
+    h('button',{class:'btn ghost',onclick:deconnexion},'Se déconnecter')));
+}
+
+/* =====================================================================
+   DONNÉES
+   ===================================================================== */
+function estApercu(){ return profil.role === 'prof'; }
+
+async function chargerDonnees(){
+  const [ex, te, co] = await Promise.all([
+    sb.from('hlp_exercices').select('*').order('ordre', {ascending:true}),
+    estApercu() ? Promise.resolve({data:[]}) : sb.from('hlp_tentatives').select('*').eq('eleve_id', profil.id).order('created_at', {ascending:false}),
+    sb.from('hlp_corriges').select('exercice_id, corrige')
+  ]);
+  if(ex.error || te.error || co.error) throw (ex.error || te.error || co.error);
+  return { exercices: ex.data || [], tentatives: te.data || [], corriges: co.data || [] };
+}
+
+/* =====================================================================
+   VUE : TABLEAU DE BORD
+   ===================================================================== */
+async function vueTableauDeBord(){
+  show(h('p',{class:'empty'},'Chargement…'));
+  let d;
+  try{ d = await chargerDonnees(); }
+  catch(e){
+    return show(h('div',{class:'msg err',role:'alert'},'Impossible de charger les exercices. Réessaie dans un instant.'),
+                h('button',{class:'btn ghost',onclick:vueTableauDeBord},'Réessayer'));
+  }
+  const corrigeDe = {}; d.corriges.forEach(c => corrigeDe[c.exercice_id] = c.corrige);
+
+  const etat = {};
+  d.tentatives.forEach(t=>{
+    const e = etat[t.exercice_id] || (etat[t.exercice_id] = {essais:0, dernier:t.created_at, meilleur:null});
+    e.essais++;
+    const ex = d.exercices.find(x=>x.id===t.exercice_id);
+    const s = ex ? scoreExercice(ex, corrigeDe[ex.id], t.reponses) : null;
+    if(s && (!e.meilleur || s.ok > e.meilleur.ok)) e.meilleur = s;
+  });
+
+  const faits = d.exercices.filter(e=>etat[e.id]).length;
+  const notes = d.exercices.filter(e=> etat[e.id] && etat[e.id].meilleur).map(e=>etat[e.id].meilleur);
+  const pct = notes.length ? Math.round(100 * notes.reduce((a,s)=>a+s.ok,0) / Math.max(1,notes.reduce((a,s)=>a+s.total,0))) : null;
+  const derniere = d.tentatives.length ? fmtDate(d.tentatives[0].created_at) : '—';
+
+  const liste = d.exercices.length
+    ? d.exercices.map(ex=>{
+        const e = etat[ex.id], T = TYPES[ex.type];
+        let texteEtat = 'Pas encore fait';
+        if(e){
+          texteEtat = 'Fait ' + (e.essais>1 ? e.essais+' fois' : '1 fois') + ' · dernière séance : ' + fmtDate(e.dernier);
+          if(e.meilleur) texteEtat += ' · meilleur score ' + e.meilleur.ok + '/' + e.meilleur.total;
+        }
+        return h('div',{class:'exo'},
+          h('div',{class:'exo-main'},
+            h('span',{class:'tag'}, (T ? T.court : ex.type) + (ex.axe ? ' · ' + ex.axe : '')),
+            h('span',{class:'exo-titre'}, ex.titre),
+            h('span',{class:'exo-etat'}, texteEtat)),
+          T ? h('button',{class:'btn ' + (e ? 'ghost' : ''),onclick:()=>vueExercice(ex)}, e ? 'Refaire' : 'Commencer') : null);
+      })
+    : [h('p',{class:'empty'},'Aucun exercice n’est disponible pour le moment.')];
+
+  show(
+    h('h1',{},'Bonjour ' + profil.prenom),
+    h('p',{class:'sub'}, 'Voici où tu en es.'),
+    h('div',{class:'stats'},
+      h('div',{class:'stat'}, h('span',{class:'label'},'Exercices faits'), h('div',{class:'value'}, faits + ' / ' + d.exercices.length)),
+      h('div',{class:'stat'}, h('span',{class:'label'},'Réussite'), h('div',{class:'value'}, pct == null ? '—' : pct + ' %')),
+      h('div',{class:'stat'}, h('span',{class:'label'},'Dernière séance'), h('div',{class:'value'}, derniere))),
+    h('h2',{},'Exercices'),
+    liste);
+}
+
+/* =====================================================================
+   VUE : EXERCICE (commune à tous les types)
+   ===================================================================== */
+function vueExercice(ex){
+  const T = TYPES[ex.type];
+  if(!T) return show(h('div',{class:'msg err',role:'alert'},'Ce type d’exercice n’est pas pris en charge par cette version de la page.'),
+                     h('button',{class:'btn ghost',onclick:retourListe},'Retour'));
+  const bouton = h('button',{class:'btn',type:'button',disabled:true}, T.bouton);
+  const zoneErreur = h('div',{});
+  let etat;
+  const maj = ()=>{ if(etat) bouton.disabled = !etat.pret(); };
+  etat = T.creer(ex, maj);
+  maj();
+
+  bouton.addEventListener('click', async ()=>{
+    bouton.disabled = true;
+    zoneErreur.replaceChildren();
+    const reponses = etat.reponses();
+    try{
+      if(!estApercu()){
+        const { error } = await sb.from('hlp_tentatives').insert({ eleve_id: profil.id, exercice_id: ex.id, reponses });
+        if(error) throw error;
+      }
+      const { data, error } = await sb.from('hlp_corriges').select('exercice_id, corrige').eq('exercice_id', ex.id);
+      if(error) throw error;
+      const corrige = data && data[0] ? data[0].corrige : null;
+      vueResultat(ex, reponses, corrige);
+    }catch(e){
+      zoneErreur.replaceChildren(h('div',{class:'msg err',role:'alert'}, 'Tes réponses n’ont pas pu être enregistrées. Réessaie dans un instant.'));
+      maj();
+    }
+  });
+
+  show(
+    h('button',{class:'linkbtn back',onclick:retourListe},'← Retour aux exercices'),
+    h('h1',{}, ex.titre),
+    h('p',{class:'sub'}, T.sousTitre + (ex.axe ? ' · ' + ex.axe : '')),
+    ex.consigne && h('p',{class:'consigne'}, ex.consigne),
+    ex.extrait && h('div',{class:'extrait'},
+      paragraphes(ex.extrait).map(p=>h('p',{},p)),
+      ex.source && h('p',{class:'source'}, ex.source)),
+    etat.noeuds, zoneErreur, bouton);
+}
+
+function vueResultat(ex, reponses, corrige){
+  const T = TYPES[ex.type];
+  const retour = h('div',{class:'actions'},
+    h('button',{class:'btn',onclick:retourListe},'Retour aux exercices'),
+    h('button',{class:'btn ghost',onclick:()=>vueExercice(ex)},'Refaire'));
+  if(!corrige){
+    return show(h('h1',{},'Réponses enregistrées'),
+      h('p',{class:'sub'},'Le corrigé de cet exercice n’est pas disponible pour l’instant.'), retour);
+  }
+  const s = scoreExercice(ex, corrige, reponses);
+  const r = T.resultat(ex, corrige, reponses);
+  show(
+    h('h1',{}, ex.titre),
+    s && h('div',{class:'score',role:'status'}, s.ok + ' / ' + s.total),
+    r.sous && h('p',{class:'sub'}, r.sous),
+    r.noeuds, retour);
+}
+
+
+/* =====================================================================
    ESPACE ENSEIGNANTE : dépôt d'exercices et résultats
    ===================================================================== */
 const LIB_NIVEAU = { '1re':'Première', 'tle':'Terminale', 'tous':'Première et Terminale' };
@@ -519,6 +1319,9 @@ function retourListe(){ return (profil && profil.role === 'prof') ? vueEnseignan
 function fmtDateHeure(iso){
   try{ return new Date(iso).toLocaleString('fr-FR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}); }catch(e){ return ''; }
 }
+const champ = (label, id, noeud) => h('div',{class:'field'}, h('label',{for:id}, label), noeud);
+const lignesNonVides = (t) => String(t || '').split(/\r?\n/).map(x => x.trim()).filter(Boolean);
+const optionsSelect = (valeurs, courante) => valeurs.map(([v,l]) => h('option',{value:v,selected: courante === v}, l));
 
 function cadreEnseignante(onglet, ...contenu){
   const msg = flash; flash = null;
@@ -538,7 +1341,7 @@ async function vueEnseignante(onglet = 'exercices'){
     if(onglet === 'resultats') await ongletResultats(); else await ongletExercices();
   }catch(e){
     cadreEnseignante(onglet,
-      h('div',{class:'msg err',role:'alert'},'Impossible de charger les données. Si tu viens de mettre à jour le site, vérifie que le script supabase-niveaux.sql a bien été exécuté dans Supabase.'),
+      h('div',{class:'msg err',role:'alert'},'Impossible de charger les données. Si tu viens de mettre à jour le site, vérifie que les scripts supabase-niveaux.sql et supabase-types.sql ont bien été exécutés dans Supabase.'),
       h('button',{class:'btn ghost',onclick:()=>vueEnseignante(onglet)},'Réessayer'));
   }
 }
@@ -562,6 +1365,7 @@ async function ongletExercices(){
     vueEnseignante('exercices');
   }
   function ligne(ex){
+    const T = TYPES[ex.type];
     if(aSupprimer === ex.id){
       return h('div',{class:'exo'},
         h('div',{class:'exo-main'},
@@ -573,13 +1377,13 @@ async function ongletExercices(){
     }
     return h('div',{class:'exo'},
       h('div',{class:'exo-main'},
-        h('span',{class:'tag'}, (ex.type==='quiz' ? 'Quiz' : 'Analyse') + ' · ' + (LIB_NIVEAU[ex.niveau] || 'Tous niveaux') + (ex.axe ? ' · ' + ex.axe : '')),
+        h('span',{class:'tag'}, (T ? T.court : ex.type) + ' · ' + (LIB_NIVEAU[ex.niveau] || 'Tous niveaux') + (ex.axe ? ' · ' + ex.axe : '')),
         h('span',{class:'exo-titre'}, ex.titre),
         h('span',{class:'badge ' + (ex.publie ? 'on' : 'off')}, ex.publie ? 'Publié' : 'Brouillon : invisible pour les élèves')),
       h('div',{class:'exo-actions'},
         h('button',{class:'btn small',onclick:()=>basculer(ex)}, ex.publie ? 'Masquer' : 'Publier'),
-        h('button',{class:'btn ghost small',onclick:()=>vueEditeur(ex)},'Modifier'),
-        h('button',{class:'btn ghost small',onclick:()=>vueExercice(ex)},'Aperçu'),
+        EDITEURS[ex.type] ? h('button',{class:'btn ghost small',onclick:()=>vueEditeur(ex)},'Modifier') : null,
+        T ? h('button',{class:'btn ghost small',onclick:()=>vueExercice(ex)},'Aperçu') : null,
         h('button',{class:'btn ghost small',onclick:()=>{ aSupprimer = ex.id; dessiner(); }},'Supprimer')));
   }
   function dessiner(){
@@ -592,11 +1396,358 @@ async function ongletExercices(){
     liste);
 }
 
-/* ---------- formulaire de création / modification ---------- */
-function nouvelleQuestion(type){
-  return { q:'', options: type === 'quiz' ? ['','','',''] : [], correcte:0, explication:'', corrige:'' };
-}
+/* =====================================================================
+   ÉDITEURS : un par type d'exercice
+   Chaque éditeur sait : init (état de départ), dessiner, valider, serialiser.
+   ===================================================================== */
+const EDITEURS = {};
 
+/* ---------- Quiz ---------- */
+EDITEURS.quiz = {
+  init(ex, corrige){
+    const qs = ex && Array.isArray(ex.questions) ? ex.questions : [];
+    const questions = qs.map((q,i)=>({
+      q: q.q || '', options: Array.isArray(q.options) ? q.options.slice() : [],
+      correcte: Number((corrige.bonnes || [])[i]) || 0, explication: (corrige.explications || [])[i] || ''
+    }));
+    if(!questions.length) questions.push({ q:'', options:['','','',''], correcte:0, explication:'' });
+    return { questions };
+  },
+  dessiner(etat, redessiner){
+    const cartes = etat.questions.map((q,i)=>{
+      const retirer = etat.questions.length > 1
+        ? h('button',{class:'linkbtn',type:'button',onclick:()=>{ etat.questions.splice(i,1); redessiner(); }},'Supprimer cette question') : null;
+      return h('div',{class:'qcard'},
+        champ('Question ' + (i+1), 'q'+i, h('textarea',{id:'q'+i,oninput:(ev)=>{ q.q = ev.target.value; }}, q.q)),
+        h('div',{class:'q-titre'},'Réponses proposées : coche la bonne'),
+        q.options.map((o,k)=> h('div',{class:'optrow'},
+          h('input',{type:'radio',name:'bonne'+i,'aria-label':'Bonne réponse : option '+(k+1),checked: q.correcte === k,onchange:()=>{ q.correcte = k; }}),
+          h('input',{type:'text','aria-label':'Option '+(k+1),value:o,oninput:(ev)=>{ q.options[k] = ev.target.value; }}),
+          q.options.length > 2
+            ? h('button',{class:'linkbtn',type:'button','aria-label':'Retirer l’option '+(k+1),onclick:()=>{
+                q.options.splice(k,1);
+                if(q.correcte === k) q.correcte = 0; else if(q.correcte > k) q.correcte--;
+                redessiner(); }},'Retirer') : null)),
+        q.options.length < 6 ? h('button',{class:'linkbtn',type:'button',onclick:()=>{ q.options.push(''); redessiner(); }},'+ Ajouter une réponse') : null,
+        champ('Explication affichée après la réponse', 'x'+i, h('textarea',{id:'x'+i,oninput:(ev)=>{ q.explication = ev.target.value; }}, q.explication)),
+        retirer);
+    });
+    return [h('h2',{},'Questions'), cartes,
+      h('button',{class:'btn ghost',type:'button',onclick:()=>{ etat.questions.push({ q:'', options:['','','',''], correcte:0, explication:'' }); redessiner(); }},'+ Ajouter une question')];
+  },
+  valider(etat){
+    for(let i = 0; i < etat.questions.length; i++){
+      const q = etat.questions[i], n = i + 1;
+      if(!q.q.trim()) return 'La question ' + n + ' est vide.';
+      if(q.options.length < 2) return 'Question ' + n + ' : propose au moins deux réponses.';
+      if(q.options.some(o => !o.trim())) return 'Question ' + n + ' : complète ou retire les réponses vides.';
+    }
+    return null;
+  },
+  serialiser(etat){
+    return {
+      questions: etat.questions.map(q => ({ q: q.q.trim(), options: q.options.map(o => o.trim()) })),
+      corrige: { bonnes: etat.questions.map(q => q.correcte), explications: etat.questions.map(q => q.explication.trim()) },
+      colonnes: {}
+    };
+  }
+};
+
+/* ---------- Analyse guidée ---------- */
+EDITEURS.analyse = {
+  init(ex, corrige){
+    const qs = ex && Array.isArray(ex.questions) ? ex.questions : [];
+    const questions = qs.map((q,i)=>({ q: q.q || '', corrige: (corrige.corriges || [])[i] || '' }));
+    if(!questions.length) questions.push({ q:'', corrige:'' });
+    return { extrait: ex ? (ex.extrait || '') : '', source: ex ? (ex.source || '') : '', questions };
+  },
+  dessiner(etat, redessiner){
+    const cartes = etat.questions.map((q,i)=>{
+      const retirer = etat.questions.length > 1
+        ? h('button',{class:'linkbtn',type:'button',onclick:()=>{ etat.questions.splice(i,1); redessiner(); }},'Supprimer cette question') : null;
+      return h('div',{class:'qcard'},
+        champ('Question ' + (i+1), 'q'+i, h('textarea',{id:'q'+i,oninput:(ev)=>{ q.q = ev.target.value; }}, q.q)),
+        champ('Corrigé type, affiché à l’élève après sa réponse', 'c'+i, h('textarea',{id:'c'+i,oninput:(ev)=>{ q.corrige = ev.target.value; }}, q.corrige)),
+        retirer);
+    });
+    return [
+      champ('Extrait à analyser','e-extrait', h('textarea',{id:'e-extrait',style:'min-height:180px',oninput:(ev)=>{ etat.extrait = ev.target.value; }}, etat.extrait)),
+      champ('Source de l’extrait (auteur, œuvre, date)','e-source', h('input',{id:'e-source',value:etat.source,oninput:(ev)=>{ etat.source = ev.target.value; }})),
+      h('h2',{},'Questions'), cartes,
+      h('button',{class:'btn ghost',type:'button',onclick:()=>{ etat.questions.push({ q:'', corrige:'' }); redessiner(); }},'+ Ajouter une question')
+    ];
+  },
+  valider(etat){
+    for(let i = 0; i < etat.questions.length; i++) if(!etat.questions[i].q.trim()) return 'La question ' + (i+1) + ' est vide.';
+    return null;
+  },
+  serialiser(etat){
+    return {
+      questions: etat.questions.map(q => ({ q: q.q.trim() })),
+      corrige: { corriges: etat.questions.map(q => q.corrige.trim()) },
+      colonnes: { extrait: etat.extrait, source: etat.source.trim() }
+    };
+  }
+};
+
+/* ---------- Liste à relier ---------- */
+function lirePaires(texte){
+  const paires = [], lignes = lignesNonVides(texte);
+  for(let i = 0; i < lignes.length; i++){
+    const m = lignes[i].match(/^(.*?)\s*(?:\||\t)\s*(.*)$/);
+    if(!m || !m[1].trim() || !m[2].trim()) return { erreur: 'Ligne ' + (i+1) + ' : écris « élément de gauche | élément de droite ».' };
+    paires.push([m[1].trim(), m[2].trim()]);
+  }
+  return { paires };
+}
+EDITEURS.relier = {
+  init(ex, corrige){
+    if(!ex) return { paires:'', leurres:'' };
+    const q = ex.questions || {}, G = q.gauche || [], D = q.droite || [], P = corrige.paires || [];
+    const utilises = new Set(P);
+    return { paires: G.map((g,i)=> g + ' | ' + P[i]).join('\n'), leurres: D.filter(d => !utilises.has(d)).join('\n') };
+  },
+  dessiner(etat){
+    return [
+      champ('Paires à relier : une par ligne, séparées par le signe |','e-paires',
+        h('textarea',{id:'e-paires',style:'min-height:150px',placeholder:'Balzac | Le Père Goriot\nFlaubert | Madame Bovary\nZola | Germinal',oninput:(ev)=>{ etat.paires = ev.target.value; }}, etat.paires)),
+      champ('Éléments en trop à droite, sans correspondant (facultatif, un par ligne)','e-leurres',
+        h('textarea',{id:'e-leurres',placeholder:'Stendhal',oninput:(ev)=>{ etat.leurres = ev.target.value; }}, etat.leurres)),
+      h('p',{class:'hint'},'L’ordre de la colonne de droite est mélangé automatiquement : l’élève ne peut pas deviner les paires.')
+    ];
+  },
+  valider(etat){
+    const r = lirePaires(etat.paires);
+    if(r.erreur) return r.erreur;
+    if(r.paires.length < 2) return 'Saisis au moins deux paires.';
+    const droite = r.paires.map(p => p[1]).concat(lignesNonVides(etat.leurres));
+    if(new Set(droite.map(d => normReponse(d, true))).size !== droite.length) return 'Deux éléments de droite sont identiques : chacun doit être unique.';
+    return null;
+  },
+  serialiser(etat){
+    const { paires } = lirePaires(etat.paires);
+    const droiteOrdre = melanger(paires.map(p => p[1]).concat(lignesNonVides(etat.leurres)));
+    return {
+      questions: { gauche: paires.map(p => p[0]), droite: droiteOrdre },
+      corrige: { paires: paires.map(p => p[1]) },
+      colonnes: {}
+    };
+  }
+};
+
+/* ---------- Texte à trous ---------- */
+function lireTrous(texte){
+  const segments = [], reponses = [];
+  let dernier = 0, m; const re = /\{([^{}]*)\}/g;
+  while((m = re.exec(texte)) !== null){
+    const alts = m[1].split('|').map(x => x.trim()).filter(Boolean);
+    if(!alts.length) return { erreur: 'Une paire d’accolades est vide : écris la réponse entre les accolades.' };
+    if(m.index > dernier) segments.push({ t: texte.slice(dernier, m.index) });
+    segments.push({ b: reponses.length }); reponses.push(alts);
+    dernier = m.index + m[0].length;
+  }
+  const reste = texte.slice(dernier);
+  if(/[{}]/.test(texte.replace(re, ''))) return { erreur: 'Une accolade est ouverte ou fermée sans sa paire.' };
+  if(reste) segments.push({ t: reste });
+  if(!reponses.length) return { erreur: 'Aucun trou : entoure les mots à cacher avec des accolades, par exemple {Romulus}.' };
+  return { segments, reponses };
+}
+EDITEURS.trous = {
+  init(ex, corrige){
+    if(!ex) return { texte:'', banque:false, accents:false };
+    const q = ex.questions || {}, alts = corrige.reponses || [];
+    return {
+      texte: (q.segments || []).map(s => s.b != null ? '{' + (alts[s.b] || []).join('|') + '}' : s.t).join(''),
+      banque: !!q.banque, accents: !!q.accents
+    };
+  },
+  dessiner(etat){
+    const compte = h('p',{class:'hint',id:'e-compte'});
+    const maj = ()=>{ const r = lireTrous(etat.texte); compte.textContent = r.erreur ? r.erreur : r.reponses.length + ' trou' + (r.reponses.length > 1 ? 's' : '') + ' repéré' + (r.reponses.length > 1 ? 's' : '') + '.'; };
+    maj();
+    return [
+      champ('Texte : entoure chaque mot à cacher avec des accolades','e-texte',
+        h('textarea',{id:'e-texte',style:'min-height:200px',placeholder:'Rome fut fondée en {753} avant J.-C. par {Romulus|Romulus et Rémus}.',
+          oninput:(ev)=>{ etat.texte = ev.target.value; maj(); }}, etat.texte)),
+      compte,
+      h('p',{class:'hint'},'Plusieurs réponses acceptées pour un même trou : sépare-les par | (barre verticale).'),
+      h('label',{class:'opt'}, h('input',{type:'checkbox',id:'e-banque',checked:etat.banque,onchange:(ev)=>{ etat.banque = ev.target.checked; }}),
+        h('span',{},'Afficher une banque de mots (les réponses, mélangées) pour aider l’élève')),
+      h('label',{class:'opt'}, h('input',{type:'checkbox',id:'e-accents',checked:etat.accents,onchange:(ev)=>{ etat.accents = ev.target.checked; }}),
+        h('span',{},'Tenir compte des accents (utile pour le grec)'))
+    ];
+  },
+  valider(etat){ const r = lireTrous(etat.texte); return r.erreur || null; },
+  serialiser(etat){
+    const r = lireTrous(etat.texte);
+    return {
+      questions: { segments: r.segments, banque: etat.banque ? melanger(r.reponses.map(a => a[0])) : null, accents: etat.accents },
+      corrige: { reponses: r.reponses },
+      colonnes: {}
+    };
+  }
+};
+
+/* ---------- Mots mêlés ---------- */
+const sigMeles = (e) => JSON.stringify([lignesNonVides(e.mots), e.taille, e.diff]);
+function apercuMeles(g){
+  const N = g.grille.length, sol = new Set();
+  g.positions.forEach(p => { for(let i = 0; i < normLettres(p.mot).length; i++) sol.add((p.r + p.dr*i) + ',' + (p.c + p.dc*i)); });
+  const cells = [];
+  for(let r = 0; r < N; r++) for(let c = 0; c < N; c++) cells.push(h('div',{class:'cell ' + (sol.has(r + ',' + c) ? 'trouve' : '')}, g.grille[r][c]));
+  return h('div',{},
+    h('p',{class:'hint'},'Aperçu (grille de ' + N + ' × ' + N + ') : les mots cachés sont surlignés ici ; l’élève ne voit pas ce surlignage.'),
+    h('div',{class:'grille',style:'grid-template-columns:repeat(' + N + ',1fr);max-width:' + (N * 38) + 'px'}, cells));
+}
+EDITEURS.meles = {
+  init(ex, corrige){
+    if(!ex) return { mots:'', taille:'auto', diff:'moyen', genere:null, erreurGen:'' };
+    const q = ex.questions || {}, o = q.options || {};
+    const e = { mots: (q.mots || []).join('\n'), taille: o.taille || 'auto', diff: o.diff || 'moyen', genere:null, erreurGen:'' };
+    e.genere = { grille: q.grille || [], positions: corrige.positions || [], mots: q.mots || [], sig: sigMeles(e) };
+    return e;
+  },
+  dessiner(etat, redessiner){
+    const perime = etat.genere && etat.genere.sig !== sigMeles(etat);
+    return [
+      champ('Mots à cacher : un par ligne','e-mots', h('textarea',{id:'e-mots',style:'min-height:160px',placeholder:'Rome\nCicéron\nVirgile\nÉnéide',oninput:(ev)=>{ etat.mots = ev.target.value; }}, etat.mots)),
+      h('div',{class:'row2'},
+        champ('Taille de la grille','e-taille', h('select',{id:'e-taille',onchange:(ev)=>{ etat.taille = ev.target.value; }},
+          optionsSelect([['auto','Automatique'],['10','10 × 10'],['12','12 × 12'],['14','14 × 14'],['16','16 × 16']], etat.taille))),
+        champ('Difficulté','e-diff', h('select',{id:'e-diff',onchange:(ev)=>{ etat.diff = ev.target.value; }},
+          optionsSelect([['facile','Facile : vers la droite et vers le bas'],['moyen','Moyen : avec les diagonales'],['difficile','Difficile : dans les 8 sens, à l’envers aussi']], etat.diff)))),
+      h('div',{class:'toolbar'}, h('button',{class:'btn ghost',type:'button',id:'e-gen',onclick:()=>{
+        const g = genererMeles(lignesNonVides(etat.mots), etat.taille, etat.diff);
+        if(g.erreur){ etat.genere = null; etat.erreurGen = g.erreur; }
+        else { etat.erreurGen = ''; etat.genere = { grille: g.grille, positions: g.positions, mots: g.mots, sig: sigMeles(etat) }; }
+        redessiner();
+      }}, etat.genere ? 'Générer une autre grille' : 'Générer la grille')),
+      etat.erreurGen ? h('div',{class:'msg err',role:'alert'}, etat.erreurGen) : null,
+      perime ? h('div',{class:'msg info',role:'status'},'La liste ou les réglages ont changé : génère la grille de nouveau avant d’enregistrer.') : null,
+      etat.genere && !perime ? apercuMeles(etat.genere) : null
+    ];
+  },
+  valider(etat){
+    if(!etat.genere || etat.genere.sig !== sigMeles(etat)) return 'Génère d’abord la grille avec le bouton « Générer la grille ».';
+    return null;
+  },
+  serialiser(etat){
+    return {
+      questions: { grille: etat.genere.grille, mots: etat.genere.mots, options: { taille: etat.taille, diff: etat.diff } },
+      corrige: { positions: etat.genere.positions },
+      colonnes: {}
+    };
+  }
+};
+
+/* ---------- Mots fléchés ---------- */
+function lireListeFleches(texte){
+  const entrees = [], lignes = lignesNonVides(texte);
+  for(let i = 0; i < lignes.length; i++){
+    const k = lignes[i].indexOf('|');
+    if(k < 0 || !lignes[i].slice(0,k).trim() || !lignes[i].slice(k+1).trim()) return { erreur: 'Ligne ' + (i+1) + ' : écris « mot | définition ».' };
+    entrees.push({ mot: lignes[i].slice(0,k).trim(), def: lignes[i].slice(k+1).trim() });
+  }
+  return { entrees };
+}
+const sigFleches = (e) => JSON.stringify([lignesNonVides(e.liste), e.taille]);
+function apercuFleches(g){
+  const q = { lignes: g.lignes, colonnes: g.colonnes, indices: g.indices }, { indicesDeCase } = structureFleches(q);
+  const cells = [];
+  for(let r = 0; r < g.lignes; r++) for(let c = 0; c < g.colonnes; c++){
+    const ch = g.lettres[r][c], k = r + ',' + c;
+    if(ch !== '.') cells.push(h('div',{class:'fcell sol'}, ch));
+    else if(indicesDeCase[k]) cells.push(h('div',{class:'fcell indice'}, rendreIndices(indicesDeCase[k])));
+    else cells.push(h('div',{class:'fcell vide'}));
+  }
+  return h('div',{},
+    h('p',{class:'hint'},'Aperçu (' + g.lignes + ' lignes × ' + g.colonnes + ' colonnes) : les lettres sont visibles ici, pas pour l’élève.'),
+    h('div',{class:'fleches-wrap'}, h('div',{class:'fleches',style:'grid-template-columns:repeat(' + g.colonnes + ',var(--fc))'}, cells)));
+}
+EDITEURS.fleches = {
+  init(ex, corrige){
+    if(!ex) return { liste:'', taille:'auto', genere:null, erreurGen:'' };
+    const q = ex.questions || {}, o = q.options || {};
+    const e = { liste: (corrige.entrees || []).map(x => x.mot + ' | ' + x.def).join('\n'), taille: o.taille || 'auto', genere:null, erreurGen:'' };
+    e.genere = { lignes: q.lignes, colonnes: q.colonnes, indices: q.indices || [], lettres: corrige.lettres || [], entrees: corrige.entrees || [], sig: sigFleches(e) };
+    return e;
+  },
+  dessiner(etat, redessiner){
+    const perime = etat.genere && etat.genere.sig !== sigFleches(etat);
+    return [
+      champ('Mots et définitions : un par ligne, sous la forme  mot | définition','e-liste',
+        h('textarea',{id:'e-liste',style:'min-height:180px',placeholder:'Rome | Capitale de l’Empire\nForum | Place publique de la cité\nConsul | Magistrat élu pour un an',oninput:(ev)=>{ etat.liste = ev.target.value; }}, etat.liste)),
+      h('p',{class:'hint'},'Choisis des mots qui partagent des lettres : la grille est construite en les croisant. Les définitions courtes (une dizaine de mots au plus) restent lisibles dans les cases.'),
+      champ('Taille maximale de la grille','e-taille', h('select',{id:'e-taille',onchange:(ev)=>{ etat.taille = ev.target.value; }},
+        optionsSelect([['auto','Automatique'],['10','10'],['12','12'],['14','14'],['16','16']], etat.taille))),
+      h('div',{class:'toolbar'}, h('button',{class:'btn ghost',type:'button',id:'e-gen',onclick:()=>{
+        const lu = lireListeFleches(etat.liste);
+        if(lu.erreur){ etat.genere = null; etat.erreurGen = lu.erreur; return redessiner(); }
+        const g = genererFleches(lu.entrees, etat.taille);
+        if(g.erreur){ etat.genere = null; etat.erreurGen = g.erreur; }
+        else { etat.erreurGen = ''; etat.genere = Object.assign({}, g, { entrees: lu.entrees, sig: sigFleches(etat) }); }
+        redessiner();
+      }}, etat.genere ? 'Générer une autre grille' : 'Générer la grille')),
+      etat.erreurGen ? h('div',{class:'msg err',role:'alert'}, etat.erreurGen) : null,
+      perime ? h('div',{class:'msg info',role:'status'},'La liste ou la taille ont changé : génère la grille de nouveau avant d’enregistrer.') : null,
+      etat.genere && !perime ? apercuFleches(etat.genere) : null
+    ];
+  },
+  valider(etat){
+    if(!etat.genere || etat.genere.sig !== sigFleches(etat)) return 'Génère d’abord la grille avec le bouton « Générer la grille ».';
+    return null;
+  },
+  serialiser(etat){
+    const g = etat.genere;
+    return {
+      questions: { lignes: g.lignes, colonnes: g.colonnes, indices: g.indices, options: { taille: etat.taille } },
+      corrige: { lettres: g.lettres, entrees: g.entrees },
+      colonnes: {}
+    };
+  }
+};
+
+/* ---------- Charades ---------- */
+const charadeVide = () => ({ premier:'', second:'', troisieme:'', tout:'', reponse:'' });
+EDITEURS.charades = {
+  init(ex, corrige){
+    if(!ex) return { items:[charadeVide()], accents:false };
+    const q = ex.questions || {}, alts = corrige.reponses || [];
+    const items = (q.items || []).map((it,i)=>({ premier: it.premier || '', second: it.second || '', troisieme: it.troisieme || '', tout: it.tout || '', reponse: (alts[i] || []).join(' | ') }));
+    return { items: items.length ? items : [charadeVide()], accents: !!q.accents };
+  },
+  dessiner(etat, redessiner){
+    const zone = (cle, label, i, it, lignes) => champ(label, 'ch-' + cle + '-' + i, h('textarea',{id:'ch-' + cle + '-' + i,style:'min-height:' + (lignes * 26 + 20) + 'px',oninput:(ev)=>{ it[cle] = ev.target.value; }}, it[cle]));
+    const cartes = etat.items.map((it,i)=> h('div',{class:'qcard'},
+      h('div',{class:'q-titre'},'Charade ' + (i+1)),
+      zone('premier','Mon premier…',i,it,1), zone('second','Mon second…',i,it,1), zone('troisieme','Mon troisième… (facultatif)',i,it,1), zone('tout','Mon tout…',i,it,1),
+      champ('Réponse attendue (variantes acceptées séparées par |)','ch-reponse-'+i, h('input',{id:'ch-reponse-'+i,value:it.reponse,oninput:(ev)=>{ it.reponse = ev.target.value; }})),
+      etat.items.length > 1 ? h('button',{class:'linkbtn',type:'button',onclick:()=>{ etat.items.splice(i,1); redessiner(); }},'Supprimer cette charade') : null));
+    return [h('h2',{},'Charades'), cartes,
+      h('button',{class:'btn ghost',type:'button',onclick:()=>{ etat.items.push(charadeVide()); redessiner(); }},'+ Ajouter une charade'),
+      h('label',{class:'opt',style:'margin-top:16px'}, h('input',{type:'checkbox',id:'e-accents',checked:etat.accents,onchange:(ev)=>{ etat.accents = ev.target.checked; }}),
+        h('span',{},'Tenir compte des accents'))];
+  },
+  valider(etat){
+    for(let i = 0; i < etat.items.length; i++){
+      const it = etat.items[i], n = i + 1;
+      if(!it.premier.trim() || !it.second.trim() || !it.tout.trim()) return 'Charade ' + n + ' : remplis « mon premier », « mon second » et « mon tout ».';
+      if(!it.reponse.split('|').some(x => x.trim())) return 'Charade ' + n + ' : indique la réponse attendue.';
+    }
+    return null;
+  },
+  serialiser(etat){
+    return {
+      questions: { items: etat.items.map(it => ({ premier: it.premier.trim(), second: it.second.trim(), troisieme: it.troisieme.trim(), tout: it.tout.trim() })), accents: etat.accents },
+      corrige: { reponses: etat.items.map(it => it.reponse.split('|').map(x => x.trim()).filter(Boolean)) },
+      colonnes: {}
+    };
+  }
+};
+
+const ORDRE_TYPES = ['quiz','analyse','relier','trous','meles','fleches','charades'];
+
+/* ---------- formulaire de création / modification ---------- */
 async function vueEditeur(ex){
   show(h('p',{class:'empty'},'Chargement…'));
   let corrige = {}, ordreSuivant = 1;
@@ -609,134 +1760,68 @@ async function vueEditeur(ex){
     ordreSuivant = ((data && data[0] && data[0].ordre) || 0) + 1;
   }
 
-  const form = {
-    id: ex ? ex.id : null,
-    type: ex ? ex.type : 'quiz',
-    niveau: ex ? (ex.niveau || 'tous') : 'tous',
-    axe: ex ? (ex.axe || '') : '',
-    titre: ex ? ex.titre : '',
-    consigne: ex ? (ex.consigne || '') : '',
-    extrait: ex ? (ex.extrait || '') : '',
-    source: ex ? (ex.source || '') : '',
-    ordre: ex ? (ex.ordre || 0) : ordreSuivant,
-    publie: ex ? !!ex.publie : false,
-    questions: []
+  const fiche = {
+    id: ex ? ex.id : null, type: ex ? ex.type : 'quiz', niveau: ex ? (ex.niveau || 'tous') : 'tous',
+    axe: ex ? (ex.axe || '') : '', titre: ex ? ex.titre : '', consigne: ex ? (ex.consigne || '') : '',
+    ordre: ex ? (ex.ordre || 0) : ordreSuivant, publie: ex ? !!ex.publie : false
   };
-  const qs = ex && Array.isArray(ex.questions) ? ex.questions : [];
-  form.questions = qs.map((q,i)=>({
-    q: q.q || '',
-    options: Array.isArray(q.options) ? q.options.slice() : [],
-    correcte: Number((corrige.bonnes || [])[i]) || 0,
-    explication: (corrige.explications || [])[i] || '',
-    corrige: (corrige.corriges || [])[i] || ''
-  }));
-  if(!form.questions.length) form.questions.push(nouvelleQuestion(form.type));
+  let ED = EDITEURS[fiche.type];
+  let etat = ED.init(ex, corrige);
 
   const zone = h('div',{});
   const zoneErreur = h('div',{});
   const bouton = h('button',{class:'btn',type:'button'},'Enregistrer');
   const erreur = (texte)=> zoneErreur.replaceChildren(...(texte ? [h('div',{class:'msg err',role:'alert'}, texte)] : []));
-  const champ = (label, id, noeud)=> h('div',{class:'field'}, h('label',{for:id}, label), noeud);
-
-  function carteQuestion(q, i){
-    const retirerQuestion = form.questions.length > 1
-      ? h('button',{class:'linkbtn',type:'button',onclick:()=>{ form.questions.splice(i,1); dessiner(); }},'Supprimer cette question') : null;
-    const enonce = champ('Question ' + (i+1), 'q'+i, h('textarea',{id:'q'+i,oninput:(ev)=>{ q.q = ev.target.value; }}, q.q));
-    if(form.type === 'quiz'){
-      return h('div',{class:'qcard'}, enonce,
-        h('div',{class:'q-titre'},'Réponses proposées : coche la bonne'),
-        q.options.map((o,k)=> h('div',{class:'optrow'},
-          h('input',{type:'radio',name:'bonne'+i,'aria-label':'Bonne réponse : option '+(k+1),checked: q.correcte === k,onchange:()=>{ q.correcte = k; }}),
-          h('input',{type:'text','aria-label':'Option '+(k+1),value:o,oninput:(ev)=>{ q.options[k] = ev.target.value; }}),
-          q.options.length > 2
-            ? h('button',{class:'linkbtn',type:'button','aria-label':'Retirer l’option '+(k+1),onclick:()=>{
-                q.options.splice(k,1);
-                if(q.correcte === k) q.correcte = 0; else if(q.correcte > k) q.correcte--;
-                dessiner(); }},'Retirer') : null)),
-        q.options.length < 6 ? h('button',{class:'linkbtn',type:'button',onclick:()=>{ q.options.push(''); dessiner(); }},'+ Ajouter une réponse') : null,
-        champ('Explication affichée après la réponse', 'x'+i, h('textarea',{id:'x'+i,oninput:(ev)=>{ q.explication = ev.target.value; }}, q.explication)),
-        retirerQuestion);
-    }
-    return h('div',{class:'qcard'}, enonce,
-      champ('Corrigé type, affiché à l’élève après sa réponse', 'c'+i, h('textarea',{id:'c'+i,oninput:(ev)=>{ q.corrige = ev.target.value; }}, q.corrige)),
-      retirerQuestion);
-  }
 
   function dessiner(){
     zone.replaceChildren(...[
       h('div',{class:'row2'},
         champ('Type d’exercice','e-type', ex
-          ? h('input',{id:'e-type',value: form.type === 'quiz' ? 'Quiz (QCM)' : 'Analyse guidée',disabled:true})
-          : h('select',{id:'e-type',onchange:(ev)=>{
-              form.type = ev.target.value;
-              form.questions = form.questions.map(q=>({ ...nouvelleQuestion(form.type), q: q.q }));
-              dessiner(); }},
-              h('option',{value:'quiz',selected: form.type === 'quiz'},'Quiz (QCM)'),
-              h('option',{value:'analyse',selected: form.type === 'analyse'},'Analyse guidée d’un extrait'))),
+          ? h('input',{id:'e-type',value: TYPES[fiche.type].libelle,disabled:true})
+          : h('select',{id:'e-type',onchange:(ev)=>{ fiche.type = ev.target.value; ED = EDITEURS[fiche.type]; etat = ED.init(null, {}); dessiner(); }},
+              ORDRE_TYPES.map(t => h('option',{value:t,selected: fiche.type === t}, TYPES[t].libelle)))),
         champ('Classes concernées','e-niveau',
-          h('select',{id:'e-niveau',onchange:(ev)=>{ form.niveau = ev.target.value; }},
-            ['1re','tle','tous'].map(v=> h('option',{value:v,selected: form.niveau === v}, LIB_NIVEAU[v]))))),
+          h('select',{id:'e-niveau',onchange:(ev)=>{ fiche.niveau = ev.target.value; }},
+            ['1re','tle','tous'].map(v=> h('option',{value:v,selected: fiche.niveau === v}, LIB_NIVEAU[v]))))),
       h('div',{class:'row2'},
-        champ('Titre','e-titre', h('input',{id:'e-titre',value:form.titre,oninput:(ev)=>{ form.titre = ev.target.value; }})),
-        champ('Axe ou séquence (facultatif)','e-axe', h('input',{id:'e-axe',value:form.axe,oninput:(ev)=>{ form.axe = ev.target.value; }}))),
-      champ('Consigne (facultatif)','e-consigne', h('textarea',{id:'e-consigne',oninput:(ev)=>{ form.consigne = ev.target.value; }}, form.consigne)),
-      form.type === 'analyse' && champ('Extrait à analyser','e-extrait', h('textarea',{id:'e-extrait',style:'min-height:180px',oninput:(ev)=>{ form.extrait = ev.target.value; }}, form.extrait)),
-      form.type === 'analyse' && champ('Source de l’extrait (auteur, œuvre, date)','e-source', h('input',{id:'e-source',value:form.source,oninput:(ev)=>{ form.source = ev.target.value; }})),
-      h('h2',{},'Questions'),
-      form.questions.map(carteQuestion),
-      h('button',{class:'btn ghost',type:'button',onclick:()=>{ form.questions.push(nouvelleQuestion(form.type)); dessiner(); }},'+ Ajouter une question'),
+        champ('Titre','e-titre', h('input',{id:'e-titre',value:fiche.titre,oninput:(ev)=>{ fiche.titre = ev.target.value; }})),
+        champ('Axe ou séquence (facultatif)','e-axe', h('input',{id:'e-axe',value:fiche.axe,oninput:(ev)=>{ fiche.axe = ev.target.value; }}))),
+      champ('Consigne (facultatif)','e-consigne', h('textarea',{id:'e-consigne',oninput:(ev)=>{ fiche.consigne = ev.target.value; }}, fiche.consigne)),
+      ED.dessiner(etat, dessiner),
       h('h2',{},'Publication'),
       h('div',{class:'row2'},
-        champ('Place dans la liste (1, 2, 3…)','e-ordre', h('input',{id:'e-ordre',type:'number',value:String(form.ordre),oninput:(ev)=>{ form.ordre = ev.target.value; }}))),
+        champ('Place dans la liste (1, 2, 3…)','e-ordre', h('input',{id:'e-ordre',type:'number',value:String(fiche.ordre),oninput:(ev)=>{ fiche.ordre = ev.target.value; }}))),
       h('label',{class:'opt'},
-        h('input',{type:'checkbox',id:'e-publie',checked: form.publie,onchange:(ev)=>{ form.publie = ev.target.checked; }}),
+        h('input',{type:'checkbox',id:'e-publie',checked: fiche.publie,onchange:(ev)=>{ fiche.publie = ev.target.checked; }}),
         h('span',{},'Publié : visible par les élèves des classes concernées'))
-    ].flat().filter(Boolean));
-  }
-
-  function valider(){
-    if(!form.titre.trim()) return 'Donne un titre à l’exercice.';
-    for(let i = 0; i < form.questions.length; i++){
-      const q = form.questions[i], n = i + 1;
-      if(!q.q.trim()) return 'La question ' + n + ' est vide.';
-      if(form.type === 'quiz'){
-        if(q.options.length < 2) return 'Question ' + n + ' : propose au moins deux réponses.';
-        if(q.options.some(o => !o.trim())) return 'Question ' + n + ' : complète ou retire les réponses vides.';
-      }
-    }
-    return null;
+    ].flat(2).filter(Boolean));
   }
 
   bouton.addEventListener('click', async ()=>{
-    const msg = valider();
+    const msg = (!fiche.titre.trim() ? 'Donne un titre à l’exercice.' : ED.valider(etat));
     if(msg) return erreur(msg);
     erreur(null);
     bouton.disabled = true;
-    const quiz = form.type === 'quiz';
-    const fiche = {
-      type: form.type, niveau: form.niveau, axe: form.axe.trim(), titre: form.titre.trim(), consigne: form.consigne.trim(),
-      extrait: quiz ? '' : form.extrait, source: quiz ? '' : form.source.trim(),
-      ordre: Number(form.ordre) || 0, publie: form.publie,
-      questions: form.questions.map(q => quiz ? { q: q.q.trim(), options: q.options.map(o => o.trim()) } : { q: q.q.trim() })
-    };
-    const corrigeJson = quiz
-      ? { bonnes: form.questions.map(q => q.correcte), explications: form.questions.map(q => q.explication.trim()) }
-      : { corriges: form.questions.map(q => q.corrige.trim()) };
+    const s = ED.serialiser(etat);
+    const ligne = Object.assign({
+      type: fiche.type, niveau: fiche.niveau, axe: fiche.axe.trim(), titre: fiche.titre.trim(), consigne: fiche.consigne.trim(),
+      extrait: '', source: '', ordre: Number(fiche.ordre) || 0, publie: fiche.publie, questions: s.questions
+    }, s.colonnes || {});
     try{
-      if(!form.id){
-        const { data, error } = await sb.from('hlp_exercices').insert(fiche).select('id').single();
+      if(!fiche.id){
+        const { data, error } = await sb.from('hlp_exercices').insert(ligne).select('id').single();
         if(error) throw error;
-        form.id = data.id;
+        fiche.id = data.id;
       } else {
-        const { error } = await sb.from('hlp_exercices').update(fiche).eq('id', form.id);
+        const { error } = await sb.from('hlp_exercices').update(ligne).eq('id', fiche.id);
         if(error) throw error;
       }
-      const { error: e2 } = await sb.from('hlp_corriges').upsert({ exercice_id: form.id, corrige: corrigeJson }, { onConflict: 'exercice_id' });
+      const { error: e2 } = await sb.from('hlp_corriges').upsert({ exercice_id: fiche.id, corrige: s.corrige }, { onConflict: 'exercice_id' });
       if(e2) throw e2;
-      flash = 'Exercice enregistré' + (form.publie ? ' et visible par les élèves concernés.' : ' en brouillon : les élèves ne le voient pas tant que tu ne le publies pas.');
+      flash = 'Exercice enregistré' + (fiche.publie ? ' et visible par les élèves concernés.' : ' en brouillon : les élèves ne le voient pas tant que tu ne le publies pas.');
       vueEnseignante('exercices');
     }catch(e){
-      erreur('L’enregistrement a échoué. Vérifie ta connexion, et que le script supabase-niveaux.sql a bien été exécuté dans Supabase.');
+      erreur('L’enregistrement a échoué. Vérifie ta connexion, et que les scripts supabase-niveaux.sql et supabase-types.sql ont bien été exécutés dans Supabase.');
       bouton.disabled = false;
     }
   });
@@ -782,10 +1867,11 @@ async function ongletResultats(){
       h('tbody',{}, lignes.map(t=>{
         const p = eleve[t.eleve_id], e = exoPar[t.exercice_id];
         let res = '—';
-        if(e && e.type === 'quiz' && corPar[e.id]){ const s = scoreQuiz(corPar[e.id], t.reponses); res = s.ok + ' / ' + s.total; }
+        const s = e ? scoreExercice(e, corPar[e.id], t.reponses) : null;
+        if(s) res = s.ok + ' / ' + s.total;
         else if(e && e.type === 'analyse'){
           res = h('details',{}, h('summary',{},'Voir les réponses'),
-            (e.questions || []).map((q,i)=> h('div',{class:'rep'}, h('strong',{}, (i+1) + '. ' + q.q), h('div',{}, (t.reponses || {})[i] || '—'))));
+            (Array.isArray(e.questions) ? e.questions : []).map((q,i)=> h('div',{class:'rep'}, h('strong',{}, (i+1) + '. ' + q.q), h('div',{}, (t.reponses || {})[i] || '—'))));
         }
         return h('tr',{},
           h('td',{}, p.nom + ' ' + p.prenom), h('td',{}, p.classe || ''),
@@ -804,200 +1890,6 @@ async function ongletResultats(){
       h('select',{id:'f-niv','aria-label':'Filtrer par niveau',onchange:(ev)=>{ fNiv = ev.target.value; dessinerTable(); }},
         h('option',{value:''},'Première et Terminale'), h('option',{value:'1re'},'Première'), h('option',{value:'tle'},'Terminale'))),
     zoneTable);
-}
-
-/* =====================================================================
-   VUE : COMPTE EN ATTENTE D'ACTIVATION
-   ===================================================================== */
-function vueEnAttente(){
-  show(h('div',{class:'card auth'},
-    h('h1',{},'Bienvenue ' + profil.prenom),
-    h('p',{class:'sub'},'Ton compte est créé, mais ton accès à l’espace HLP n’est pas encore activé. Ton enseignante va le faire : reviens un peu plus tard.'),
-    h('button',{class:'btn ghost',onclick:deconnexion},'Se déconnecter')));
-}
-
-/* =====================================================================
-   DONNÉES
-   ===================================================================== */
-function estApercu(){ return profil.role === 'prof'; }
-
-async function chargerDonnees(){
-  const [ex, te, co] = await Promise.all([
-    sb.from('hlp_exercices').select('*').order('ordre', {ascending:true}),
-    estApercu() ? Promise.resolve({data:[]}) : sb.from('hlp_tentatives').select('*').eq('eleve_id', profil.id).order('created_at', {ascending:false}),
-    sb.from('hlp_corriges').select('exercice_id, corrige')
-  ]);
-  if(ex.error || te.error || co.error) throw (ex.error || te.error || co.error);
-  return { exercices: ex.data || [], tentatives: te.data || [], corriges: co.data || [] };
-}
-
-function scoreQuiz(corrige, reponses){
-  const bonnes = Array.isArray(corrige && corrige.bonnes) ? corrige.bonnes : [];
-  let ok = 0;
-  bonnes.forEach((b,i)=>{ if(reponses && reponses[i] != null && Number(reponses[i]) === Number(b)) ok++; });
-  return { ok, total: bonnes.length };
-}
-
-/* =====================================================================
-   VUE : TABLEAU DE BORD
-   ===================================================================== */
-async function vueTableauDeBord(){
-  show(h('p',{class:'empty'},'Chargement…'));
-  let d;
-  try{ d = await chargerDonnees(); }
-  catch(e){
-    return show(h('div',{class:'msg err',role:'alert'},'Impossible de charger les exercices. Réessaie dans un instant.'),
-                h('button',{class:'btn ghost',onclick:vueTableauDeBord},'Réessayer'));
-  }
-  const corrigeDe = {}; d.corriges.forEach(c => corrigeDe[c.exercice_id] = c.corrige);
-
-  // état par exercice
-  const etat = {};
-  d.tentatives.forEach(t=>{
-    const e = etat[t.exercice_id] || (etat[t.exercice_id] = {essais:0, dernier:t.created_at, meilleur:null});
-    e.essais++;
-    const ex = d.exercices.find(x=>x.id===t.exercice_id);
-    if(ex && ex.type==='quiz' && corrigeDe[ex.id]){
-      const s = scoreQuiz(corrigeDe[ex.id], t.reponses);
-      if(!e.meilleur || s.ok > e.meilleur.ok) e.meilleur = s;
-    }
-  });
-
-  const faits = d.exercices.filter(e=>etat[e.id]).length;
-  const quizScores = d.exercices.filter(e=>e.type==='quiz' && etat[e.id] && etat[e.id].meilleur).map(e=>etat[e.id].meilleur);
-  const pct = quizScores.length ? Math.round(100 * quizScores.reduce((a,s)=>a+s.ok,0) / Math.max(1,quizScores.reduce((a,s)=>a+s.total,0))) : null;
-  const derniere = d.tentatives.length ? fmtDate(d.tentatives[0].created_at) : '—';
-
-  const liste = d.exercices.length
-    ? d.exercices.map(ex=>{
-        const e = etat[ex.id];
-        let texteEtat = 'Pas encore fait';
-        if(e){
-          texteEtat = 'Fait ' + (e.essais>1 ? e.essais+' fois' : '1 fois') + ' · dernière séance : ' + fmtDate(e.dernier);
-          if(e.meilleur) texteEtat += ' · meilleur score ' + e.meilleur.ok + '/' + e.meilleur.total;
-        }
-        return h('div',{class:'exo'},
-          h('div',{class:'exo-main'},
-            h('span',{class:'tag'}, (ex.type==='quiz' ? 'Quiz' : 'Analyse') + (ex.axe ? ' · ' + ex.axe : '')),
-            h('span',{class:'exo-titre'}, ex.titre),
-            h('span',{class:'exo-etat'}, texteEtat)),
-          h('button',{class:'btn ' + (e ? 'ghost' : ''),onclick:()=>vueExercice(ex)}, e ? 'Refaire' : 'Commencer'));
-      })
-    : [h('p',{class:'empty'},'Aucun exercice n’est disponible pour le moment.')];
-
-  show(
-    h('h1',{},'Bonjour ' + profil.prenom),
-    h('p',{class:'sub'}, estApercu() ? 'Aperçu enseignante de l’espace HLP.' : 'Voici où tu en es.'),
-    estApercu() && h('div',{class:'banner'},'Mode aperçu : avec un compte enseignante, tes réponses ne sont pas enregistrées et les corrigés sont visibles d’emblée.'),
-    !estApercu() && h('div',{class:'stats'},
-      h('div',{class:'stat'}, h('span',{class:'label'},'Exercices faits'), h('div',{class:'value'}, faits + ' / ' + d.exercices.length)),
-      h('div',{class:'stat'}, h('span',{class:'label'},'Réussite aux quiz'), h('div',{class:'value'}, pct == null ? '—' : pct + ' %')),
-      h('div',{class:'stat'}, h('span',{class:'label'},'Dernière séance'), h('div',{class:'value'}, derniere))),
-    h('h2',{},'Exercices'),
-    liste);
-}
-
-/* =====================================================================
-   VUE : EXERCICE
-   ===================================================================== */
-function vueExercice(ex){
-  const questions = Array.isArray(ex.questions) ? ex.questions : [];
-  const reponses = {};
-  const bouton = h('button',{class:'btn',type:'button',disabled:true}, ex.type==='quiz' ? 'Valider mes réponses' : 'Valider et voir le corrigé type');
-  const zoneErreur = h('div',{});
-
-  function pret(){
-    if(ex.type==='quiz') return questions.every((_,i)=> reponses[i] != null);
-    return questions.every((_,i)=> (reponses[i]||'').trim().length >= MIN_CARACTERES_ANALYSE);
-  }
-  function maj(){ bouton.disabled = !pret(); }
-
-  const blocs = questions.map((q,i)=>{
-    if(ex.type==='quiz'){
-      const ordre = shuffle((q.options||[]).map((_,k)=>k));
-      return h('fieldset',{class:'q',style:'border:none'},
-        h('legend',{class:'q-titre'}, (i+1) + '. ' + q.q),
-        ordre.map(k=> h('label',{class:'opt'},
-          h('input',{type:'radio',name:'q'+i,value:String(k),onchange:()=>{ reponses[i]=k; maj(); }}),
-          h('span',{}, q.options[k]))));
-    }
-    return h('div',{class:'q'},
-      h('div',{class:'q-titre'}, (i+1) + '. ' + q.q),
-      h('div',{class:'field'},
-        h('label',{for:'r'+i},'Ta réponse (' + MIN_CARACTERES_ANALYSE + ' caractères minimum)'),
-        h('textarea',{id:'r'+i,oninput:(ev)=>{ reponses[i]=ev.target.value; maj(); }})));
-  });
-
-  bouton.addEventListener('click', async ()=>{
-    bouton.disabled = true;
-    zoneErreur.replaceChildren();
-    try{
-      if(!estApercu()){
-        const { error } = await sb.from('hlp_tentatives').insert({ eleve_id: profil.id, exercice_id: ex.id, reponses });
-        if(error) throw error;
-      }
-      const { data, error } = await sb.from('hlp_corriges').select('exercice_id, corrige').eq('exercice_id', ex.id);
-      if(error) throw error;
-      const corrige = data && data[0] ? data[0].corrige : null;
-      vueResultat(ex, reponses, corrige);
-    }catch(e){
-      zoneErreur.replaceChildren(h('div',{class:'msg err',role:'alert'}, 'Tes réponses n’ont pas pu être enregistrées. Réessaie dans un instant.'));
-      maj();
-    }
-  });
-
-  show(
-    h('button',{class:'linkbtn back',onclick:retourListe},'← Retour aux exercices'),
-    h('h1',{}, ex.titre),
-    h('p',{class:'sub'}, (ex.type==='quiz' ? 'Quiz' : 'Analyse guidée') + (ex.axe ? ' · ' + ex.axe : '')),
-    ex.consigne && h('p',{class:'consigne'}, ex.consigne),
-    ex.extrait && h('div',{class:'extrait'},
-      paragraphes(ex.extrait).map(p=>h('p',{},p)),
-      ex.source && h('p',{class:'source'}, ex.source)),
-    blocs, zoneErreur, bouton);
-}
-
-function vueResultat(ex, reponses, corrige){
-  const questions = Array.isArray(ex.questions) ? ex.questions : [];
-  const retour = h('div',{class:'actions'},
-    h('button',{class:'btn',onclick:retourListe},'Retour aux exercices'),
-    h('button',{class:'btn ghost',onclick:()=>vueExercice(ex)},'Refaire'));
-
-  if(!corrige){
-    return show(h('h1',{},'Réponses enregistrées'),
-      h('p',{class:'sub'},'Le corrigé de cet exercice n’est pas disponible pour l’instant.'), retour);
-  }
-
-  if(ex.type==='quiz'){
-    const s = scoreQuiz(corrige, reponses);
-    const bonnes = corrige.bonnes || [], expl = corrige.explications || [];
-    return show(
-      h('h1',{}, ex.titre),
-      h('div',{class:'score',role:'status'}, s.ok + ' / ' + s.total),
-      h('p',{class:'sub'}, s.ok === s.total ? 'Sans faute !' : 'Relis les explications ci-dessous.'),
-      questions.map((q,i)=> h('div',{class:'q'},
-        h('div',{class:'q-titre'}, (i+1) + '. ' + q.q),
-        (q.options||[]).map((o,k)=>{
-          const choisie = Number(reponses[i]) === k, juste = Number(bonnes[i]) === k;
-          return h('div',{class:'opt ' + (juste ? 'ok' : (choisie ? 'ko' : ''))},
-            h('span',{}, o),
-            juste && h('span',{class:'tagres'}, '✓ Bonne réponse'),
-            (!juste && choisie) && h('span',{class:'tagres'}, '✗ Ta réponse'));
-        }),
-        expl[i] && h('div',{class:'explain'}, expl[i]))),
-      retour);
-  }
-
-  const cor = corrige.corriges || [];
-  show(
-    h('h1',{}, ex.titre),
-    h('p',{class:'sub'},'Compare ta réponse au corrigé type, puis corrige-toi.'),
-    questions.map((q,i)=> h('div',{class:'q'},
-      h('div',{class:'q-titre'}, (i+1) + '. ' + q.q),
-      h('div',{class:'cmp'},
-        h('div',{class:'mine'}, h('span',{class:'lbl'},'Ta réponse'), reponses[i] || ''),
-        h('div',{class:'ref'}, h('span',{class:'lbl'},'Corrigé type'), cor[i] || '—')))),
-    retour);
 }
 
 demarrer();
