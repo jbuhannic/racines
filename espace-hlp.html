@@ -61,10 +61,30 @@
   .tab[aria-selected="true"]{background:var(--slate-light);color:var(--slate-dark);border-color:var(--slate-light);font-weight:700;}
   .field{margin-bottom:14px;}
   .field label{display:block;font-family:var(--font-title2);font-size:12px;color:var(--ink-soft);margin-bottom:5px;}
-  .field input,.field textarea{width:100%;padding:11px 12px;border-radius:8px;border:1px solid var(--border);
+  .field input,.field textarea,.field select{width:100%;padding:11px 12px;border-radius:8px;border:1px solid var(--border);
     background:var(--bg);font-size:16px;}
   .field textarea{min-height:110px;resize:vertical;line-height:1.5;}
-  .field input:focus,.field textarea:focus{border-color:var(--slate);}
+  .field input:focus,.field textarea:focus,.field select:focus{border-color:var(--slate);}
+  .field input:disabled{opacity:.7;}
+
+  /* --- espace enseignante --- */
+  .toolbar{margin-bottom:16px;}
+  .exo-actions{display:flex;gap:8px;flex-wrap:wrap;}
+  .btn.small{min-height:38px;padding:0 14px;font-size:13px;}
+  .btn.danger{background:var(--ko);}
+  .badge{align-self:flex-start;font-family:var(--font-title2);font-size:12px;}
+  .badge.on{color:var(--ok);} .badge.off{color:var(--ink-soft);}
+  .qcard{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:16px;}
+  .optrow{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+  .optrow input[type=text]{flex:1;padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:var(--bg);font-size:15px;}
+  .filters{display:flex;gap:12px;flex-wrap:wrap;margin:12px 0 18px;}
+  .filters select{padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:var(--surface);font-size:14px;}
+  .tablewrap{overflow-x:auto;}
+  table.res{width:100%;border-collapse:collapse;font-size:14px;}
+  table.res th{font-family:var(--font-title2);font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-soft);text-align:left;padding:8px;border-bottom:1px solid var(--border);}
+  table.res td{padding:10px 8px;border-bottom:1px solid var(--border);vertical-align:top;}
+  .rep{margin:8px 0;white-space:pre-wrap;}
+  details summary{cursor:pointer;color:var(--slate);}
   .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
   .btn{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 22px;border:none;border-radius:10px;
     background:var(--slate-dark);color:#fff;font-family:var(--font-title2);font-weight:700;font-size:15px;cursor:pointer;}
@@ -302,7 +322,8 @@ async function chargerProfil(){
   }
   profil = data;
   entete();
-  if(profil.role === 'prof' || profil.hlp) return vueTableauDeBord();
+  if(profil.role === 'prof') return vueEnseignante();
+  if(profil.hlp) return vueTableauDeBord();
   vueEnAttente();
 }
 
@@ -332,7 +353,10 @@ function vueConnexion(mode = 'connexion', message = null){
   const f = {
     prenom: h('input',{id:'f-prenom',autocomplete:'given-name',required:true}),
     nom:    h('input',{id:'f-nom',autocomplete:'family-name',required:true}),
-    classe: h('input',{id:'f-classe',placeholder:'ex. Terminale',autocomplete:'off'}),
+    classe: h('select',{id:'f-classe',required:true},
+              h('option',{value:''},'Choisis ta classe'),
+              h('option',{value:'1re HLP'},'Première HLP'),
+              h('option',{value:'Tle HLP'},'Terminale HLP')),
     email:  h('input',{id:'f-email',type:'email',autocomplete:'email',required:true}),
   };
   const pwc = champMotDePasse({ id:'f-pw', label: 'Mot de passe' + (insc ? ' (8 caractères minimum)' : ''),
@@ -365,10 +389,11 @@ function vueConnexion(mode = 'connexion', message = null){
       h('button',{class:'tab',role:'tab','aria-selected':String(insc),onclick:()=>vueConnexion('inscription')},'Créer un compte')),
     zoneMsg, form,
     insc
-      ? h('p',{class:'hint'}, 'Après ton inscription, ton enseignante doit activer ton accès HLP.')
-      : (CONFIG.reinitialisationParEmail === true
+      ? h('p',{class:'hint'}, 'Après ton inscription, ton enseignante doit activer ton accès HLP. ', h('a',{href:'mentions.html#donnees'},'Comment sont utilisées tes données ?'))
+      : ((CONFIG.reinitialisationParEmail === true || location.hash === '#reinit')
           ? h('button',{class:'linkbtn',type:'button',onclick:()=>vueMotDePasseOublie()}, 'Mot de passe oublié ?')
-          : h('p',{class:'hint'}, 'Mot de passe oublié ? Demande à ton enseignante de le réinitialiser.'))));
+          : h('p',{class:'hint'}, 'Mot de passe oublié ? Demande à ton enseignante de le réinitialiser.')),
+    h('p',{class:'hint'}, h('a',{href:'mentions.html#donnees'}, 'Informations sur tes données personnelles'))));
 }
 
 async function connexion(f){
@@ -482,6 +507,303 @@ function vueNouveauMotDePasse(){
     h('p',{class:'sub'},'Choisis un nouveau mot de passe, puis saisis-le une seconde fois pour vérifier.'),
     zoneMsg, form,
     h('button',{class:'linkbtn',type:'button',onclick:()=>{ enRecuperation = false; nettoyerUrl(); deconnexion(); }},'Annuler')));
+}
+
+/* =====================================================================
+   ESPACE ENSEIGNANTE : dépôt d'exercices et résultats
+   ===================================================================== */
+const LIB_NIVEAU = { '1re':'Première', 'tle':'Terminale', 'tous':'Première et Terminale' };
+let flash = null;
+
+function retourListe(){ return (profil && profil.role === 'prof') ? vueEnseignante() : vueTableauDeBord(); }
+function fmtDateHeure(iso){
+  try{ return new Date(iso).toLocaleString('fr-FR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}); }catch(e){ return ''; }
+}
+
+function cadreEnseignante(onglet, ...contenu){
+  const msg = flash; flash = null;
+  show(
+    h('h1',{},'Espace enseignante'),
+    h('p',{class:'sub'},'Dépose tes exercices et suis les résultats de tes élèves.'),
+    h('div',{class:'tabs',role:'tablist'},
+      h('button',{class:'tab',role:'tab','aria-selected':String(onglet==='exercices'),onclick:()=>vueEnseignante('exercices')},'Exercices'),
+      h('button',{class:'tab',role:'tab','aria-selected':String(onglet==='resultats'),onclick:()=>vueEnseignante('resultats')},'Résultats')),
+    msg && h('div',{class:'msg info',role:'status'}, msg),
+    contenu);
+}
+
+async function vueEnseignante(onglet = 'exercices'){
+  show(h('p',{class:'empty'},'Chargement…'));
+  try{
+    if(onglet === 'resultats') await ongletResultats(); else await ongletExercices();
+  }catch(e){
+    cadreEnseignante(onglet,
+      h('div',{class:'msg err',role:'alert'},'Impossible de charger les données. Si tu viens de mettre à jour le site, vérifie que le script supabase-niveaux.sql a bien été exécuté dans Supabase.'),
+      h('button',{class:'btn ghost',onclick:()=>vueEnseignante(onglet)},'Réessayer'));
+  }
+}
+
+/* ---------- onglet « Exercices » ---------- */
+async function ongletExercices(){
+  const { data, error } = await sb.from('hlp_exercices').select('*').order('ordre',{ascending:true});
+  if(error) throw error;
+  const exos = data || [];
+  let aSupprimer = null;
+  const liste = h('div',{});
+
+  async function basculer(ex){
+    const { error } = await sb.from('hlp_exercices').update({ publie: !ex.publie }).eq('id', ex.id);
+    flash = error ? 'La modification a échoué.' : (ex.publie ? 'Exercice masqué : les élèves ne le voient plus.' : 'Exercice publié : les élèves concernés le voient maintenant.');
+    vueEnseignante('exercices');
+  }
+  async function supprimer(ex){
+    const { error } = await sb.from('hlp_exercices').delete().eq('id', ex.id);
+    flash = error ? 'La suppression a échoué.' : 'Exercice supprimé.';
+    vueEnseignante('exercices');
+  }
+  function ligne(ex){
+    if(aSupprimer === ex.id){
+      return h('div',{class:'exo'},
+        h('div',{class:'exo-main'},
+          h('span',{class:'exo-titre'}, 'Supprimer « ' + ex.titre + ' » ?'),
+          h('span',{class:'exo-etat'},'Les réponses déjà enregistrées par les élèves pour cet exercice seront supprimées aussi.')),
+        h('div',{class:'exo-actions'},
+          h('button',{class:'btn danger small',onclick:()=>supprimer(ex)},'Oui, supprimer'),
+          h('button',{class:'btn ghost small',onclick:()=>{ aSupprimer = null; dessiner(); }},'Annuler')));
+    }
+    return h('div',{class:'exo'},
+      h('div',{class:'exo-main'},
+        h('span',{class:'tag'}, (ex.type==='quiz' ? 'Quiz' : 'Analyse') + ' · ' + (LIB_NIVEAU[ex.niveau] || 'Tous niveaux') + (ex.axe ? ' · ' + ex.axe : '')),
+        h('span',{class:'exo-titre'}, ex.titre),
+        h('span',{class:'badge ' + (ex.publie ? 'on' : 'off')}, ex.publie ? 'Publié' : 'Brouillon : invisible pour les élèves')),
+      h('div',{class:'exo-actions'},
+        h('button',{class:'btn small',onclick:()=>basculer(ex)}, ex.publie ? 'Masquer' : 'Publier'),
+        h('button',{class:'btn ghost small',onclick:()=>vueEditeur(ex)},'Modifier'),
+        h('button',{class:'btn ghost small',onclick:()=>vueExercice(ex)},'Aperçu'),
+        h('button',{class:'btn ghost small',onclick:()=>{ aSupprimer = ex.id; dessiner(); }},'Supprimer')));
+  }
+  function dessiner(){
+    liste.replaceChildren(...(exos.length ? exos.map(ligne)
+      : [h('p',{class:'empty'},'Aucun exercice pour le moment. Crée le premier avec « Nouvel exercice ».')]));
+  }
+  dessiner();
+  cadreEnseignante('exercices',
+    h('div',{class:'toolbar'}, h('button',{class:'btn',onclick:()=>vueEditeur(null)},'+ Nouvel exercice')),
+    liste);
+}
+
+/* ---------- formulaire de création / modification ---------- */
+function nouvelleQuestion(type){
+  return { q:'', options: type === 'quiz' ? ['','','',''] : [], correcte:0, explication:'', corrige:'' };
+}
+
+async function vueEditeur(ex){
+  show(h('p',{class:'empty'},'Chargement…'));
+  let corrige = {}, ordreSuivant = 1;
+  if(ex){
+    const { data, error } = await sb.from('hlp_corriges').select('corrige').eq('exercice_id', ex.id);
+    if(error){ flash = 'Impossible de charger le corrigé de cet exercice.'; return vueEnseignante('exercices'); }
+    corrige = (data && data[0] && data[0].corrige) || {};
+  } else {
+    const { data } = await sb.from('hlp_exercices').select('ordre').order('ordre',{ascending:false});
+    ordreSuivant = ((data && data[0] && data[0].ordre) || 0) + 1;
+  }
+
+  const form = {
+    id: ex ? ex.id : null,
+    type: ex ? ex.type : 'quiz',
+    niveau: ex ? (ex.niveau || 'tous') : 'tous',
+    axe: ex ? (ex.axe || '') : '',
+    titre: ex ? ex.titre : '',
+    consigne: ex ? (ex.consigne || '') : '',
+    extrait: ex ? (ex.extrait || '') : '',
+    source: ex ? (ex.source || '') : '',
+    ordre: ex ? (ex.ordre || 0) : ordreSuivant,
+    publie: ex ? !!ex.publie : false,
+    questions: []
+  };
+  const qs = ex && Array.isArray(ex.questions) ? ex.questions : [];
+  form.questions = qs.map((q,i)=>({
+    q: q.q || '',
+    options: Array.isArray(q.options) ? q.options.slice() : [],
+    correcte: Number((corrige.bonnes || [])[i]) || 0,
+    explication: (corrige.explications || [])[i] || '',
+    corrige: (corrige.corriges || [])[i] || ''
+  }));
+  if(!form.questions.length) form.questions.push(nouvelleQuestion(form.type));
+
+  const zone = h('div',{});
+  const zoneErreur = h('div',{});
+  const bouton = h('button',{class:'btn',type:'button'},'Enregistrer');
+  const erreur = (texte)=> zoneErreur.replaceChildren(...(texte ? [h('div',{class:'msg err',role:'alert'}, texte)] : []));
+  const champ = (label, id, noeud)=> h('div',{class:'field'}, h('label',{for:id}, label), noeud);
+
+  function carteQuestion(q, i){
+    const retirerQuestion = form.questions.length > 1
+      ? h('button',{class:'linkbtn',type:'button',onclick:()=>{ form.questions.splice(i,1); dessiner(); }},'Supprimer cette question') : null;
+    const enonce = champ('Question ' + (i+1), 'q'+i, h('textarea',{id:'q'+i,oninput:(ev)=>{ q.q = ev.target.value; }}, q.q));
+    if(form.type === 'quiz'){
+      return h('div',{class:'qcard'}, enonce,
+        h('div',{class:'q-titre'},'Réponses proposées : coche la bonne'),
+        q.options.map((o,k)=> h('div',{class:'optrow'},
+          h('input',{type:'radio',name:'bonne'+i,'aria-label':'Bonne réponse : option '+(k+1),checked: q.correcte === k,onchange:()=>{ q.correcte = k; }}),
+          h('input',{type:'text','aria-label':'Option '+(k+1),value:o,oninput:(ev)=>{ q.options[k] = ev.target.value; }}),
+          q.options.length > 2
+            ? h('button',{class:'linkbtn',type:'button','aria-label':'Retirer l’option '+(k+1),onclick:()=>{
+                q.options.splice(k,1);
+                if(q.correcte === k) q.correcte = 0; else if(q.correcte > k) q.correcte--;
+                dessiner(); }},'Retirer') : null)),
+        q.options.length < 6 ? h('button',{class:'linkbtn',type:'button',onclick:()=>{ q.options.push(''); dessiner(); }},'+ Ajouter une réponse') : null,
+        champ('Explication affichée après la réponse', 'x'+i, h('textarea',{id:'x'+i,oninput:(ev)=>{ q.explication = ev.target.value; }}, q.explication)),
+        retirerQuestion);
+    }
+    return h('div',{class:'qcard'}, enonce,
+      champ('Corrigé type, affiché à l’élève après sa réponse', 'c'+i, h('textarea',{id:'c'+i,oninput:(ev)=>{ q.corrige = ev.target.value; }}, q.corrige)),
+      retirerQuestion);
+  }
+
+  function dessiner(){
+    zone.replaceChildren(...[
+      h('div',{class:'row2'},
+        champ('Type d’exercice','e-type', ex
+          ? h('input',{id:'e-type',value: form.type === 'quiz' ? 'Quiz (QCM)' : 'Analyse guidée',disabled:true})
+          : h('select',{id:'e-type',onchange:(ev)=>{
+              form.type = ev.target.value;
+              form.questions = form.questions.map(q=>({ ...nouvelleQuestion(form.type), q: q.q }));
+              dessiner(); }},
+              h('option',{value:'quiz',selected: form.type === 'quiz'},'Quiz (QCM)'),
+              h('option',{value:'analyse',selected: form.type === 'analyse'},'Analyse guidée d’un extrait'))),
+        champ('Classes concernées','e-niveau',
+          h('select',{id:'e-niveau',onchange:(ev)=>{ form.niveau = ev.target.value; }},
+            ['1re','tle','tous'].map(v=> h('option',{value:v,selected: form.niveau === v}, LIB_NIVEAU[v]))))),
+      h('div',{class:'row2'},
+        champ('Titre','e-titre', h('input',{id:'e-titre',value:form.titre,oninput:(ev)=>{ form.titre = ev.target.value; }})),
+        champ('Axe ou séquence (facultatif)','e-axe', h('input',{id:'e-axe',value:form.axe,oninput:(ev)=>{ form.axe = ev.target.value; }}))),
+      champ('Consigne (facultatif)','e-consigne', h('textarea',{id:'e-consigne',oninput:(ev)=>{ form.consigne = ev.target.value; }}, form.consigne)),
+      form.type === 'analyse' && champ('Extrait à analyser','e-extrait', h('textarea',{id:'e-extrait',style:'min-height:180px',oninput:(ev)=>{ form.extrait = ev.target.value; }}, form.extrait)),
+      form.type === 'analyse' && champ('Source de l’extrait (auteur, œuvre, date)','e-source', h('input',{id:'e-source',value:form.source,oninput:(ev)=>{ form.source = ev.target.value; }})),
+      h('h2',{},'Questions'),
+      form.questions.map(carteQuestion),
+      h('button',{class:'btn ghost',type:'button',onclick:()=>{ form.questions.push(nouvelleQuestion(form.type)); dessiner(); }},'+ Ajouter une question'),
+      h('h2',{},'Publication'),
+      h('div',{class:'row2'},
+        champ('Place dans la liste (1, 2, 3…)','e-ordre', h('input',{id:'e-ordre',type:'number',value:String(form.ordre),oninput:(ev)=>{ form.ordre = ev.target.value; }}))),
+      h('label',{class:'opt'},
+        h('input',{type:'checkbox',id:'e-publie',checked: form.publie,onchange:(ev)=>{ form.publie = ev.target.checked; }}),
+        h('span',{},'Publié : visible par les élèves des classes concernées'))
+    ].flat().filter(Boolean));
+  }
+
+  function valider(){
+    if(!form.titre.trim()) return 'Donne un titre à l’exercice.';
+    for(let i = 0; i < form.questions.length; i++){
+      const q = form.questions[i], n = i + 1;
+      if(!q.q.trim()) return 'La question ' + n + ' est vide.';
+      if(form.type === 'quiz'){
+        if(q.options.length < 2) return 'Question ' + n + ' : propose au moins deux réponses.';
+        if(q.options.some(o => !o.trim())) return 'Question ' + n + ' : complète ou retire les réponses vides.';
+      }
+    }
+    return null;
+  }
+
+  bouton.addEventListener('click', async ()=>{
+    const msg = valider();
+    if(msg) return erreur(msg);
+    erreur(null);
+    bouton.disabled = true;
+    const quiz = form.type === 'quiz';
+    const fiche = {
+      type: form.type, niveau: form.niveau, axe: form.axe.trim(), titre: form.titre.trim(), consigne: form.consigne.trim(),
+      extrait: quiz ? '' : form.extrait, source: quiz ? '' : form.source.trim(),
+      ordre: Number(form.ordre) || 0, publie: form.publie,
+      questions: form.questions.map(q => quiz ? { q: q.q.trim(), options: q.options.map(o => o.trim()) } : { q: q.q.trim() })
+    };
+    const corrigeJson = quiz
+      ? { bonnes: form.questions.map(q => q.correcte), explications: form.questions.map(q => q.explication.trim()) }
+      : { corriges: form.questions.map(q => q.corrige.trim()) };
+    try{
+      if(!form.id){
+        const { data, error } = await sb.from('hlp_exercices').insert(fiche).select('id').single();
+        if(error) throw error;
+        form.id = data.id;
+      } else {
+        const { error } = await sb.from('hlp_exercices').update(fiche).eq('id', form.id);
+        if(error) throw error;
+      }
+      const { error: e2 } = await sb.from('hlp_corriges').upsert({ exercice_id: form.id, corrige: corrigeJson }, { onConflict: 'exercice_id' });
+      if(e2) throw e2;
+      flash = 'Exercice enregistré' + (form.publie ? ' et visible par les élèves concernés.' : ' en brouillon : les élèves ne le voient pas tant que tu ne le publies pas.');
+      vueEnseignante('exercices');
+    }catch(e){
+      erreur('L’enregistrement a échoué. Vérifie ta connexion, et que le script supabase-niveaux.sql a bien été exécuté dans Supabase.');
+      bouton.disabled = false;
+    }
+  });
+
+  dessiner();
+  show(
+    h('button',{class:'linkbtn back',onclick:()=>vueEnseignante('exercices')},'← Retour aux exercices'),
+    h('h1',{}, ex ? 'Modifier l’exercice' : 'Nouvel exercice'),
+    zone, zoneErreur,
+    h('div',{class:'actions'}, bouton, h('button',{class:'btn ghost',type:'button',onclick:()=>vueEnseignante('exercices')},'Annuler')));
+}
+
+/* ---------- onglet « Résultats » ---------- */
+async function ongletResultats(){
+  const [ex, te, pr, co] = await Promise.all([
+    sb.from('hlp_exercices').select('*').order('ordre',{ascending:true}),
+    sb.from('hlp_tentatives').select('*').order('created_at',{ascending:false}),
+    sb.from('profiles').select('id, prenom, nom, classe, role, hlp, niveau_hlp'),
+    sb.from('hlp_corriges').select('exercice_id, corrige')
+  ]);
+  const err = ex.error || te.error || pr.error || co.error;
+  if(err) throw err;
+  const exos = ex.data || [], tent = te.data || [], profs = pr.data || [], cors = co.data || [];
+  const eleve = {}; profs.forEach(p => eleve[p.id] = p);
+  const exoPar = {}; exos.forEach(e => exoPar[e.id] = e);
+  const corPar = {}; cors.forEach(c => corPar[c.exercice_id] = c.corrige);
+  const actifs = profs.filter(p => p.role === 'eleve' && p.hlp);
+  const ontFait = new Set(tent.map(t => t.eleve_id));
+  const sansRien = actifs.filter(p => !ontFait.has(p.id));
+  let fExo = '', fNiv = '';
+  const zoneTable = h('div',{class:'tablewrap'});
+
+  function dessinerTable(){
+    const lignes = tent.filter(t=>{
+      const p = eleve[t.eleve_id]; if(!p) return false;
+      if(fExo && t.exercice_id !== fExo) return false;
+      if(fNiv && p.niveau_hlp !== fNiv) return false;
+      return true;
+    });
+    if(!lignes.length){ zoneTable.replaceChildren(h('p',{class:'empty'},'Aucun résultat pour le moment.')); return; }
+    zoneTable.replaceChildren(h('table',{class:'res'},
+      h('thead',{}, h('tr',{}, ['Élève','Classe','Exercice','Date','Résultat'].map(c => h('th',{},c)))),
+      h('tbody',{}, lignes.map(t=>{
+        const p = eleve[t.eleve_id], e = exoPar[t.exercice_id];
+        let res = '—';
+        if(e && e.type === 'quiz' && corPar[e.id]){ const s = scoreQuiz(corPar[e.id], t.reponses); res = s.ok + ' / ' + s.total; }
+        else if(e && e.type === 'analyse'){
+          res = h('details',{}, h('summary',{},'Voir les réponses'),
+            (e.questions || []).map((q,i)=> h('div',{class:'rep'}, h('strong',{}, (i+1) + '. ' + q.q), h('div',{}, (t.reponses || {})[i] || '—'))));
+        }
+        return h('tr',{},
+          h('td',{}, p.nom + ' ' + p.prenom), h('td',{}, p.classe || ''),
+          h('td',{}, e ? e.titre : '(exercice supprimé)'), h('td',{}, fmtDateHeure(t.created_at)), h('td',{}, res));
+      }))));
+  }
+  dessinerTable();
+
+  cadreEnseignante('resultats',
+    h('p',{class:'sub'}, actifs.length + ' élève' + (actifs.length > 1 ? 's' : '') + ' avec l’accès HLP · ' + (actifs.length - sansRien.length) + ' ont fait au moins un exercice.'),
+    sansRien.length ? h('details',{}, h('summary',{}, 'Qui n’a encore rien fait ? (' + sansRien.length + ')'),
+      h('p',{class:'sub'}, sansRien.map(p => p.prenom + ' ' + p.nom + (p.classe ? ' (' + p.classe + ')' : '')).join(', '))) : null,
+    h('div',{class:'filters'},
+      h('select',{id:'f-exo','aria-label':'Filtrer par exercice',onchange:(ev)=>{ fExo = ev.target.value; dessinerTable(); }},
+        h('option',{value:''},'Tous les exercices'), exos.map(e => h('option',{value:e.id}, e.titre))),
+      h('select',{id:'f-niv','aria-label':'Filtrer par niveau',onchange:(ev)=>{ fNiv = ev.target.value; dessinerTable(); }},
+        h('option',{value:''},'Première et Terminale'), h('option',{value:'1re'},'Première'), h('option',{value:'tle'},'Terminale'))),
+    zoneTable);
 }
 
 /* =====================================================================
@@ -625,7 +947,7 @@ function vueExercice(ex){
   });
 
   show(
-    h('button',{class:'linkbtn back',onclick:vueTableauDeBord},'← Retour aux exercices'),
+    h('button',{class:'linkbtn back',onclick:retourListe},'← Retour aux exercices'),
     h('h1',{}, ex.titre),
     h('p',{class:'sub'}, (ex.type==='quiz' ? 'Quiz' : 'Analyse guidée') + (ex.axe ? ' · ' + ex.axe : '')),
     ex.consigne && h('p',{class:'consigne'}, ex.consigne),
@@ -638,7 +960,7 @@ function vueExercice(ex){
 function vueResultat(ex, reponses, corrige){
   const questions = Array.isArray(ex.questions) ? ex.questions : [];
   const retour = h('div',{class:'actions'},
-    h('button',{class:'btn',onclick:vueTableauDeBord},'Retour aux exercices'),
+    h('button',{class:'btn',onclick:retourListe},'Retour aux exercices'),
     h('button',{class:'btn ghost',onclick:()=>vueExercice(ex)},'Refaire'));
 
   if(!corrige){
