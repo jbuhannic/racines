@@ -366,7 +366,9 @@ function vueConnexion(mode = 'connexion', message = null){
     zoneMsg, form,
     insc
       ? h('p',{class:'hint'}, 'Après ton inscription, ton enseignante doit activer ton accès HLP.')
-      : h('button',{class:'linkbtn',type:'button',onclick:()=>vueMotDePasseOublie()}, 'Mot de passe oublié ?')));
+      : (CONFIG.reinitialisationParEmail === true
+          ? h('button',{class:'linkbtn',type:'button',onclick:()=>vueMotDePasseOublie()}, 'Mot de passe oublié ?')
+          : h('p',{class:'hint'}, 'Mot de passe oublié ? Demande à ton enseignante de le réinitialiser.'))));
 }
 
 async function connexion(f){
