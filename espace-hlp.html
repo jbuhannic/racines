@@ -849,11 +849,41 @@ TYPES.analyse = {
   }
 };
 
-/* ---------- Liste à relier ---------- */
+/* ---------- Liste à relier : plusieurs éléments de droite par catégorie de gauche ---------- */
+function creerRelierMulti(G, D, maj){
+  const place = D.map(()=>null);   // place[j] = indice de la catégorie de gauche, ou null
+  let sel = null;
+  const zone = h('div',{class:'relier'});
+  function dessiner(){
+    zone.replaceChildren(
+      h('div',{class:'rcol'}, G.map((g,i)=>{
+        const mes = D.filter((d,j)=> place[j] === i);
+        return h('button',{type:'button',class:'ritem' + (sel === i ? ' sel' : '') + (mes.length ? ' lie' : ''),
+          'aria-pressed':String(sel === i), onclick:()=>{ sel = (sel === i ? null : i); dessiner(); }},
+          h('span',{}, (i+1) + '. ' + g),
+          mes.length ? h('span',{class:'lien'}, '→ ' + mes.join(' · ')) : null);
+      })),
+      h('div',{class:'rcol'}, D.map((d,j)=>{
+        const k = place[j];
+        return h('button',{type:'button',class:'ritem' + (k != null ? ' lie utilise' : ''),onclick:()=>{
+          if(sel == null){ if(k != null){ place[j] = null; } }
+          else { place[j] = (k === sel ? null : sel); }
+          dessiner(); maj();
+        }}, k != null ? h('span',{class:'num'}, '(' + (k+1) + ')') : null, h('span',{}, d));
+      })));
+  }
+  dessiner();
+  return {
+    noeuds:[h('p',{class:'consigne'},'Chaque catégorie de gauche peut recevoir plusieurs éléments. Touche une catégorie, puis touche tous les éléments de droite qui lui correspondent (un deuxième clic sur un élément le retire). Change de catégorie quand tu as fini.'), zone],
+    pret:()=> G.length > 0 && G.every((g,i)=> place.includes(i)),
+    reponses:()=>({ multi:true, groupes: G.map((g,i)=> D.filter((d,j)=> place[j] === i)) })
+  };
+}
 TYPES.relier = {
   libelle:'Liste à relier', court:'À relier', sousTitre:'Liste à relier', auto:true, bouton:'Valider mes liens',
   creer(ex, maj){
     const q = motsDe(ex), G = q.gauche || [], D = q.droite || [];
+    if(q.multi) return creerRelierMulti(G, D, maj);
     const liens = G.map(()=>null);
     let sel = null;
     const zone = h('div',{class:'relier'});
@@ -888,12 +918,37 @@ TYPES.relier = {
     };
   },
   score(ex, corrige, reponses){
+    if(corrige.groupes){
+      const att = corrige.groupes, rep = reponses.groupes || [];
+      let ok = 0, total = 0;
+      att.forEach((liste,i)=>{
+        const donnes = (rep[i] || []).map(x => normReponse(x, true));
+        liste.forEach(r => { total++; if(donnes.includes(normReponse(r, true))) ok++; });
+      });
+      return { ok, total };
+    }
     const attendu = corrige.paires || [], liens = reponses.liens || [];
     return { ok: attendu.filter((texte,i)=> liens[i] != null && normReponse(liens[i], true) === normReponse(texte, true)).length, total: attendu.length };
   },
   resultat(ex, corrige, reponses){
     const q = motsDe(ex), G = q.gauche || [], attendu = corrige.paires || [], liens = reponses.liens || [];
     const s = this.score(ex, corrige, reponses);
+    if(corrige.groupes){
+      return {
+        sous: s.ok === s.total ? 'Tout est bien rangé !' : 'Regarde les catégories à corriger.',
+        noeuds: [h('div',{class:'q'}, G.map((g,i)=>{
+          const att = corrige.groupes[i] || [], donnes = (reponses.groupes || [])[i] || [];
+          const nAtt = att.map(x => normReponse(x, true)), nDon = donnes.map(x => normReponse(x, true));
+          const manquants = att.filter(x => !nDon.includes(normReponse(x, true)));
+          const intrus = donnes.filter(x => !nAtt.includes(normReponse(x, true)));
+          const juste = !manquants.length && !intrus.length;
+          return h('div',{class:'opt ' + (juste ? 'ok' : 'ko')},
+            h('span',{}, (i+1) + '. ' + g + ' → ' + (donnes.length ? donnes.join(' · ') : '(rien)')
+              + (juste ? '' : '   ·   attendu : ' + att.join(' · '))),
+            h('span',{class:'tagres'}, juste ? '✓' : '✗'));
+        }))]
+      };
+    }
     return {
       sous: s.ok === s.total ? 'Tous les liens sont justes !' : 'Regarde les liens à corriger.',
       noeuds: [h('div',{class:'q'}, G.map((g,i)=>{
@@ -1348,6 +1403,18 @@ async function vueEnseignante(onglet = 'exercices'){
 }
 
 /* ---------- onglet « Exercices » ---------- */
+let filtreExercices = '';   // '', 'niv:1re', 'niv:tle' ou 'grp:THLP'…
+function exerciceConcerne(ex, filtre){
+  if(!filtre) return true;
+  const gr = Array.isArray(ex.groupes) ? ex.groupes : [];
+  const niv = ex.niveau || 'tous';
+  if(filtre.startsWith('niv:')){
+    const n = filtre.slice(4), liste = n === '1re' ? GROUPES['Première'] : GROUPES['Terminale'];
+    return (niv === 'tous' || niv === n) && (!gr.length || gr.some(g => liste.includes(g)));
+  }
+  const g = filtre.slice(4), n = GROUPES['Première'].includes(g) ? '1re' : 'tle';
+  return gr.length ? gr.includes(g) : (niv === 'tous' || niv === n);
+}
 async function ongletExercices(){
   const { data, error } = await sb.from('hlp_exercices').select('*').order('ordre',{ascending:true});
   if(error) throw error;
@@ -1388,12 +1455,18 @@ async function ongletExercices(){
         h('button',{class:'btn ghost small',onclick:()=>{ aSupprimer = ex.id; dessiner(); }},'Supprimer')));
   }
   function dessiner(){
-    liste.replaceChildren(...(exos.length ? exos.map(ligne)
-      : [h('p',{class:'empty'},'Aucun exercice pour le moment. Crée le premier avec « Nouvel exercice ».')]));
+    const vus = exos.filter(e => exerciceConcerne(e, filtreExercices));
+    liste.replaceChildren(...(vus.length ? vus.map(ligne)
+      : [h('p',{class:'empty'}, exos.length ? 'Aucun exercice pour ce filtre.' : 'Aucun exercice pour le moment. Crée le premier avec « Nouvel exercice ».')]));
   }
   dessiner();
   cadreEnseignante('exercices',
-    h('div',{class:'toolbar'}, h('button',{class:'btn',onclick:()=>vueEditeur(null)},'+ Nouvel exercice')),
+    h('div',{class:'toolbar'}, h('button',{class:'btn',onclick:()=>vueEditeur(null)},'+ Nouvel exercice'),
+      h('select',{id:'f-exos','aria-label':'Afficher les exercices d’un niveau ou d’un groupe',onchange:(ev)=>{ filtreExercices = ev.target.value; dessiner(); }},
+        h('option',{value:''},'Tous les exercices'),
+        h('option',{value:'niv:1re',selected: filtreExercices === 'niv:1re'},'Première (tous groupes)'),
+        h('option',{value:'niv:tle',selected: filtreExercices === 'niv:tle'},'Terminale (THLP)'),
+        [].concat(GROUPES['Première'], GROUPES['Terminale']).map(g => h('option',{value:'grp:'+g,selected: filtreExercices === 'grp:'+g}, 'Groupe ' + g)))),
     liste);
 }
 
@@ -1505,6 +1578,11 @@ EDITEURS.relier = {
   init(ex, corrige){
     if(!ex) return { paires:'', leurres:'' };
     const q = ex.questions || {}, G = q.gauche || [], D = q.droite || [], P = corrige.paires || [];
+    if(corrige.groupes){
+      const lignes = [], pris = new Set();
+      G.forEach((g,i)=> (corrige.groupes[i] || []).forEach(r => { lignes.push(g + ' | ' + r); pris.add(r); }));
+      return { paires: lignes.join('\n'), leurres: D.filter(d => !pris.has(d)).join('\n') };
+    }
     const utilises = new Set(P);
     return { paires: G.map((g,i)=> g + ' | ' + P[i]).join('\n'), leurres: D.filter(d => !utilises.has(d)).join('\n') };
   },
@@ -1514,19 +1592,32 @@ EDITEURS.relier = {
         h('textarea',{id:'e-paires',style:'min-height:150px',placeholder:'Balzac | Le Père Goriot\nFlaubert | Madame Bovary\nZola | Germinal',oninput:(ev)=>{ etat.paires = ev.target.value; }}, etat.paires)),
       champ('Éléments en trop à droite, sans correspondant (facultatif, un par ligne)','e-leurres',
         h('textarea',{id:'e-leurres',placeholder:'Stendhal',oninput:(ev)=>{ etat.leurres = ev.target.value; }}, etat.leurres)),
-      h('p',{class:'hint'},'L’ordre de la colonne de droite est mélangé automatiquement : l’élève ne peut pas deviner les paires.')
+      h('p',{class:'hint'},'L’ordre de la colonne de droite est mélangé automatiquement : l’élève ne peut pas deviner les paires.'),
+      h('p',{class:'hint'},'Pour ranger plusieurs éléments dans une même catégorie, répète la catégorie de gauche sur plusieurs lignes (exemple : « Mammifères | chat » puis « Mammifères | baleine »). Chaque élément de droite doit rester unique.')
     ];
   },
   valider(etat){
     const r = lirePaires(etat.paires);
     if(r.erreur) return r.erreur;
     if(r.paires.length < 2) return 'Saisis au moins deux paires.';
+    if(new Set(r.paires.map(p => normReponse(p[0], true))).size < 2) return 'Il faut au moins deux catégories différentes à gauche.';
     const droite = r.paires.map(p => p[1]).concat(lignesNonVides(etat.leurres));
     if(new Set(droite.map(d => normReponse(d, true))).size !== droite.length) return 'Deux éléments de droite sont identiques : chacun doit être unique.';
     return null;
   },
   serialiser(etat){
     const { paires } = lirePaires(etat.paires);
+    const cle = (x) => normReponse(x, true);
+    const gauches = [];
+    paires.forEach(p => { if(!gauches.some(g => cle(g) === cle(p[0]))) gauches.push(p[0]); });
+    if(gauches.length < paires.length){
+      const groupes = gauches.map(g => paires.filter(p => cle(p[0]) === cle(g)).map(p => p[1]));
+      return {
+        questions: { multi:true, gauche: gauches, droite: melanger(paires.map(p => p[1]).concat(lignesNonVides(etat.leurres))) },
+        corrige: { groupes },
+        colonnes: {}
+      };
+    }
     const droiteOrdre = melanger(paires.map(p => p[1]).concat(lignesNonVides(etat.leurres)));
     return {
       questions: { gauche: paires.map(p => p[0]), droite: droiteOrdre },
