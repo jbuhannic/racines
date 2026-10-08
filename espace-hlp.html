@@ -1862,9 +1862,21 @@ async function ongletResultats(){
   const exoPar = {}; exos.forEach(e => exoPar[e.id] = e);
   const corPar = {}; cors.forEach(c => corPar[c.exercice_id] = c.corrige);
   const actifs = profs.filter(p => p.role === 'eleve' && p.hlp);
-  const groupes = [...new Set(actifs.map(p => (p.classe || '').trim()).filter(Boolean))]
+  const officiels = [].concat(GROUPES['Première'], GROUPES['Terminale']);
+  const autres = [...new Set(actifs.map(p => (p.classe || '').trim()).filter(c => c && !officiels.includes(c)))]
     .sort((a,b) => a.localeCompare(b, 'fr', {numeric:true}));
+  function optionsGroupes(){
+    const base = fNiv === '1re' ? GROUPES['Première'] : fNiv === 'tle' ? GROUPES['Terminale'] : officiels;
+    return [h('option',{value:''},'Tous les groupes')]
+      .concat(base.map(g => h('option',{value:g,selected: fGrp === g}, g)))
+      .concat(autres.map(g => h('option',{value:g,selected: fGrp === g}, g + ' (à renommer)')));
+  }
+  function majMenuGroupes(){
+    if(fGrp && !optionsGroupes().some(o => o.value === fGrp)) fGrp = '';
+    selGrp.replaceChildren(...optionsGroupes());
+  }
   let fExo = '', fNiv = '', fGrp = '';
+  const selGrp = h('select',{id:'f-grp','aria-label':'Filtrer par groupe',onchange:(ev)=>{ fGrp = ev.target.value; tout(); }});
   const zoneTable = h('div',{class:'tablewrap'});
   const zoneResume = h('div',{});
   const garde = (p) => (!fNiv || p.niveau_hlp === fNiv) && (!fGrp || (p.classe || '').trim() === fGrp);
@@ -1910,11 +1922,11 @@ async function ongletResultats(){
     h('div',{class:'filters'},
       h('select',{id:'f-exo','aria-label':'Filtrer par exercice',onchange:(ev)=>{ fExo = ev.target.value; tout(); }},
         h('option',{value:''},'Tous les exercices'), exos.map(e => h('option',{value:e.id}, e.titre))),
-      h('select',{id:'f-niv','aria-label':'Filtrer par niveau',onchange:(ev)=>{ fNiv = ev.target.value; tout(); }},
+      h('select',{id:'f-niv','aria-label':'Filtrer par niveau',onchange:(ev)=>{ fNiv = ev.target.value; majMenuGroupes(); tout(); }},
         h('option',{value:''},'Première et Terminale'), h('option',{value:'1re'},'Première'), h('option',{value:'tle'},'Terminale')),
-      h('select',{id:'f-grp','aria-label':'Filtrer par groupe',onchange:(ev)=>{ fGrp = ev.target.value; tout(); }},
-        h('option',{value:''},'Tous les groupes'), groupes.map(g => h('option',{value:g}, g)))),
+      selGrp),
     zoneTable);
+  majMenuGroupes();
 }
 
 demarrer();
