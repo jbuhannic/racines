@@ -210,6 +210,8 @@ const SUPABASE_KEY = CONFIG.key || '';
 /* ===================================================================== */
 
 const MIN_CARACTERES_ANALYSE = 15;
+/* Groupes proposés à l'inscription (modifiables ici) */
+const GROUPES = { 'Première': ['1HLP1','1HLP2','1HLP3'], 'Terminale': ['THLP'] };
 
 /* ---------- petits outils ---------- */
 function h(tag, props, ...kids){
@@ -398,9 +400,8 @@ function vueConnexion(mode = 'connexion', message = null){
     prenom: h('input',{id:'f-prenom',autocomplete:'given-name',required:true}),
     nom:    h('input',{id:'f-nom',autocomplete:'family-name',required:true}),
     classe: h('select',{id:'f-classe',required:true},
-              h('option',{value:''},'Choisis ta classe'),
-              h('option',{value:'1re HLP'},'Première HLP'),
-              h('option',{value:'Tle HLP'},'Terminale HLP')),
+              h('option',{value:''},'Choisis ton groupe'),
+              Object.keys(GROUPES).map(niv => h('optgroup',{label:niv}, GROUPES[niv].map(g => h('option',{value:g}, g))))),
     email:  h('input',{id:'f-email',type:'email',autocomplete:'email',required:true}),
   };
   const pwc = champMotDePasse({ id:'f-pw', label: 'Mot de passe' + (insc ? ' (8 caractères minimum)' : ''),
@@ -420,7 +421,7 @@ function vueConnexion(mode = 'connexion', message = null){
     insc && h('div',{class:'row2'},
       h('div',{class:'field'}, h('label',{for:'f-prenom'},'Prénom'), f.prenom),
       h('div',{class:'field'}, h('label',{for:'f-nom'},'Nom'), f.nom)),
-    insc && h('div',{class:'field'}, h('label',{for:'f-classe'},'Classe'), f.classe),
+    insc && h('div',{class:'field'}, h('label',{for:'f-classe'},'Ton groupe de HLP'), f.classe),
     h('div',{class:'field'}, h('label',{for:'f-email'},'Adresse email'), f.email),
     pwc.champ,
     bouton);
@@ -1341,7 +1342,7 @@ async function vueEnseignante(onglet = 'exercices'){
     if(onglet === 'resultats') await ongletResultats(); else await ongletExercices();
   }catch(e){
     cadreEnseignante(onglet,
-      h('div',{class:'msg err',role:'alert'},'Impossible de charger les données. Si tu viens de mettre à jour le site, vérifie que les scripts supabase-niveaux.sql et supabase-types.sql ont bien été exécutés dans Supabase.'),
+      h('div',{class:'msg err',role:'alert'},'Impossible de charger les données. Si tu viens de mettre à jour le site, vérifie que les scripts supabase-niveaux.sql, supabase-types.sql et supabase-groupes.sql ont bien été exécutés dans Supabase.'),
       h('button',{class:'btn ghost',onclick:()=>vueEnseignante(onglet)},'Réessayer'));
   }
 }
@@ -1377,7 +1378,7 @@ async function ongletExercices(){
     }
     return h('div',{class:'exo'},
       h('div',{class:'exo-main'},
-        h('span',{class:'tag'}, (T ? T.court : ex.type) + ' · ' + (LIB_NIVEAU[ex.niveau] || 'Tous niveaux') + (ex.axe ? ' · ' + ex.axe : '')),
+        h('span',{class:'tag'}, (T ? T.court : ex.type) + ' · ' + (LIB_NIVEAU[ex.niveau] || 'Tous niveaux') + (Array.isArray(ex.groupes) && ex.groupes.length ? ' (' + ex.groupes.join(', ') + ')' : '') + (ex.axe ? ' · ' + ex.axe : '')),
         h('span',{class:'exo-titre'}, ex.titre),
         h('span',{class:'badge ' + (ex.publie ? 'on' : 'off')}, ex.publie ? 'Publié' : 'Brouillon : invisible pour les élèves')),
       h('div',{class:'exo-actions'},
@@ -1761,7 +1762,7 @@ async function vueEditeur(ex){
   }
 
   const fiche = {
-    id: ex ? ex.id : null, type: ex ? ex.type : 'quiz', niveau: ex ? (ex.niveau || 'tous') : 'tous',
+    id: ex ? ex.id : null, type: ex ? ex.type : 'quiz', niveau: ex ? (ex.niveau || 'tous') : 'tous', groupes: ex && Array.isArray(ex.groupes) ? ex.groupes.slice() : [],
     axe: ex ? (ex.axe || '') : '', titre: ex ? ex.titre : '', consigne: ex ? (ex.consigne || '') : '',
     ordre: ex ? (ex.ordre || 0) : ordreSuivant, publie: ex ? !!ex.publie : false
   };
@@ -1781,8 +1782,20 @@ async function vueEditeur(ex){
           : h('select',{id:'e-type',onchange:(ev)=>{ fiche.type = ev.target.value; ED = EDITEURS[fiche.type]; etat = ED.init(null, {}); dessiner(); }},
               ORDRE_TYPES.map(t => h('option',{value:t,selected: fiche.type === t}, TYPES[t].libelle)))),
         champ('Classes concernées','e-niveau',
-          h('select',{id:'e-niveau',onchange:(ev)=>{ fiche.niveau = ev.target.value; }},
+          h('select',{id:'e-niveau',onchange:(ev)=>{ fiche.niveau = ev.target.value; dessiner(); }},
             ['1re','tle','tous'].map(v=> h('option',{value:v,selected: fiche.niveau === v}, LIB_NIVEAU[v]))))),
+      (()=>{
+        const dispo = fiche.niveau === '1re' ? GROUPES['Première'] : fiche.niveau === 'tle' ? GROUPES['Terminale'] : [].concat(GROUPES['Première'], GROUPES['Terminale']);
+        fiche.groupes = fiche.groupes.filter(g => dispo.includes(g));
+        return h('div',{class:'field'},
+          h('label',{},'Groupes concernés'),
+          h('div',{class:'filters'}, dispo.map(g => h('label',{class:'opt'},
+            h('input',{type:'checkbox',checked: fiche.groupes.includes(g),onchange:(ev)=>{
+              fiche.groupes = ev.target.checked ? fiche.groupes.concat(g) : fiche.groupes.filter(x => x !== g);
+              dessiner();
+            }}), h('span',{}, g)))),
+          h('p',{class:'sub'}, fiche.groupes.length ? 'Seuls ces groupes verront l’exercice.' : 'Aucun groupe coché : tous les groupes du niveau le voient.'));
+      })(),
       h('div',{class:'row2'},
         champ('Titre','e-titre', h('input',{id:'e-titre',value:fiche.titre,oninput:(ev)=>{ fiche.titre = ev.target.value; }})),
         champ('Axe ou séquence (facultatif)','e-axe', h('input',{id:'e-axe',value:fiche.axe,oninput:(ev)=>{ fiche.axe = ev.target.value; }}))),
@@ -1804,7 +1817,7 @@ async function vueEditeur(ex){
     bouton.disabled = true;
     const s = ED.serialiser(etat);
     const ligne = Object.assign({
-      type: fiche.type, niveau: fiche.niveau, axe: fiche.axe.trim(), titre: fiche.titre.trim(), consigne: fiche.consigne.trim(),
+      type: fiche.type, niveau: fiche.niveau, groupes: fiche.groupes, axe: fiche.axe.trim(), titre: fiche.titre.trim(), consigne: fiche.consigne.trim(),
       extrait: '', source: '', ordre: Number(fiche.ordre) || 0, publie: fiche.publie, questions: s.questions
     }, s.colonnes || {});
     try{
@@ -1821,7 +1834,7 @@ async function vueEditeur(ex){
       flash = 'Exercice enregistré' + (fiche.publie ? ' et visible par les élèves concernés.' : ' en brouillon : les élèves ne le voient pas tant que tu ne le publies pas.');
       vueEnseignante('exercices');
     }catch(e){
-      erreur('L’enregistrement a échoué. Vérifie ta connexion, et que les scripts supabase-niveaux.sql et supabase-types.sql ont bien été exécutés dans Supabase.');
+      erreur('L’enregistrement a échoué. Vérifie ta connexion, et que les scripts supabase-niveaux.sql, supabase-types.sql et supabase-groupes.sql ont bien été exécutés dans Supabase.');
       bouton.disabled = false;
     }
   });
@@ -1849,21 +1862,32 @@ async function ongletResultats(){
   const exoPar = {}; exos.forEach(e => exoPar[e.id] = e);
   const corPar = {}; cors.forEach(c => corPar[c.exercice_id] = c.corrige);
   const actifs = profs.filter(p => p.role === 'eleve' && p.hlp);
-  const ontFait = new Set(tent.map(t => t.eleve_id));
-  const sansRien = actifs.filter(p => !ontFait.has(p.id));
-  let fExo = '', fNiv = '';
+  const groupes = [...new Set(actifs.map(p => (p.classe || '').trim()).filter(Boolean))]
+    .sort((a,b) => a.localeCompare(b, 'fr', {numeric:true}));
+  let fExo = '', fNiv = '', fGrp = '';
   const zoneTable = h('div',{class:'tablewrap'});
+  const zoneResume = h('div',{});
+  const garde = (p) => (!fNiv || p.niveau_hlp === fNiv) && (!fGrp || (p.classe || '').trim() === fGrp);
+
+  function dessinerResume(){
+    const sel = actifs.filter(garde);
+    const ontFait = new Set(tent.filter(t => (!fExo || t.exercice_id === fExo)).map(t => t.eleve_id));
+    const sansRien = sel.filter(p => !ontFait.has(p.id));
+    zoneResume.replaceChildren(
+      h('p',{class:'sub'}, sel.length + ' élève' + (sel.length > 1 ? 's' : '') + ' avec l’accès HLP · ' + (sel.length - sansRien.length) + ' ' + (sel.length - sansRien.length > 1 ? 'ont' : 'a') + ' fait ' + (fExo ? 'cet exercice' : 'au moins un exercice') + '.'),
+      sansRien.length ? h('details',{}, h('summary',{}, 'Qui n’a encore rien fait ? (' + sansRien.length + ')'),
+        h('p',{class:'sub'}, sansRien.map(p => p.prenom + ' ' + p.nom + (p.classe ? ' (' + p.classe + ')' : '')).join(', '))) : null);
+  }
 
   function dessinerTable(){
     const lignes = tent.filter(t=>{
       const p = eleve[t.eleve_id]; if(!p) return false;
       if(fExo && t.exercice_id !== fExo) return false;
-      if(fNiv && p.niveau_hlp !== fNiv) return false;
-      return true;
+      return garde(p);
     });
     if(!lignes.length){ zoneTable.replaceChildren(h('p',{class:'empty'},'Aucun résultat pour le moment.')); return; }
     zoneTable.replaceChildren(h('table',{class:'res'},
-      h('thead',{}, h('tr',{}, ['Élève','Classe','Exercice','Date','Résultat'].map(c => h('th',{},c)))),
+      h('thead',{}, h('tr',{}, ['Élève','Groupe','Exercice','Date','Résultat'].map(c => h('th',{},c)))),
       h('tbody',{}, lignes.map(t=>{
         const p = eleve[t.eleve_id], e = exoPar[t.exercice_id];
         let res = '—';
@@ -1878,17 +1902,18 @@ async function ongletResultats(){
           h('td',{}, e ? e.titre : '(exercice supprimé)'), h('td',{}, fmtDateHeure(t.created_at)), h('td',{}, res));
       }))));
   }
-  dessinerTable();
+  function tout(){ dessinerResume(); dessinerTable(); }
+  tout();
 
   cadreEnseignante('resultats',
-    h('p',{class:'sub'}, actifs.length + ' élève' + (actifs.length > 1 ? 's' : '') + ' avec l’accès HLP · ' + (actifs.length - sansRien.length) + ' ont fait au moins un exercice.'),
-    sansRien.length ? h('details',{}, h('summary',{}, 'Qui n’a encore rien fait ? (' + sansRien.length + ')'),
-      h('p',{class:'sub'}, sansRien.map(p => p.prenom + ' ' + p.nom + (p.classe ? ' (' + p.classe + ')' : '')).join(', '))) : null,
+    zoneResume,
     h('div',{class:'filters'},
-      h('select',{id:'f-exo','aria-label':'Filtrer par exercice',onchange:(ev)=>{ fExo = ev.target.value; dessinerTable(); }},
+      h('select',{id:'f-exo','aria-label':'Filtrer par exercice',onchange:(ev)=>{ fExo = ev.target.value; tout(); }},
         h('option',{value:''},'Tous les exercices'), exos.map(e => h('option',{value:e.id}, e.titre))),
-      h('select',{id:'f-niv','aria-label':'Filtrer par niveau',onchange:(ev)=>{ fNiv = ev.target.value; dessinerTable(); }},
-        h('option',{value:''},'Première et Terminale'), h('option',{value:'1re'},'Première'), h('option',{value:'tle'},'Terminale'))),
+      h('select',{id:'f-niv','aria-label':'Filtrer par niveau',onchange:(ev)=>{ fNiv = ev.target.value; tout(); }},
+        h('option',{value:''},'Première et Terminale'), h('option',{value:'1re'},'Première'), h('option',{value:'tle'},'Terminale')),
+      h('select',{id:'f-grp','aria-label':'Filtrer par groupe',onchange:(ev)=>{ fGrp = ev.target.value; tout(); }},
+        h('option',{value:''},'Tous les groupes'), groupes.map(g => h('option',{value:g}, g)))),
     zoneTable);
 }
 
