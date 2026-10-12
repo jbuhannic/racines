@@ -165,11 +165,42 @@
   .colonne h2{margin-top:6px;display:flex;justify-content:space-between;align-items:baseline;gap:8px;border-bottom:2px solid var(--slate);padding-bottom:6px;}
   .colonne h2 small{font-weight:400;color:var(--ink-soft);font-size:13px;}
   .colonne .exo{flex-direction:column;align-items:flex-start;}
-  .groupe-titre{margin-top:34px;}
+  .colonne .groupe-titre,.groupe-titre{margin-top:38px;}
   table.res td.nb,table.res th.nb{text-align:center;white-space:nowrap;}
   .etoiles-lecture{color:#E0A100;letter-spacing:1px;white-space:nowrap;}
   @media(max-width:1100px){ .colonnes,.colonnes.trois{grid-template-columns:repeat(2,minmax(0,1fr));} }
   @media(max-width:700px){ .colonnes,.colonnes.trois,.colonnes.deux{grid-template-columns:minmax(0,1fr);} }
+
+
+  /* --- résultats : cartes lisibles --- */
+  .pastille{display:inline-block;font-family:var(--font-title2);font-weight:700;font-size:13px;padding:4px 12px;border-radius:100px;white-space:nowrap;}
+  .pastille.bon{background:var(--ok-light);color:var(--ok);}
+  .pastille.moyen{background:#FBF0D5;color:#8A5A00;}
+  .pastille.bas{background:var(--ko-light);color:var(--ko);}
+  .pastille.neutre{background:var(--slate-light);color:var(--slate-dark);}
+  .sgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:14px;}
+  .ecard{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px;min-width:0;}
+  .ecard.vide{background:transparent;border-style:dashed;}
+  .ecard .nom{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:16px;margin-bottom:2px;}
+  .ecard .nom small{font-family:var(--font-title2);font-size:12px;color:var(--ink-soft);font-weight:400;}
+  .ecard .exr{border-top:1px solid var(--border);padding:10px 0 4px;margin-top:10px;}
+  .ecard .exr-titre{font-size:14px;margin-bottom:6px;}
+  .ecard .exr-scores{display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
+  .ecard .exr-meta{font-family:var(--font-title2);font-size:12px;color:var(--ink-soft);margin-top:6px;display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center;}
+  .lbl-mini{font-family:var(--font-title2);font-size:11px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.04em;}
+  .tentative{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 16px;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:12px 16px;margin-bottom:10px;}
+  .tentative .t-main{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1 1 260px;}
+  .tentative .t-eleve{font-size:15px;}
+  .tentative .t-eleve .tag{margin-left:8px;vertical-align:middle;}
+  .tentative .t-exo{font-family:var(--font-title2);font-size:13px;color:var(--ink-soft);}
+  .tentative .t-meta{font-family:var(--font-title2);font-size:12px;color:var(--ink-soft);display:flex;gap:4px 14px;flex-wrap:wrap;align-items:center;}
+  .tentative details{flex-basis:100%;}
+  .qbar{display:grid;grid-template-columns:minmax(0,1fr) 150px 90px;gap:6px 14px;align-items:center;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px 14px;margin-bottom:8px;font-size:14px;}
+  .qbar .barre{height:10px;background:var(--border);border-radius:10px;overflow:hidden;}
+  .qbar .barre span{display:block;height:100%;border-radius:10px;}
+  .qbar .barre .bon{background:var(--ok);} .qbar .barre .moyen{background:#E0A100;} .qbar .barre .bas{background:var(--ko);}
+  .qbar .pc{font-family:var(--font-title2);font-weight:700;text-align:right;}
+  @media(max-width:600px){ .qbar{grid-template-columns:1fr 90px;} .qbar .barre{grid-column:1 / -1;order:3;} }
 
   /* --- nouveaux types d'exercices --- */
   .relier{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px;}
@@ -248,7 +279,7 @@ function h(tag, props, ...kids){
     else if(v === true) e.setAttribute(k, '');
     else if(v !== false && v != null) e.setAttribute(k, v);
   }
-  for(const c of kids.flat()){
+  for(const c of kids.flat(Infinity)){
     if(c == null || c === false) continue;
     e.append(c.nodeType ? c : document.createTextNode(String(c)));
   }
@@ -866,6 +897,12 @@ function itemsExercice(ex, corrige, reponses){
   }
   return null;
 }
+
+const classeScore = (s) => { const p = pctDe(s); return p == null ? 'neutre' : p >= 80 ? 'bon' : p >= 50 ? 'moyen' : 'bas'; };
+const pastilleScore = (s) => s
+  ? h('span',{class:'pastille ' + classeScore(s)}, s.ok + ' / ' + s.total + (s.total ? ' · ' + pctDe(s) + ' %' : ''))
+  : null;
+const nomEleve = (p) => p.prenom + ' ' + p.nom;
 const motsDe = (ex) => (ex.questions && !Array.isArray(ex.questions)) ? ex.questions : {};
 
 /* ---------- Quiz (QCM) ---------- */
@@ -1668,37 +1705,39 @@ async function ongletEleves(){
     const eleves = actifs.filter(p => (p.classe || '').trim() === g)
       .sort((a,b) => (a.nom + ' ' + a.prenom).localeCompare(b.nom + ' ' + b.prenom, 'fr'));
     const exosVus = exos.filter(e => !fExo || e.id === fExo);
-    const lignes = [];
     let nbActifs = 0;
-    eleves.forEach(p => {
+    const cartes = eleves.map(p => {
       const faits = exosVus.filter(e => parEleveExo[p.id + '|' + e.id]);
-      if(faits.length) nbActifs++;
       if(!faits.length){
-        lignes.push(h('tr',{}, h('td',{}, p.nom + ' ' + p.prenom), h('td',{colspan:'6',class:'empty-cell'}, h('span',{class:'exo-etat'},'Aucune tentative'))));
-        return;
+        return h('div',{class:'ecard vide'},
+          h('div',{class:'nom'}, h('strong',{}, nomEleve(p))),
+          h('span',{class:'exo-etat'},'Aucune tentative pour le moment'));
       }
-      faits.forEach((e,i)=>{
+      nbActifs++;
+      const blocs = faits.map(e => {
         const R = resumeEssais(e, corPar[e.id], parEleveExo[p.id + '|' + e.id]);
         const auto = TYPES[e.type] && TYPES[e.type].auto;
         const gain = (R.premier && R.meilleur && R.essais > 1) ? R.meilleur.ok - R.premier.ok : 0;
-        lignes.push(h('tr',{},
-          h('td',{}, i === 0 ? p.nom + ' ' + p.prenom : ''),
-          h('td',{}, e.titre),
-          h('td',{class:'nb'}, auto ? fmtScore(R.premier) : 'rédaction'),
-          h('td',{class:'nb'}, auto ? [fmtScore(R.meilleur), gain > 0 ? h('span',{class:'delta'},' ▲ +' + gain) : null] : '—'),
-          h('td',{class:'nb'}, String(R.essais)),
-          h('td',{class:'nb'}, fmtDuree(R.duree)),
-          h('td',{class:'nb'}, h('span',{class:'etoiles-lecture'}, etoilesTexte(R.auto)))));
+        return h('div',{class:'exr'},
+          h('div',{class:'exr-titre'}, e.titre),
+          h('div',{class:'exr-scores'},
+            auto
+              ? [ h('span',{class:'lbl-mini'},'1er essai'), pastilleScore(R.premier),
+                  R.essais > 1 ? [ h('span',{class:'lbl-mini'},'meilleur'), pastilleScore(R.meilleur), gain > 0 ? h('span',{class:'delta'},'▲ +' + gain) : null ] : null ]
+              : h('span',{class:'pastille neutre'},'Rédaction')),
+          h('div',{class:'exr-meta'},
+            h('span',{}, R.essais + ' essai' + (R.essais > 1 ? 's' : '')),
+            h('span',{}, '⏱ ' + fmtDuree(R.duree)),
+            R.auto ? h('span',{class:'etoiles-lecture',title:'Auto-évaluation de l’élève'}, etoilesTexte(R.auto)) : null));
       });
+      return h('div',{class:'ecard'},
+        h('div',{class:'nom'}, h('strong',{}, nomEleve(p)), h('small',{}, faits.length + ' exercice' + (faits.length > 1 ? 's' : ''))),
+        blocs);
     });
-    return h('div',{},
-      h('h2',{class:'groupe-titre'}, g, h('small',{style:'font-weight:400;color:var(--ink-soft);font-size:13px;margin-left:10px'},
-        eleves.length + ' élève' + (eleves.length > 1 ? 's' : '') + ' avec l’accès · ' + nbActifs + ' ont fait ' + (fExo ? 'cet exercice' : 'au moins un exercice'))),
-      eleves.length
-        ? h('div',{class:'tablewrap'}, h('table',{class:'res'},
-            h('thead',{}, h('tr',{}, ['Élève','Exercice','1er score','Meilleur score','Essais','Temps','Auto-éval.'].map((c,i) => h('th',{class: i >= 2 ? 'nb' : ''}, c)))),
-            h('tbody',{}, lignes)))
-        : h('p',{class:'empty'},'Aucun élève activé dans ce groupe.'));
+    return h('section',{class:'colonne'},
+      h('h2',{class:'groupe-titre'}, g, h('small',{},
+        eleves.length + ' élève' + (eleves.length > 1 ? 's' : '') + ' · ' + nbActifs + ' ont fait ' + (fExo ? 'cet exercice' : 'au moins un exercice'))),
+      eleves.length ? h('div',{class:'sgrid'}, cartes) : h('p',{class:'empty'},'Aucun élève activé dans ce groupe.'));
   }
   function dessiner(){
     const gs = ordreGroupes.filter(g => !fGrp || g === fGrp).filter(g => officiels.includes(g) || actifs.some(p => (p.classe || '').trim() === g));
@@ -1707,7 +1746,7 @@ async function ongletEleves(){
   dessiner();
 
   cadreEnseignante('eleves',
-    h('p',{class:'sub'},'Pour chaque élève et chaque exercice : premier score (point de départ), meilleur score, nombre d’essais, temps passé et auto-évaluation.'),
+    h('p',{class:'sub'},'Pour chaque élève et chaque exercice : premier essai (point de départ), meilleur score, nombre d’essais, temps passé et auto-évaluation. Vert : 80 % et plus · orange : 50 à 79 % · rouge : moins de 50 %.'),
     h('div',{class:'filters'},
       h('select',{id:'f-eleves-grp','aria-label':'Filtrer par groupe',onchange:(ev)=>{ fGrp = ev.target.value; dessiner(); }},
         h('option',{value:''},'Tous les groupes'),
@@ -2203,6 +2242,13 @@ async function ongletResultats(){
   const officiels = [].concat(GROUPES['Première'], GROUPES['Terminale']);
   const autres = [...new Set(actifs.map(p => (p.classe || '').trim()).filter(c => c && !officiels.includes(c)))]
     .sort((a,b) => a.localeCompare(b, 'fr', {numeric:true}));
+  let fExo = '', fNiv = '', fGrp = '';
+  const selGrp = h('select',{id:'f-grp','aria-label':'Filtrer par groupe',onchange:(ev)=>{ fGrp = ev.target.value; tout(); }});
+  const zoneTable = h('div',{});
+  const zoneResume = h('div',{});
+  const zoneQuestions = h('div',{});
+  const garde = (p) => (!fNiv || p.niveau_hlp === fNiv) && (!fGrp || (p.classe || '').trim() === fGrp);
+
   function optionsGroupes(){
     const base = fNiv === '1re' ? GROUPES['Première'] : fNiv === 'tle' ? GROUPES['Terminale'] : officiels;
     return [h('option',{value:''},'Tous les groupes')]
@@ -2213,50 +2259,27 @@ async function ongletResultats(){
     if(fGrp && !optionsGroupes().some(o => o.value === fGrp)) fGrp = '';
     selGrp.replaceChildren(...optionsGroupes());
   }
-  let fExo = '', fNiv = '', fGrp = '';
-  const selGrp = h('select',{id:'f-grp','aria-label':'Filtrer par groupe',onchange:(ev)=>{ fGrp = ev.target.value; tout(); }});
-  const zoneTable = h('div',{class:'tablewrap'});
-  const zoneResume = h('div',{});
-  const garde = (p) => (!fNiv || p.niveau_hlp === fNiv) && (!fGrp || (p.classe || '').trim() === fGrp);
+  const lignesFiltrees = () => tent.filter(t => { const p = eleve[t.eleve_id]; return p && (!fExo || t.exercice_id === fExo) && garde(p); });
 
   function dessinerResume(){
     const sel = actifs.filter(garde);
-    const ontFait = new Set(tent.filter(t => (!fExo || t.exercice_id === fExo)).map(t => t.eleve_id));
+    const lignes = lignesFiltrees();
+    const ontFait = new Set(lignes.map(t => t.eleve_id));
     const sansRien = sel.filter(p => !ontFait.has(p.id));
+    const durees = lignes.map(t => t.duree_secondes).filter(Boolean);
+    const moy = durees.length ? durees.reduce((a,b)=>a+b,0) / durees.length : 0;
     zoneResume.replaceChildren(
-      h('p',{class:'sub'}, sel.length + ' élève' + (sel.length > 1 ? 's' : '') + ' avec l’accès HLP · ' + (sel.length - sansRien.length) + ' ' + (sel.length - sansRien.length > 1 ? 'ont' : 'a') + ' fait ' + (fExo ? 'cet exercice' : 'au moins un exercice') + '.'),
-      sansRien.length ? h('details',{}, h('summary',{}, 'Qui n’a encore rien fait ? (' + sansRien.length + ')'),
-        h('p',{class:'sub'}, sansRien.map(p => p.prenom + ' ' + p.nom + (p.classe ? ' (' + p.classe + ')' : '')).join(', '))) : null);
+      h('div',{class:'stats'},
+        h('div',{class:'stat'}, h('span',{class:'label'},'Élèves ayant travaillé'), h('div',{class:'value'}, (sel.length - sansRien.length) + ' / ' + sel.length)),
+        h('div',{class:'stat'}, h('span',{class:'label'},'Tentatives'), h('div',{class:'value'}, String(lignes.length))),
+        h('div',{class:'stat'}, h('span',{class:'label'},'Temps moyen par essai'), h('div',{class:'value'}, fmtDuree(moy)))),
+      sansRien.length ? h('details',{style:'margin-top:12px'}, h('summary',{}, 'Qui n’a encore rien fait ? (' + sansRien.length + ')'),
+        h('p',{class:'sub',style:'margin-top:8px'}, sansRien.map(p => nomEleve(p) + (p.classe ? ' (' + p.classe + ')' : '')).join(', '))) : null);
   }
 
-  function dessinerTable(){
-    const lignes = tent.filter(t=>{
-      const p = eleve[t.eleve_id]; if(!p) return false;
-      if(fExo && t.exercice_id !== fExo) return false;
-      return garde(p);
-    });
-    if(!lignes.length){ zoneTable.replaceChildren(h('p',{class:'empty'},'Aucun résultat pour le moment.')); return; }
-    zoneTable.replaceChildren(h('table',{class:'res'},
-      h('thead',{}, h('tr',{}, ['Élève','Groupe','Exercice','Date','Résultat','Durée','Auto-éval.'].map(c => h('th',{},c)))),
-      h('tbody',{}, lignes.map(t=>{
-        const p = eleve[t.eleve_id], e = exoPar[t.exercice_id];
-        let res = '—';
-        const s = e ? scoreExercice(e, corPar[e.id], t.reponses) : null;
-        if(s) res = s.ok + ' / ' + s.total;
-        else if(e && e.type === 'analyse'){
-          res = h('details',{}, h('summary',{},'Voir les réponses'),
-            (Array.isArray(e.questions) ? e.questions : []).map((q,i)=> h('div',{class:'rep'}, h('strong',{}, (i+1) + '. ' + q.q), h('div',{}, (t.reponses || {})[i] || '—'))));
-        }
-        return h('tr',{},
-          h('td',{}, p.nom + ' ' + p.prenom), h('td',{}, p.classe || ''),
-          h('td',{}, e ? e.titre : '(exercice supprimé)'), h('td',{}, fmtDateHeure(t.created_at)), h('td',{}, res),
-          h('td',{class:'nb'}, fmtDuree(t.duree_secondes)), h('td',{class:'nb'}, h('span',{class:'etoiles-lecture'}, etoilesTexte(t.auto_eval))));
-      }))));
-  }
-  const zoneQuestions = h('div',{});
   function dessinerQuestions(){
-    if(!fExo){ zoneQuestions.replaceChildren(h('p',{class:'hint'},'Choisis un exercice dans le premier menu pour voir, question par question, ce que les élèves ratent le plus (d’après leur 1er essai).')); return; }
-    const ex = exoPar[fExo];
+    if(!fExo){ zoneQuestions.replaceChildren(h('p',{class:'hint'},'Astuce : choisis un exercice dans le premier menu pour voir, question par question, ce que les élèves ratent le plus (d’après leur 1er essai).')); return; }
+    const exo = exoPar[fExo];
     const premiers = {};
     tent.slice().sort((a,b)=> new Date(a.created_at) - new Date(b.created_at)).forEach(t => {
       const p = eleve[t.eleve_id];
@@ -2264,26 +2287,51 @@ async function ongletResultats(){
     });
     const stats = [];
     Object.values(premiers).forEach(t => {
-      const items = itemsExercice(ex, corPar[fExo], t.reponses);
+      const items = itemsExercice(exo, corPar[fExo], t.reponses);
       if(!items) return;
       items.forEach((it,i)=>{ const x = stats[i] || (stats[i] = { libelle: it.libelle, ok:0, n:0 }); x.n++; if(it.ok) x.ok++; });
     });
     if(!stats.length){
-      zoneQuestions.replaceChildren(h('p',{class:'hint'}, itemsExercice(ex, corPar[fExo] || {}, {}) ? 'Aucun élève du filtre n’a encore fait cet exercice.' : 'Le détail question par question n’existe pas pour ce type d’exercice (rédaction ou mots fléchés).'));
+      zoneQuestions.replaceChildren(h('p',{class:'hint'}, itemsExercice(exo, corPar[fExo] || {}, {}) ? 'Aucun élève du filtre n’a encore fait cet exercice.' : 'Le détail question par question n’existe pas pour ce type d’exercice (rédaction ou mots fléchés).'));
       return;
     }
     const classes = stats.slice().sort((a,b)=> (a.ok / a.n) - (b.ok / b.n));
     zoneQuestions.replaceChildren(
-      h('h2',{},'Question par question — du plus raté au mieux réussi'),
-      h('p',{class:'sub'}, 'D’après le 1er essai de ' + stats[0].n + ' élève' + (stats[0].n > 1 ? 's' : '') + ' (filtres de niveau et de groupe appliqués).'),
-      h('div',{class:'tablewrap'}, h('table',{class:'res'},
-        h('thead',{}, h('tr',{}, ['Question','Réussite','Élèves ayant juste'].map((c,i)=> h('th',{class: i ? 'nb' : ''}, c)))),
-        h('tbody',{}, classes.map(x => h('tr',{},
-          h('td',{}, x.libelle),
-          h('td',{class:'nb'}, Math.round(100 * x.ok / x.n) + ' %'),
-          h('td',{class:'nb'}, x.ok + ' / ' + x.n)))))));
+      h('h2',{},'Question par question'),
+      h('p',{class:'sub'}, 'Du plus raté au mieux réussi, d’après le 1er essai de ' + stats[0].n + ' élève' + (stats[0].n > 1 ? 's' : '') + '.'),
+      ...classes.map(x => {
+        const pc = Math.round(100 * x.ok / x.n), c = pc >= 80 ? 'bon' : pc >= 50 ? 'moyen' : 'bas';
+        return h('div',{class:'qbar'},
+          h('span',{}, x.libelle),
+          h('div',{class:'barre','aria-hidden':'true'}, h('span',{class:c,style:'width:' + pc + '%'})),
+          h('span',{class:'pc'}, pc + ' % ', h('small',{style:'font-weight:400;color:var(--ink-soft)'}, '(' + x.ok + '/' + x.n + ')')));
+      }));
+  }
+
+  function dessinerTable(){
+    const lignes = lignesFiltrees();
+    if(!lignes.length){ zoneTable.replaceChildren(h('p',{class:'empty'},'Aucun résultat pour le moment.')); return; }
+    zoneTable.replaceChildren(h('h2',{},'Toutes les tentatives'), ...lignes.map(t=>{
+      const p = eleve[t.eleve_id], e = exoPar[t.exercice_id];
+      const s = e ? scoreExercice(e, corPar[e.id], t.reponses) : null;
+      const reponses = (!s && e && e.type === 'analyse')
+        ? h('details',{}, h('summary',{},'Voir les réponses'),
+            (Array.isArray(e.questions) ? e.questions : []).map((q,i)=> h('div',{class:'rep'}, h('strong',{}, (i+1) + '. ' + q.q), h('div',{}, (t.reponses || {})[i] || '—'))))
+        : null;
+      return h('div',{class:'tentative'},
+        h('div',{class:'t-main'},
+          h('span',{class:'t-eleve'}, nomEleve(p), h('span',{class:'tag'}, p.classe || '—')),
+          h('span',{class:'t-exo'}, e ? e.titre : '(exercice supprimé)')),
+        h('div',{class:'t-meta'},
+          h('span',{}, fmtDateHeure(t.created_at)),
+          h('span',{}, '⏱ ' + fmtDuree(t.duree_secondes)),
+          t.auto_eval ? h('span',{class:'etoiles-lecture',title:'Auto-évaluation de l’élève'}, etoilesTexte(t.auto_eval)) : null),
+        s ? pastilleScore(s) : h('span',{class:'pastille neutre'}, 'Rédaction'),
+        reponses);
+    }));
   }
   function tout(){ dessinerResume(); dessinerQuestions(); dessinerTable(); }
+  majMenuGroupes();
   tout();
 
   cadreEnseignante('resultats',
@@ -2295,9 +2343,7 @@ async function ongletResultats(){
         h('option',{value:''},'Première et Terminale'), h('option',{value:'1re'},'Première'), h('option',{value:'tle'},'Terminale')),
       selGrp),
     zoneQuestions,
-    h('h2',{},'Toutes les tentatives'),
     zoneTable);
-  majMenuGroupes();
 }
 
 demarrer();
