@@ -68,7 +68,8 @@
   .field input:disabled{opacity:.7;}
 
   /* --- espace enseignante --- */
-  .toolbar{margin:14px 0 16px;}
+  .toolbar{margin:14px 0 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;}
+  .toolbar select{padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:var(--surface);font-size:14px;}
   main > h1 + .field, main > h1 + .row2{margin-top:18px;}
   .defs{margin:10px 0 22px;}
   .actions{margin-top:20px;}
@@ -144,6 +145,31 @@
     .exo{flex-wrap:wrap;}
     h1{font-size:24px;}
   }
+
+  /* --- suivi : scores, étoiles, colonnes --- */
+  main.large{max-width:1240px;}
+  .delta{color:var(--ok);font-weight:700;}
+  .record{background:var(--ok-light);color:var(--ok);border-radius:10px;padding:10px 14px;font-family:var(--font-title2);font-size:14px;margin:8px 0 14px;}
+  .comparatif{display:flex;gap:10px;flex-wrap:wrap;margin:6px 0 16px;}
+  .comparatif div{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:8px 14px;font-family:var(--font-title2);font-size:13px;color:var(--ink-soft);}
+  .comparatif strong{display:block;font-family:var(--font-title1);font-size:20px;color:var(--slate-dark);}
+  .autoeval{margin-top:30px;padding-top:6px;border-top:1px solid var(--border);}
+  .etoiles{display:flex;gap:4px;margin:4px 0 6px;}
+  .etoile{background:none;border:none;cursor:pointer;font-size:40px;line-height:1;padding:2px 4px;min-width:48px;min-height:48px;color:var(--border);}
+  .etoile.on{color:#E0A100;}
+  .etoile:hover{color:#E0A100;}
+  .colonnes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;align-items:start;}
+  .colonnes.une{grid-template-columns:minmax(0,1fr);max-width:760px;}
+  .colonnes.deux{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .colonnes.trois{grid-template-columns:repeat(3,minmax(0,1fr));}
+  .colonne h2{margin-top:6px;display:flex;justify-content:space-between;align-items:baseline;gap:8px;border-bottom:2px solid var(--slate);padding-bottom:6px;}
+  .colonne h2 small{font-weight:400;color:var(--ink-soft);font-size:13px;}
+  .colonne .exo{flex-direction:column;align-items:flex-start;}
+  .groupe-titre{margin-top:34px;}
+  table.res td.nb,table.res th.nb{text-align:center;white-space:nowrap;}
+  .etoiles-lecture{color:#E0A100;letter-spacing:1px;white-space:nowrap;}
+  @media(max-width:1100px){ .colonnes,.colonnes.trois{grid-template-columns:repeat(2,minmax(0,1fr));} }
+  @media(max-width:700px){ .colonnes,.colonnes.trois,.colonnes.deux{grid-template-columns:minmax(0,1fr);} }
 
   /* --- nouveaux types d'exercices --- */
   .relier{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px;}
@@ -230,7 +256,7 @@ function h(tag, props, ...kids){
 }
 const app = document.getElementById('app');
 const who = document.getElementById('who');
-function show(...nodes){ app.replaceChildren(...nodes.flat().filter(Boolean)); window.scrollTo(0,0); }
+function show(...nodes){ app.classList.remove('large'); app.replaceChildren(...nodes.flat().filter(Boolean)); window.scrollTo(0,0); }
 function shuffle(a){ a = a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
 function fmtDate(iso){ try{ return new Date(iso).toLocaleDateString('fr-FR',{day:'numeric',month:'long'}); }catch(e){ return ''; } }
 function paragraphes(texte){ return String(texte||'').split(/\n+/).filter(Boolean); }
@@ -782,6 +808,64 @@ function scoreExercice(ex, corrige, reponses){
   const T = TYPES[ex.type];
   return (T && T.auto && corrige) ? T.score(ex, corrige, reponses || {}) : null;
 }
+/* ----- suivi par élève : 1er score, meilleur score, nombre d'essais, durée, étoiles ----- */
+const pctDe = (s) => (s && s.total) ? Math.round(100 * s.ok / s.total) : null;
+const rapport = (s) => s.total ? s.ok / s.total : 0;
+function resumeEssais(ex, corrige, tentatives){
+  const L = tentatives.slice().sort((a,b)=> new Date(a.created_at) - new Date(b.created_at));
+  const scores = L.map(t => (ex && corrige) ? scoreExercice(ex, corrige, t.reponses) : null);
+  let meilleur = null;
+  scores.forEach(s => { if(s && (!meilleur || rapport(s) > rapport(meilleur))) meilleur = s; });
+  const notee = L.slice().reverse().find(t => t.auto_eval);
+  return {
+    essais: L.length, premier: scores[0] || null, meilleur,
+    duree: L.reduce((a,t)=> a + (t.duree_secondes || 0), 0),
+    auto: notee ? notee.auto_eval : null,
+    dernier: L.length ? L[L.length-1].created_at : null
+  };
+}
+function fmtDuree(sec){
+  sec = Math.round(sec || 0);
+  if(!sec) return '—';
+  if(sec < 60) return sec + ' s';
+  const m = Math.floor(sec / 60), r = sec % 60;
+  return m + ' min' + (r ? ' ' + String(r).padStart(2,'0') : '');
+}
+const etoilesTexte = (n) => n ? '★'.repeat(n) + '☆'.repeat(5 - n) : '—';
+const fmtScore = (s) => s ? s.ok + ' / ' + s.total + (s.total ? ' (' + pctDe(s) + ' %)' : '') : '—';
+/* ----- détail question par question (pour repérer ce qui est le plus raté) ----- */
+function itemsExercice(ex, corrige, reponses){
+  if(!ex || !corrige) return null;
+  reponses = reponses || {};
+  const q = (ex.questions && !Array.isArray(ex.questions)) ? ex.questions : {};
+  const acc = !!q.accents;
+  if(ex.type === 'quiz'){
+    const qs = Array.isArray(ex.questions) ? ex.questions : [], b = corrige.bonnes || [];
+    return qs.map((x,i)=>({ libelle:(i+1) + '. ' + (x.q || ''), ok: reponses[i] != null && Number(reponses[i]) === Number(b[i]) }));
+  }
+  if(ex.type === 'trous' || ex.type === 'charades'){
+    const alts = corrige.reponses || [], mots = reponses.mots || [];
+    return alts.map((a,k)=>({ libelle:(ex.type === 'trous' ? 'Trou ' : 'Charade ') + (k+1) + ' : ' + (a && a[0] != null ? a[0] : ''), ok: reponseJuste(mots[k], a, acc) }));
+  }
+  if(ex.type === 'relier'){
+    const G = q.gauche || [];
+    if(corrige.groupes){
+      const out = [];
+      corrige.groupes.forEach((liste,i)=>{
+        const donnes = ((reponses.groupes || [])[i] || []).map(x => normReponse(x, true));
+        liste.forEach(r => out.push({ libelle: r + '  →  ' + (G[i] || ''), ok: donnes.includes(normReponse(r, true)) }));
+      });
+      return out;
+    }
+    const att = corrige.paires || [], liens = reponses.liens || [];
+    return att.map((r,i)=>({ libelle:(G[i] || '') + '  →  ' + r, ok: liens[i] != null && normReponse(liens[i], true) === normReponse(r, true) }));
+  }
+  if(ex.type === 'meles'){
+    const trouves = new Set(reponses.trouves || []);
+    return (q.mots || []).map(m => ({ libelle: m, ok: trouves.has(m) }));
+  }
+  return null;
+}
 const motsDe = (ex) => (ex.questions && !Array.isArray(ex.questions)) ? ex.questions : {};
 
 /* ---------- Quiz (QCM) ---------- */
@@ -1260,33 +1344,38 @@ async function vueTableauDeBord(){
   }
   const corrigeDe = {}; d.corriges.forEach(c => corrigeDe[c.exercice_id] = c.corrige);
 
+  const parExo = {};
+  d.tentatives.forEach(t => (parExo[t.exercice_id] = parExo[t.exercice_id] || []).push(t));
   const etat = {};
-  d.tentatives.forEach(t=>{
-    const e = etat[t.exercice_id] || (etat[t.exercice_id] = {essais:0, dernier:t.created_at, meilleur:null});
-    e.essais++;
-    const ex = d.exercices.find(x=>x.id===t.exercice_id);
-    const s = ex ? scoreExercice(ex, corrigeDe[ex.id], t.reponses) : null;
-    if(s && (!e.meilleur || s.ok > e.meilleur.ok)) e.meilleur = s;
-  });
+  d.exercices.forEach(ex => { if(parExo[ex.id]) etat[ex.id] = resumeEssais(ex, corrigeDe[ex.id], parExo[ex.id]); });
 
   const faits = d.exercices.filter(e=>etat[e.id]).length;
-  const notes = d.exercices.filter(e=> etat[e.id] && etat[e.id].meilleur).map(e=>etat[e.id].meilleur);
-  const pct = notes.length ? Math.round(100 * notes.reduce((a,s)=>a+s.ok,0) / Math.max(1,notes.reduce((a,s)=>a+s.total,0))) : null;
+  const evalues = d.exercices.filter(e => etat[e.id] && etat[e.id].premier && etat[e.id].meilleur).map(e => etat[e.id]);
+  const somme = (liste, cle, champ) => liste.reduce((a,x)=> a + x[cle][champ], 0);
+  const pct1 = evalues.length ? Math.round(100 * somme(evalues,'premier','ok') / Math.max(1, somme(evalues,'premier','total'))) : null;
+  const pctB = evalues.length ? Math.round(100 * somme(evalues,'meilleur','ok') / Math.max(1, somme(evalues,'meilleur','total'))) : null;
   const derniere = d.tentatives.length ? fmtDate(d.tentatives[0].created_at) : '—';
 
   const liste = d.exercices.length
     ? d.exercices.map(ex=>{
         const e = etat[ex.id], T = TYPES[ex.type];
         let texteEtat = 'Pas encore fait';
+        let delta = null;
         if(e){
           texteEtat = 'Fait ' + (e.essais>1 ? e.essais+' fois' : '1 fois') + ' · dernière séance : ' + fmtDate(e.dernier);
-          if(e.meilleur) texteEtat += ' · meilleur score ' + e.meilleur.ok + '/' + e.meilleur.total;
+          if(e.premier) texteEtat += ' · 1er essai ' + e.premier.ok + '/' + e.premier.total;
+          if(e.meilleur && e.essais > 1){
+            texteEtat += ' · meilleur ' + e.meilleur.ok + '/' + e.meilleur.total;
+            const gain = e.meilleur.ok - e.premier.ok;
+            if(gain > 0) delta = ' ▲ +' + gain;
+          }
+          if(e.auto) texteEtat += ' · ma maîtrise ' + etoilesTexte(e.auto);
         }
         return h('div',{class:'exo'},
           h('div',{class:'exo-main'},
             h('span',{class:'tag'}, (T ? T.court : ex.type) + (ex.axe ? ' · ' + ex.axe : '')),
             h('span',{class:'exo-titre'}, ex.titre),
-            h('span',{class:'exo-etat'}, texteEtat)),
+            h('span',{class:'exo-etat'}, texteEtat, delta ? h('span',{class:'delta'}, delta) : null)),
           T ? h('button',{class:'btn ' + (e ? 'ghost' : ''),onclick:()=>vueExercice(ex)}, e ? 'Refaire' : 'Commencer') : null);
       })
     : [h('p',{class:'empty'},'Aucun exercice n’est disponible pour le moment.')];
@@ -1296,7 +1385,7 @@ async function vueTableauDeBord(){
     h('p',{class:'sub'}, 'Voici où tu en es.'),
     h('div',{class:'stats'},
       h('div',{class:'stat'}, h('span',{class:'label'},'Exercices faits'), h('div',{class:'value'}, faits + ' / ' + d.exercices.length)),
-      h('div',{class:'stat'}, h('span',{class:'label'},'Réussite'), h('div',{class:'value'}, pct == null ? '—' : pct + ' %')),
+      h('div',{class:'stat'}, h('span',{class:'label'},'Réussite : 1er essai → meilleur'), h('div',{class:'value'}, pct1 == null ? '—' : (pct1 === pctB ? pct1 + ' %' : pct1 + ' % → ' + pctB + ' %'))),
       h('div',{class:'stat'}, h('span',{class:'label'},'Dernière séance'), h('div',{class:'value'}, derniere))),
     h('h2',{},'Exercices'),
     liste);
@@ -1305,8 +1394,19 @@ async function vueTableauDeBord(){
 /* =====================================================================
    VUE : EXERCICE (commune à tous les types)
    ===================================================================== */
+let detacherChrono = null;
 function vueExercice(ex){
   const T = TYPES[ex.type];
+  if(detacherChrono){ detacherChrono(); detacherChrono = null; }
+  /* chrono silencieux : ne compte que le temps où l'onglet est visible */
+  let secondes = 0, depuis = document.hidden ? null : Date.now();
+  const surVisibilite = ()=>{
+    if(document.hidden){ if(depuis){ secondes += (Date.now() - depuis) / 1000; depuis = null; } }
+    else if(!depuis) depuis = Date.now();
+  };
+  document.addEventListener('visibilitychange', surVisibilite);
+  detacherChrono = ()=> document.removeEventListener('visibilitychange', surVisibilite);
+  const lireDuree = ()=> Math.min(7200, Math.round(secondes + (depuis ? (Date.now() - depuis) / 1000 : 0)));
   if(!T) return show(h('div',{class:'msg err',role:'alert'},'Ce type d’exercice n’est pas pris en charge par cette version de la page.'),
                      h('button',{class:'btn ghost',onclick:retourListe},'Retour'));
   const bouton = h('button',{class:'btn',type:'button',disabled:true}, T.bouton);
@@ -1321,14 +1421,21 @@ function vueExercice(ex){
     zoneErreur.replaceChildren();
     const reponses = etat.reponses();
     try{
+      let tentativeId = null;
       if(!estApercu()){
-        const { error } = await sb.from('hlp_tentatives').insert({ eleve_id: profil.id, exercice_id: ex.id, reponses });
-        if(error) throw error;
+        const base = { eleve_id: profil.id, exercice_id: ex.id, reponses };
+        let ins = await sb.from('hlp_tentatives').insert(Object.assign({ duree_secondes: lireDuree() }, base)).select('id').single();
+        if(ins.error && /duree_secondes|schema cache|column/i.test(ins.error.message || '')){
+          ins = await sb.from('hlp_tentatives').insert(base).select('id').single();   // script supabase-suivi.sql pas encore lancé
+        }
+        if(ins.error) throw ins.error;
+        tentativeId = ins.data ? ins.data.id : null;
+        if(detacherChrono){ detacherChrono(); detacherChrono = null; }
       }
       const { data, error } = await sb.from('hlp_corriges').select('exercice_id, corrige').eq('exercice_id', ex.id);
       if(error) throw error;
       const corrige = data && data[0] ? data[0].corrige : null;
-      vueResultat(ex, reponses, corrige);
+      vueResultat(ex, reponses, corrige, tentativeId);
     }catch(e){
       zoneErreur.replaceChildren(h('div',{class:'msg err',role:'alert'}, 'Tes réponses n’ont pas pu être enregistrées. Réessaie dans un instant.'));
       maj();
@@ -1346,7 +1453,29 @@ function vueExercice(ex){
     etat.noeuds, zoneErreur, bouton);
 }
 
-function vueResultat(ex, reponses, corrige){
+const LIB_ETOILES = ['', 'Je dois tout reprendre', 'Je suis encore fragile', 'Je commence à maîtriser', 'Je maîtrise bien', 'Je maîtrise parfaitement'];
+function blocEtoiles(tentativeId, initiale){
+  let note = initiale || 0;
+  const zone = h('div',{class:'etoiles',role:'radiogroup','aria-label':'Mon auto-évaluation'});
+  const legende = h('p',{class:'hint'}, note ? LIB_ETOILES[note] : 'Touche une étoile.');
+  async function choisir(n){
+    note = n; dessiner(); legende.textContent = 'Enregistrement…';
+    const { error } = await sb.from('hlp_tentatives').update({ auto_eval: n }).eq('id', tentativeId);
+    legende.textContent = error ? 'Ta note n’a pas pu être enregistrée. Réessaie.' : LIB_ETOILES[n] + ' · merci, c’est enregistré.';
+  }
+  function dessiner(){
+    zone.replaceChildren(...[1,2,3,4,5].map(n => h('button',{type:'button',class:'etoile' + (n <= note ? ' on' : ''),
+      role:'radio','aria-checked':String(n === note),'aria-label':n + ' étoile' + (n > 1 ? 's' : '') + ' : ' + LIB_ETOILES[n],
+      onclick:()=>choisir(n)}, n <= note ? '★' : '☆')));
+  }
+  dessiner();
+  return h('div',{class:'autoeval'},
+    h('h2',{},'Ton auto-évaluation'),
+    h('p',{class:'sub'},'Maintenant que tu as lu le corrigé : à quel point maîtrises-tu cette notion ? (1 étoile : à reprendre · 5 étoiles : maîtrisée)'),
+    zone, legende);
+}
+
+async function vueResultat(ex, reponses, corrige, tentativeId){
   const T = TYPES[ex.type];
   const retour = h('div',{class:'actions'},
     h('button',{class:'btn',onclick:retourListe},'Retour aux exercices'),
@@ -1357,11 +1486,37 @@ function vueResultat(ex, reponses, corrige){
   }
   const s = scoreExercice(ex, corrige, reponses);
   const r = T.resultat(ex, corrige, reponses);
+
+  /* progression : comparaison avec les essais précédents */
+  let progression = null;
+  if(s && tentativeId && !estApercu()){
+    try{
+      const { data } = await sb.from('hlp_tentatives').select('*').eq('eleve_id', profil.id).eq('exercice_id', ex.id);
+      const avant = (data || []).filter(t => t.id !== tentativeId);
+      if(avant.length){
+        const R = resumeEssais(ex, corrige, avant);
+        const gainPremier = s.ok - R.premier.ok;
+        const record = R.meilleur && rapport(s) > rapport(R.meilleur);
+        progression = [
+          record ? h('div',{class:'record',role:'status'},'Nouveau record ! Ton meilleur score passe à ' + s.ok + ' / ' + s.total + '.') : null,
+          h('div',{class:'comparatif'},
+            h('div',{}, h('strong',{}, R.premier.ok + ' / ' + R.premier.total), 'ton 1er essai'),
+            h('div',{}, h('strong',{}, (record ? s : R.meilleur).ok + ' / ' + s.total), 'ton meilleur score'),
+            h('div',{}, h('strong',{}, (gainPremier > 0 ? '+' : '') + gainPremier), 'points depuis ton 1er essai'))
+        ];
+      } else {
+        progression = h('p',{class:'hint'},'C’est ton premier essai : il sert de point de départ. Tu peux refaire l’exercice pour battre ton score.');
+      }
+    }catch(e){ progression = null; }
+  }
   show(
     h('h1',{}, ex.titre),
     s && h('div',{class:'score',role:'status'}, s.ok + ' / ' + s.total),
+    progression,
     r.sous && h('p',{class:'sub'}, r.sous),
-    r.noeuds, retour);
+    r.noeuds,
+    (tentativeId && !estApercu()) ? blocEtoiles(tentativeId, null) : null,
+    retour);
 }
 
 
@@ -1381,12 +1536,14 @@ const optionsSelect = (valeurs, courante) => valeurs.map(([v,l]) => h('option',{
 
 function cadreEnseignante(onglet, ...contenu){
   const msg = flash; flash = null;
+  setTimeout(()=> app.classList.add('large'), 0);
   show(
     h('h1',{},'Espace enseignante'),
     h('p',{class:'sub'},'Dépose tes exercices et suis les résultats de tes élèves.'),
     h('div',{class:'tabs',role:'tablist'},
       h('button',{class:'tab',role:'tab','aria-selected':String(onglet==='exercices'),onclick:()=>vueEnseignante('exercices')},'Exercices'),
-      h('button',{class:'tab',role:'tab','aria-selected':String(onglet==='resultats'),onclick:()=>vueEnseignante('resultats')},'Résultats')),
+      h('button',{class:'tab',role:'tab','aria-selected':String(onglet==='resultats'),onclick:()=>vueEnseignante('resultats')},'Résultats'),
+      h('button',{class:'tab',role:'tab','aria-selected':String(onglet==='eleves'),onclick:()=>vueEnseignante('eleves')},'Par élève')),
     msg && h('div',{class:'msg info',role:'status'}, msg),
     contenu);
 }
@@ -1394,7 +1551,7 @@ function cadreEnseignante(onglet, ...contenu){
 async function vueEnseignante(onglet = 'exercices'){
   show(h('p',{class:'empty'},'Chargement…'));
   try{
-    if(onglet === 'resultats') await ongletResultats(); else await ongletExercices();
+    if(onglet === 'resultats') await ongletResultats(); else if(onglet === 'eleves') await ongletEleves(); else await ongletExercices();
   }catch(e){
     cadreEnseignante(onglet,
       h('div',{class:'msg err',role:'alert'},'Impossible de charger les données. Si tu viens de mettre à jour le site, vérifie que les scripts supabase-niveaux.sql, supabase-types.sql et supabase-groupes.sql ont bien été exécutés dans Supabase.'),
@@ -1454,10 +1611,24 @@ async function ongletExercices(){
         T ? h('button',{class:'btn ghost small',onclick:()=>vueExercice(ex)},'Aperçu') : null,
         h('button',{class:'btn ghost small',onclick:()=>{ aSupprimer = ex.id; dessiner(); }},'Supprimer')));
   }
+  const COLONNES = [
+    { titre:'1HLP1', groupes:['1HLP1'] },
+    { titre:'1HLP2', groupes:['1HLP2'] },
+    { titre:'1HLP3', groupes:['1HLP3'] },
+    { titre:'THLP',  groupes:['THLP'] }
+  ];
+  const concerne = (e, col) => col.groupes.some(g => exerciceConcerne(e, 'grp:' + g));
   function dessiner(){
-    const vus = exos.filter(e => exerciceConcerne(e, filtreExercices));
-    liste.replaceChildren(...(vus.length ? vus.map(ligne)
-      : [h('p',{class:'empty'}, exos.length ? 'Aucun exercice pour ce filtre.' : 'Aucun exercice pour le moment. Crée le premier avec « Nouvel exercice ».')]));
+    const visibles = COLONNES.filter(col => !filtreExercices || exos.some(e => exerciceConcerne(e, filtreExercices) && concerne(e, col)));
+    const cols = (visibles.length ? visibles : COLONNES).map(col => {
+      const lignes = exos.filter(e => exerciceConcerne(e, filtreExercices) && concerne(e, col));
+      return h('section',{class:'colonne'},
+        h('h2',{}, col.titre, h('small',{}, lignes.length + ' exercice' + (lignes.length > 1 ? 's' : ''))),
+        lignes.length ? lignes.map(ligne) : h('p',{class:'empty'},'Aucun exercice.'));
+    });
+    liste.className = 'colonnes' + (cols.length === 1 ? ' une' : cols.length === 2 ? ' deux' : cols.length === 3 ? ' trois' : '');
+    liste.replaceChildren(...(exos.length ? cols
+      : [h('p',{class:'empty'},'Aucun exercice pour le moment. Crée le premier avec « Nouvel exercice ».')]));
   }
   dessiner();
   cadreEnseignante('exercices',
@@ -1468,6 +1639,82 @@ async function ongletExercices(){
         h('option',{value:'niv:tle',selected: filtreExercices === 'niv:tle'},'Terminale (THLP)'),
         [].concat(GROUPES['Première'], GROUPES['Terminale']).map(g => h('option',{value:'grp:'+g,selected: filtreExercices === 'grp:'+g}, 'Groupe ' + g)))),
     liste);
+}
+
+/* ---------- onglet « Par élève » ---------- */
+async function ongletEleves(){
+  const [ex, te, pr, co] = await Promise.all([
+    sb.from('hlp_exercices').select('*').order('ordre',{ascending:true}),
+    sb.from('hlp_tentatives').select('*'),
+    sb.from('profiles').select('id, prenom, nom, classe, role, hlp, niveau_hlp'),
+    sb.from('hlp_corriges').select('exercice_id, corrige')
+  ]);
+  const err = ex.error || te.error || pr.error || co.error;
+  if(err) throw err;
+  const exos = ex.data || [], tent = te.data || [], profs = pr.data || [], cors = co.data || [];
+  const corPar = {}; cors.forEach(c => corPar[c.exercice_id] = c.corrige);
+  const actifs = profs.filter(p => p.role === 'eleve' && p.hlp);
+  const parEleveExo = {};
+  tent.forEach(t => { const k = t.eleve_id + '|' + t.exercice_id; (parEleveExo[k] = parEleveExo[k] || []).push(t); });
+
+  const officiels = [].concat(GROUPES['Première'], GROUPES['Terminale']);
+  const autres = [...new Set(actifs.map(p => (p.classe || '').trim()).filter(c => !officiels.includes(c)))]
+    .sort((a,b) => a.localeCompare(b, 'fr', {numeric:true}));
+  const ordreGroupes = officiels.concat(autres);
+  let fExo = '', fGrp = '';
+  const zone = h('div',{});
+
+  function tableauGroupe(g){
+    const eleves = actifs.filter(p => (p.classe || '').trim() === g)
+      .sort((a,b) => (a.nom + ' ' + a.prenom).localeCompare(b.nom + ' ' + b.prenom, 'fr'));
+    const exosVus = exos.filter(e => !fExo || e.id === fExo);
+    const lignes = [];
+    let nbActifs = 0;
+    eleves.forEach(p => {
+      const faits = exosVus.filter(e => parEleveExo[p.id + '|' + e.id]);
+      if(faits.length) nbActifs++;
+      if(!faits.length){
+        lignes.push(h('tr',{}, h('td',{}, p.nom + ' ' + p.prenom), h('td',{colspan:'6',class:'empty-cell'}, h('span',{class:'exo-etat'},'Aucune tentative'))));
+        return;
+      }
+      faits.forEach((e,i)=>{
+        const R = resumeEssais(e, corPar[e.id], parEleveExo[p.id + '|' + e.id]);
+        const auto = TYPES[e.type] && TYPES[e.type].auto;
+        const gain = (R.premier && R.meilleur && R.essais > 1) ? R.meilleur.ok - R.premier.ok : 0;
+        lignes.push(h('tr',{},
+          h('td',{}, i === 0 ? p.nom + ' ' + p.prenom : ''),
+          h('td',{}, e.titre),
+          h('td',{class:'nb'}, auto ? fmtScore(R.premier) : 'rédaction'),
+          h('td',{class:'nb'}, auto ? [fmtScore(R.meilleur), gain > 0 ? h('span',{class:'delta'},' ▲ +' + gain) : null] : '—'),
+          h('td',{class:'nb'}, String(R.essais)),
+          h('td',{class:'nb'}, fmtDuree(R.duree)),
+          h('td',{class:'nb'}, h('span',{class:'etoiles-lecture'}, etoilesTexte(R.auto)))));
+      });
+    });
+    return h('div',{},
+      h('h2',{class:'groupe-titre'}, g, h('small',{style:'font-weight:400;color:var(--ink-soft);font-size:13px;margin-left:10px'},
+        eleves.length + ' élève' + (eleves.length > 1 ? 's' : '') + ' avec l’accès · ' + nbActifs + ' ont fait ' + (fExo ? 'cet exercice' : 'au moins un exercice'))),
+      eleves.length
+        ? h('div',{class:'tablewrap'}, h('table',{class:'res'},
+            h('thead',{}, h('tr',{}, ['Élève','Exercice','1er score','Meilleur score','Essais','Temps','Auto-éval.'].map((c,i) => h('th',{class: i >= 2 ? 'nb' : ''}, c)))),
+            h('tbody',{}, lignes)))
+        : h('p',{class:'empty'},'Aucun élève activé dans ce groupe.'));
+  }
+  function dessiner(){
+    const gs = ordreGroupes.filter(g => !fGrp || g === fGrp).filter(g => officiels.includes(g) || actifs.some(p => (p.classe || '').trim() === g));
+    zone.replaceChildren(...gs.map(tableauGroupe));
+  }
+  dessiner();
+
+  cadreEnseignante('eleves',
+    h('p',{class:'sub'},'Pour chaque élève et chaque exercice : premier score (point de départ), meilleur score, nombre d’essais, temps passé et auto-évaluation.'),
+    h('div',{class:'filters'},
+      h('select',{id:'f-eleves-grp','aria-label':'Filtrer par groupe',onchange:(ev)=>{ fGrp = ev.target.value; dessiner(); }},
+        h('option',{value:''},'Tous les groupes'),
+        officiels.concat(autres).map(g => h('option',{value:g}, g))),
+      h('select',{id:'f-eleves-exo','aria-label':'Filtrer par exercice',onchange:(ev)=>{ fExo = ev.target.value; dessiner(); }},
+        h('option',{value:''},'Tous les exercices'), exos.map(e => h('option',{value:e.id}, e.titre)))),
+    zone);
 }
 
 /* =====================================================================
@@ -1990,7 +2237,7 @@ async function ongletResultats(){
     });
     if(!lignes.length){ zoneTable.replaceChildren(h('p',{class:'empty'},'Aucun résultat pour le moment.')); return; }
     zoneTable.replaceChildren(h('table',{class:'res'},
-      h('thead',{}, h('tr',{}, ['Élève','Groupe','Exercice','Date','Résultat'].map(c => h('th',{},c)))),
+      h('thead',{}, h('tr',{}, ['Élève','Groupe','Exercice','Date','Résultat','Durée','Auto-éval.'].map(c => h('th',{},c)))),
       h('tbody',{}, lignes.map(t=>{
         const p = eleve[t.eleve_id], e = exoPar[t.exercice_id];
         let res = '—';
@@ -2002,10 +2249,41 @@ async function ongletResultats(){
         }
         return h('tr',{},
           h('td',{}, p.nom + ' ' + p.prenom), h('td',{}, p.classe || ''),
-          h('td',{}, e ? e.titre : '(exercice supprimé)'), h('td',{}, fmtDateHeure(t.created_at)), h('td',{}, res));
+          h('td',{}, e ? e.titre : '(exercice supprimé)'), h('td',{}, fmtDateHeure(t.created_at)), h('td',{}, res),
+          h('td',{class:'nb'}, fmtDuree(t.duree_secondes)), h('td',{class:'nb'}, h('span',{class:'etoiles-lecture'}, etoilesTexte(t.auto_eval))));
       }))));
   }
-  function tout(){ dessinerResume(); dessinerTable(); }
+  const zoneQuestions = h('div',{});
+  function dessinerQuestions(){
+    if(!fExo){ zoneQuestions.replaceChildren(h('p',{class:'hint'},'Choisis un exercice dans le premier menu pour voir, question par question, ce que les élèves ratent le plus (d’après leur 1er essai).')); return; }
+    const ex = exoPar[fExo];
+    const premiers = {};
+    tent.slice().sort((a,b)=> new Date(a.created_at) - new Date(b.created_at)).forEach(t => {
+      const p = eleve[t.eleve_id];
+      if(t.exercice_id === fExo && p && garde(p) && !premiers[t.eleve_id]) premiers[t.eleve_id] = t;
+    });
+    const stats = [];
+    Object.values(premiers).forEach(t => {
+      const items = itemsExercice(ex, corPar[fExo], t.reponses);
+      if(!items) return;
+      items.forEach((it,i)=>{ const x = stats[i] || (stats[i] = { libelle: it.libelle, ok:0, n:0 }); x.n++; if(it.ok) x.ok++; });
+    });
+    if(!stats.length){
+      zoneQuestions.replaceChildren(h('p',{class:'hint'}, itemsExercice(ex, corPar[fExo] || {}, {}) ? 'Aucun élève du filtre n’a encore fait cet exercice.' : 'Le détail question par question n’existe pas pour ce type d’exercice (rédaction ou mots fléchés).'));
+      return;
+    }
+    const classes = stats.slice().sort((a,b)=> (a.ok / a.n) - (b.ok / b.n));
+    zoneQuestions.replaceChildren(
+      h('h2',{},'Question par question — du plus raté au mieux réussi'),
+      h('p',{class:'sub'}, 'D’après le 1er essai de ' + stats[0].n + ' élève' + (stats[0].n > 1 ? 's' : '') + ' (filtres de niveau et de groupe appliqués).'),
+      h('div',{class:'tablewrap'}, h('table',{class:'res'},
+        h('thead',{}, h('tr',{}, ['Question','Réussite','Élèves ayant juste'].map((c,i)=> h('th',{class: i ? 'nb' : ''}, c)))),
+        h('tbody',{}, classes.map(x => h('tr',{},
+          h('td',{}, x.libelle),
+          h('td',{class:'nb'}, Math.round(100 * x.ok / x.n) + ' %'),
+          h('td',{class:'nb'}, x.ok + ' / ' + x.n)))))));
+  }
+  function tout(){ dessinerResume(); dessinerQuestions(); dessinerTable(); }
   tout();
 
   cadreEnseignante('resultats',
@@ -2016,6 +2294,8 @@ async function ongletResultats(){
       h('select',{id:'f-niv','aria-label':'Filtrer par niveau',onchange:(ev)=>{ fNiv = ev.target.value; majMenuGroupes(); tout(); }},
         h('option',{value:''},'Première et Terminale'), h('option',{value:'1re'},'Première'), h('option',{value:'tle'},'Terminale')),
       selGrp),
+    zoneQuestions,
+    h('h2',{},'Toutes les tentatives'),
     zoneTable);
   majMenuGroupes();
 }
