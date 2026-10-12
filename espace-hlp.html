@@ -195,6 +195,9 @@
   .tentative .t-exo{font-family:var(--font-title2);font-size:13px;color:var(--ink-soft);}
   .tentative .t-meta{font-family:var(--font-title2);font-size:12px;color:var(--ink-soft);display:flex;gap:4px 14px;flex-wrap:wrap;align-items:center;}
   .tentative details{flex-basis:100%;}
+  .tentative.premiere{margin-top:16px;}
+  .tentative.vide{background:transparent;border-style:dashed;}
+  .tentative .t-scores{display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
   .qbar{display:grid;grid-template-columns:minmax(0,1fr) 150px 90px;gap:6px 14px;align-items:center;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px 14px;margin-bottom:8px;font-size:14px;}
   .qbar .barre{height:10px;background:var(--border);border-radius:10px;overflow:hidden;}
   .qbar .barre span{display:block;height:100%;border-radius:10px;}
@@ -1706,38 +1709,38 @@ async function ongletEleves(){
       .sort((a,b) => (a.nom + ' ' + a.prenom).localeCompare(b.nom + ' ' + b.prenom, 'fr'));
     const exosVus = exos.filter(e => !fExo || e.id === fExo);
     let nbActifs = 0;
-    const cartes = eleves.map(p => {
+    const lignes = [];
+    eleves.forEach(p => {
       const faits = exosVus.filter(e => parEleveExo[p.id + '|' + e.id]);
       if(!faits.length){
-        return h('div',{class:'ecard vide'},
-          h('div',{class:'nom'}, h('strong',{}, nomEleve(p))),
-          h('span',{class:'exo-etat'},'Aucune tentative pour le moment'));
+        lignes.push(h('div',{class:'tentative vide premiere'},
+          h('div',{class:'t-main'}, h('span',{class:'t-eleve'}, nomEleve(p)), h('span',{class:'t-exo'},'Aucune tentative pour le moment'))));
+        return;
       }
       nbActifs++;
-      const blocs = faits.map(e => {
+      faits.forEach((e,i) => {
         const R = resumeEssais(e, corPar[e.id], parEleveExo[p.id + '|' + e.id]);
         const auto = TYPES[e.type] && TYPES[e.type].auto;
         const gain = (R.premier && R.meilleur && R.essais > 1) ? R.meilleur.ok - R.premier.ok : 0;
-        return h('div',{class:'exr'},
-          h('div',{class:'exr-titre'}, e.titre),
-          h('div',{class:'exr-scores'},
-            auto
-              ? [ h('span',{class:'lbl-mini'},'1er essai'), pastilleScore(R.premier),
-                  R.essais > 1 ? [ h('span',{class:'lbl-mini'},'meilleur'), pastilleScore(R.meilleur), gain > 0 ? h('span',{class:'delta'},'▲ +' + gain) : null ] : null ]
-              : h('span',{class:'pastille neutre'},'Rédaction')),
-          h('div',{class:'exr-meta'},
+        lignes.push(h('div',{class:'tentative' + (i === 0 ? ' premiere' : '')},
+          h('div',{class:'t-main'},
+            h('span',{class:'t-eleve'}, nomEleve(p)),
+            h('span',{class:'t-exo'}, e.titre)),
+          h('div',{class:'t-meta'},
             h('span',{}, R.essais + ' essai' + (R.essais > 1 ? 's' : '')),
             h('span',{}, '⏱ ' + fmtDuree(R.duree)),
-            R.auto ? h('span',{class:'etoiles-lecture',title:'Auto-évaluation de l’élève'}, etoilesTexte(R.auto)) : null));
+            R.auto ? h('span',{class:'etoiles-lecture',title:'Auto-évaluation de l’élève'}, etoilesTexte(R.auto)) : null),
+          auto
+            ? h('div',{class:'t-scores'},
+                h('span',{class:'lbl-mini'},'1er essai'), pastilleScore(R.premier),
+                R.essais > 1 ? [ h('span',{class:'lbl-mini'},'meilleur'), pastilleScore(R.meilleur), gain > 0 ? h('span',{class:'delta'},'▲ +' + gain) : null ] : null)
+            : h('span',{class:'pastille neutre'},'Rédaction')));
       });
-      return h('div',{class:'ecard'},
-        h('div',{class:'nom'}, h('strong',{}, nomEleve(p)), h('small',{}, faits.length + ' exercice' + (faits.length > 1 ? 's' : ''))),
-        blocs);
     });
     return h('section',{class:'colonne'},
       h('h2',{class:'groupe-titre'}, g, h('small',{},
         eleves.length + ' élève' + (eleves.length > 1 ? 's' : '') + ' · ' + nbActifs + ' ont fait ' + (fExo ? 'cet exercice' : 'au moins un exercice'))),
-      eleves.length ? h('div',{class:'sgrid'}, cartes) : h('p',{class:'empty'},'Aucun élève activé dans ce groupe.'));
+      eleves.length ? lignes : h('p',{class:'empty'},'Aucun élève activé dans ce groupe.'));
   }
   function dessiner(){
     const gs = ordreGroupes.filter(g => !fGrp || g === fGrp).filter(g => officiels.includes(g) || actifs.some(p => (p.classe || '').trim() === g));
