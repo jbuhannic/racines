@@ -4,5 +4,6 @@
 // JAMAIS la clé "secret" ni "service_role" : elle donne tous les droits sur ta base.
 window.HLP_CONFIG = {
   url: 'https://mrltggoggjnismrcdepk.supabase.co',
-  key: 'sb_publishable_IYXv0zwJZOxsmfdc6tpiPg_kMaipUUm'
+  key: 'sb_publishable_IYXv0zwJZOxsmfdc6tpiPg_kMaipUUm',
+  reinitialisationParEmail: true
 };
