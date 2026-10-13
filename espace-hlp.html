@@ -119,6 +119,19 @@
   .consigne{color:var(--ink-soft);font-size:15px;margin-bottom:20px;}
   .extrait{background:var(--surface);border-left:4px solid var(--slate);border-radius:0 12px 12px 0;padding:18px 20px;margin-bottom:24px;font-size:16px;}
   .extrait p{margin-bottom:10px;}
+  .ordre-wrap{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:20px;align-items:start;margin-bottom:16px;}
+  .ordre-wrap h2{font-size:15px;margin:0 0 10px;}
+  .brique{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid var(--border);border-radius:12px;background:var(--surface);margin-bottom:8px;font-size:15px;line-height:1.45;}
+  .brique .grip{cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;padding:4px 8px;margin:-4px -2px;font-size:20px;line-height:1;color:var(--ink-soft);}
+  .brique .num{color:var(--ink-soft);min-width:22px;}
+  .brique .txt{flex:1;}
+  .brique .mv{display:flex;flex-direction:column;gap:2px;}
+  .brique .mvb{width:30px;height:22px;border:1px solid var(--border);border-radius:6px;background:var(--bg);cursor:pointer;font-size:11px;line-height:1;padding:0;}
+  .brique .mvb:disabled{opacity:.35;cursor:default;}
+  .brique.drag{box-shadow:0 8px 20px rgba(0,0,0,.2);border-color:var(--slate);}
+  .ordre-lecture{background:var(--surface);border-left:4px solid var(--slate);border-radius:0 12px 12px 0;padding:16px 18px;font-size:16px;line-height:1.7;position:sticky;top:12px;}
+  .ordre-lecture p{margin:0 0 10px;}
+  @media(max-width:800px){ .ordre-wrap{grid-template-columns:minmax(0,1fr);} .ordre-lecture{position:static;} }
   .figure-ex{margin:0 0 24px;text-align:center;}
   .figure-ex img{max-width:100%;max-height:520px;height:auto;border-radius:12px;border:1px solid var(--line,#d8dde3);background:#fff;}
   .figure-ex figcaption{font-family:var(--font-title2);font-size:12px;color:var(--ink-soft);margin-top:8px;}
@@ -913,6 +926,10 @@ function itemsExercice(ex, corrige, reponses){
     const att = corrige.paires || [], liens = reponses.liens || [];
     return att.map((r,i)=>({ libelle:(G[i] || '') + '  →  ' + r, ok: liens[i] != null && normReponse(liens[i], true) === normReponse(r, true) }));
   }
+  if(ex.type === 'ordre'){
+    const A = (corrige.ordre || []).map(nettoyerBrique), L = liensOrdreAttendus(A, reponses.ordre);
+    return A.map((t,k) => ({ libelle: k === 0 ? 'Début : « ' + abregeBrique(t) + ' »' : 'Après « ' + abregeBrique(A[k-1]) + ' » : « ' + abregeBrique(t) + ' »', ok: !!L[k] }));
+  }
   if(ex.type === 'meles'){
     const trouves = new Set(reponses.trouves || []);
     return (q.mots || []).map(m => ({ libelle: m, ok: trouves.has(m) }));
@@ -1100,6 +1117,105 @@ TYPES.relier = {
           h('span',{}, (i+1) + '. ' + g + ' → ' + (liens[i] != null ? liens[i] : '(pas de lien)') + (juste ? '' : '   ·   attendu : ' + attendu[i])),
           h('span',{class:'tagres'}, juste ? '✓' : '✗'));
       }))]
+    };
+  }
+};
+
+/* ---------- Texte à remettre dans l'ordre ---------- */
+const nettoyerBrique = (t) => String(t == null ? '' : t).trim().replace(/\s+/g, ' ');
+const abregeBrique = (t) => { t = nettoyerBrique(t); return t.length > 70 ? t.slice(0, 67) + '…' : t; };
+/* Pour chaque position attendue k : la bonne brique est-elle bien au début (k = 0) ou juste après la précédente ? */
+function liensOrdreAttendus(attendu, donne){
+  const A = (attendu || []).map(nettoyerBrique), R = (donne || []).map(nettoyerBrique);
+  return A.map((t, k) => {
+    if(k === 0) return R[0] === t;
+    const i = R.indexOf(A[k - 1]);
+    return i >= 0 && R[i + 1] === t;
+  });
+}
+function texteLuOrdre(liste, paragraphes_){
+  return paragraphes_ ? liste.map(t => h('p',{}, t)) : [h('p',{}, liste.join(' '))];
+}
+TYPES.ordre = {
+  libelle:'Texte à remettre dans l’ordre', court:'À remettre en ordre', sousTitre:'Texte à remettre dans l’ordre', auto:true, bouton:'Valider mon ordre',
+  creer(ex, maj){
+    const q = motsDe(ex), B = Array.isArray(q.briques) ? q.briques.slice() : [], para = q.mode === 'paragraphes';
+    let ordre = B.slice();
+    const liste = h('div',{class:'ordre-liste'});
+    const lecture = h('div',{class:'ordre-lecture','aria-live':'polite'});
+    const lire = (arr) => lecture.replaceChildren(...texteLuOrdre(arr || ordre, para));
+    function dessiner(focus){
+      liste.replaceChildren(...ordre.map((t,i) => h('div',{class:'brique','data-i':String(i)},
+        h('span',{class:'grip','aria-hidden':'true',title:'Glisser pour déplacer',onpointerdown:(ev)=>glisser(ev)}, '⠿'),
+        h('span',{class:'num'}, (i+1) + '.'),
+        h('span',{class:'txt'}, t),
+        h('span',{class:'mv'},
+          h('button',{type:'button',class:'mvb','data-s':'h','aria-label':'Monter la brique ' + (i+1),disabled: i === 0,onclick:()=>deplacer(i, i-1)}, '▲'),
+          h('button',{type:'button',class:'mvb','data-s':'b','aria-label':'Descendre la brique ' + (i+1),disabled: i === ordre.length - 1,onclick:()=>deplacer(i, i+1)}, '▼')))));
+      lire();
+      if(focus){ const b = liste.querySelector('[data-i="' + focus.i + '"] [data-s="' + focus.s + '"]:not(:disabled)') || liste.querySelector('[data-i="' + focus.i + '"] .mvb:not(:disabled)'); if(b) b.focus(); }
+    }
+    function deplacer(a, b){
+      if(b < 0 || b >= ordre.length) return;
+      const [x] = ordre.splice(a, 1); ordre.splice(b, 0, x);
+      dessiner({ i: b, s: b < a ? 'h' : 'b' }); maj();
+    }
+    function glisser(ev){
+      if(ev.button !== undefined && ev.button !== 0) return;
+      ev.preventDefault();
+      const el = ev.currentTarget.closest('.brique');
+      el.classList.add('drag');
+      const ordreAvant = ordre.slice();
+      const arrDom = () => Array.from(liste.children).map(c => ordreAvant[Number(c.dataset.i)]);
+      const bouge = (e) => {
+        const y = e.clientY;
+        if(y < 70) window.scrollBy(0, -14); else if(y > window.innerHeight - 70) window.scrollBy(0, 14);
+        const ref = Array.from(liste.children).find(c => { if(c === el) return false; const r = c.getBoundingClientRect(); return y < r.top + r.height / 2; });
+        if(ref){ if(el.nextElementSibling !== ref) liste.insertBefore(el, ref); }
+        else if(liste.lastElementChild !== el) liste.append(el);
+        lire(arrDom());
+      };
+      const fin = () => {
+        window.removeEventListener('pointermove', bouge);
+        window.removeEventListener('pointerup', fin);
+        window.removeEventListener('pointercancel', fin);
+        ordre = arrDom(); dessiner(); maj();
+      };
+      window.addEventListener('pointermove', bouge);
+      window.addEventListener('pointerup', fin);
+      window.addEventListener('pointercancel', fin);
+    }
+    dessiner();
+    return {
+      noeuds:[
+        h('p',{class:'consigne'},'Glisse les briques par la poignée ⠿, ou utilise les flèches ▲ ▼. À droite, ton texte se lit au fur et à mesure : relis-le pour vérifier ton hypothèse.'),
+        h('div',{class:'ordre-wrap'},
+          h('div',{}, h('h2',{},'Les briques'), liste),
+          h('div',{}, h('h2',{},'Mon texte, tel que je l’ai reconstitué'), lecture))
+      ],
+      pret:()=> B.length > 0,
+      reponses:()=>({ ordre: ordre.slice() })
+    };
+  },
+  score(ex, corrige, reponses){
+    const L = liensOrdreAttendus(corrige.ordre, reponses.ordre);
+    return { ok: L.filter(Boolean).length, total: L.length };
+  },
+  resultat(ex, corrige, reponses){
+    const q = motsDe(ex), para = q.mode === 'paragraphes';
+    const att = (corrige.ordre || []).map(nettoyerBrique), don = (reponses.ordre || []).map(nettoyerBrique);
+    const s = this.score(ex, corrige, reponses);
+    const succ = new Map(); att.forEach((t,k) => { if(k < att.length - 1) succ.set(t, att[k+1]); });
+    const juste = don.map((t,j) => j === 0 ? t === att[0] : succ.get(don[j-1]) === t);
+    return {
+      sous: s.ok === s.total ? 'Le texte est parfaitement reconstitué !' : 'Regarde les enchaînements à revoir (✗), puis relis le texte dans le bon ordre.',
+      noeuds: [
+        h('h2',{},'Ton ordre'),
+        h('div',{class:'q'}, don.map((t,j) => h('div',{class:'opt ' + (juste[j] ? 'ok' : 'ko')},
+          h('span',{}, (j+1) + '. ' + t), h('span',{class:'tagres'}, juste[j] ? '✓' : '✗')))),
+        h('h2',{},'Le texte dans le bon ordre'),
+        h('div',{class:'ordre-lecture',style:'position:static;margin-bottom:16px'}, texteLuOrdre(att, para))
+      ]
     };
   }
 };
@@ -2150,7 +2266,45 @@ EDITEURS.charades = {
   }
 };
 
-const ORDRE_TYPES = ['quiz','analyse','relier','trous','meles','fleches','charades'];
+/* ---------- Texte à remettre dans l'ordre ---------- */
+EDITEURS.ordre = {
+  init(ex, corrige){
+    if(!ex) return { texte:'', mode:'phrases' };
+    const q = ex.questions || {};
+    return { texte: ((corrige && corrige.ordre) || []).join('\n'), mode: q.mode === 'paragraphes' ? 'paragraphes' : 'phrases' };
+  },
+  dessiner(etat, redessiner){
+    const n = lignesNonVides(etat.texte).length;
+    const compte = h('p',{class:'sub',id:'e-ordre-compte'}, n + ' brique' + (n > 1 ? 's' : '') + (n < 3 ? ' (il en faut au moins 3)' : ''));
+    return [
+      champ('Les briques : une par ligne, dans le BON ordre (le texte reconstitué)','e-briques',
+        h('textarea',{id:'e-briques',style:'min-height:220px',placeholder:'Il était une fois un roi.\nCe roi avait trois filles.\nLa plus jeune était la plus belle.',
+          oninput:(ev)=>{ etat.texte = ev.target.value; const k = lignesNonVides(etat.texte).length; compte.textContent = k + ' brique' + (k > 1 ? 's' : '') + (k < 3 ? ' (il en faut au moins 3)' : ''); }}, etat.texte)),
+      compte,
+      champ('Les briques sont…','e-mode', h('select',{id:'e-mode',onchange:(ev)=>{ etat.mode = ev.target.value; }},
+        optionsSelect([['phrases','des phrases ou groupes de mots (le texte se lit à la suite)'],['paragraphes','des paragraphes (chaque brique reste un paragraphe)']], etat.mode))),
+      h('p',{class:'sub'},'L’ordre que tu écris ici est le corrigé : les élèves reçoivent les briques mélangées. Chaque brique doit être différente des autres.')
+    ];
+  },
+  valider(etat){
+    const L = lignesNonVides(etat.texte).map(nettoyerBrique);
+    if(L.length < 3) return 'Il faut au moins 3 briques (une par ligne).';
+    if(L.length > 20) return 'Au plus 20 briques.';
+    if(new Set(L).size !== L.length) return 'Deux briques sont identiques : change-en une, sinon l’ordre n’est pas évaluable.';
+    return null;
+  },
+  serialiser(etat){
+    const L = lignesNonVides(etat.texte).map(nettoyerBrique);
+    let melange = L.slice();
+    for(let essai = 0; essai < 30; essai++){
+      melange = shuffle(L);
+      if(melange.some((t,i) => t !== L[i])) break;
+    }
+    return { questions: { briques: melange, mode: etat.mode }, corrige: { ordre: L }, colonnes: {} };
+  }
+};
+
+const ORDRE_TYPES = ['quiz','analyse','relier','trous','meles','fleches','charades','ordre'];
 
 /* ---------- formulaire de création / modification ---------- */
 async function vueEditeur(ex){
@@ -2287,7 +2441,7 @@ async function vueEditeur(ex){
       flash = 'Exercice enregistré' + (fiche.publie ? ' et visible par les élèves concernés.' : ' en brouillon : les élèves ne le voient pas tant que tu ne le publies pas.');
       vueEnseignante('exercices');
     }catch(e){
-      erreur('L’enregistrement a échoué. Vérifie ta connexion, et que les scripts supabase-niveaux.sql, supabase-types.sql et supabase-groupes.sql ont bien été exécutés dans Supabase (et supabase-images.sql si tu ajoutes une image).');
+      erreur('L’enregistrement a échoué. Vérifie ta connexion, et que les scripts supabase-niveaux.sql, supabase-types.sql et supabase-groupes.sql ont bien été exécutés dans Supabase (et supabase-images.sql si tu ajoutes une image, supabase-ordre.sql pour l’exercice « à remettre dans l’ordre »).');
       bouton.disabled = false;
     }
   });
