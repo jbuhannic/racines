@@ -348,7 +348,7 @@ function icone(visible){
   return s;
 }
 function champMotDePasse({id, label, autocomplete, minlength}){
-  const input = h('input',{id, type:'password', autocomplete, required:true, minlength});
+  const input = h('input',{id, type:'password', autocomplete, autocapitalize:'none', autocorrect:'off', spellcheck:'false', required:true, minlength});
   const btn = h('button',{type:'button', class:'eye', 'aria-pressed':'false',
                           'aria-label':'Afficher le mot de passe', title:'Afficher le mot de passe'}, icone(false));
   btn.addEventListener('click', ()=>{
@@ -396,6 +396,10 @@ async function demarrer(){
     sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, { auth:{ flowType:'implicit' } });
     sb.auth.onAuthStateChange((event)=>{
       if(event === 'PASSWORD_RECOVERY'){ enRecuperation = true; if(!app.querySelector('#np1')) vueNouveauMotDePasse(); }
+      if(event === 'SIGNED_OUT' && session){
+        session = null; profil = null; who.replaceChildren();
+        vueConnexion('connexion', {type:'info', texte:'Ta session s’est terminée : reconnecte-toi. Les exercices déjà validés sont bien enregistrés.'});
+      }
     });
     if(erreurLien){
       nettoyerUrl();
@@ -452,8 +456,8 @@ function entete(){
 }
 
 async function deconnexion(){
+  session = null; profil = null;   // avant signOut : l'écouteur ne croit pas à une expiration
   await sb.auth.signOut();
-  session = null; profil = null;
   who.replaceChildren();
   vueConnexion();
 }
@@ -472,7 +476,7 @@ function vueConnexion(mode = 'connexion', message = null){
     classe: h('select',{id:'f-classe',required:true},
               h('option',{value:''},'Choisis ton groupe'),
               Object.keys(GROUPES).map(niv => h('optgroup',{label:niv}, GROUPES[niv].map(g => h('option',{value:g}, g))))),
-    email:  h('input',{id:'f-email',type:'email',autocomplete:'email',required:true}),
+    email:  h('input',{id:'f-email',type:'email',autocomplete:'email',autocapitalize:'none',autocorrect:'off',spellcheck:'false',inputmode:'email',required:true}),
   };
   const pwc = champMotDePasse({ id:'f-pw', label: 'Mot de passe' + (insc ? ' (8 caractères minimum)' : ''),
                                 autocomplete: insc ? 'new-password' : 'current-password', minlength: insc ? 8 : undefined });
@@ -512,7 +516,12 @@ function vueConnexion(mode = 'connexion', message = null){
 }
 
 async function connexion(f){
-  const { data, error } = await sb.auth.signInWithPassword({ email: f.email.value.trim(), password: f.pw.value });
+  const email = f.email.value.trim().toLowerCase(), mdp = f.pw.value;
+  let { data, error } = await sb.auth.signInWithPassword({ email, password: mdp });
+  // Un espace collé en début ou fin de mot de passe (copier-coller, saisie automatique) : on réessaie sans.
+  if(error && /invalid login/i.test(error.message || '') && mdp !== mdp.trim()){
+    ({ data, error } = await sb.auth.signInWithPassword({ email, password: mdp.trim() }));
+  }
   if(error) throw error;
   session = data.session;
   await chargerProfil();
@@ -522,7 +531,7 @@ async function inscription(f){
   const prenom = f.prenom.value.trim(), nom = f.nom.value.trim();
   if(!prenom || !nom) return vueConnexion('inscription', {type:'err', texte:'Prénom et nom sont obligatoires.'});
   const { data, error } = await sb.auth.signUp({
-    email: f.email.value.trim(), password: f.pw.value,
+    email: f.email.value.trim().toLowerCase(), password: f.pw.value,
     options: { data: { prenom, nom, classe: f.classe.value.trim() } }
   });
   if(error) throw error;
