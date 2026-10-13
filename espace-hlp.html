@@ -119,6 +119,11 @@
   .consigne{color:var(--ink-soft);font-size:15px;margin-bottom:20px;}
   .extrait{background:var(--surface);border-left:4px solid var(--slate);border-radius:0 12px 12px 0;padding:18px 20px;margin-bottom:24px;font-size:16px;}
   .extrait p{margin-bottom:10px;}
+  .figure-ex{margin:0 0 24px;text-align:center;}
+  .figure-ex img{max-width:100%;max-height:520px;height:auto;border-radius:12px;border:1px solid var(--line,#d8dde3);background:#fff;}
+  .figure-ex figcaption{font-family:var(--font-title2);font-size:12px;color:var(--ink-soft);margin-top:8px;}
+  .image-edit{display:flex;flex-direction:column;gap:10px;align-items:flex-start;}
+  .image-edit img{max-width:320px;max-height:220px;border-radius:10px;border:1px solid #d8dde3;}
   .extrait .source{font-family:var(--font-title2);font-size:12px;color:var(--ink-soft);margin:0;}
   .q{margin-bottom:26px;}
   .q-titre{font-family:var(--font-title2);font-size:15px;font-weight:700;margin-bottom:12px;}
@@ -1492,6 +1497,9 @@ function vueExercice(ex){
     h('h1',{}, ex.titre),
     h('p',{class:'sub'}, T.sousTitre + (ex.axe ? ' · ' + ex.axe : '')),
     ex.consigne && h('p',{class:'consigne'}, ex.consigne),
+    ex.image && h('figure',{class:'figure-ex'},
+      h('img',{src:ex.image, alt: ex.image_alt || '', loading:'lazy'}),
+      (ex.source && !ex.extrait) ? h('figcaption',{}, ex.source) : null),
     ex.extrait && h('div',{class:'extrait'},
       paragraphes(ex.extrait).map(p=>h('p',{},p)),
       ex.source && h('p',{class:'source'}, ex.source)),
@@ -1841,8 +1849,8 @@ EDITEURS.analyse = {
         retirer);
     });
     return [
-      champ('Extrait à analyser','e-extrait', h('textarea',{id:'e-extrait',style:'min-height:180px',oninput:(ev)=>{ etat.extrait = ev.target.value; }}, etat.extrait)),
-      champ('Source de l’extrait (auteur, œuvre, date)','e-source', h('input',{id:'e-source',value:etat.source,oninput:(ev)=>{ etat.source = ev.target.value; }})),
+      champ('Extrait à analyser (facultatif : laisse vide pour ne proposer que des questions)','e-extrait', h('textarea',{id:'e-extrait',style:'min-height:180px',oninput:(ev)=>{ etat.extrait = ev.target.value; }}, etat.extrait)),
+      champ('Source (auteur, œuvre, date, ou crédit de l’image)','e-source', h('input',{id:'e-source',value:etat.source,oninput:(ev)=>{ etat.source = ev.target.value; }})),
       h('h2',{},'Questions'), cartes,
       h('button',{class:'btn ghost',type:'button',onclick:()=>{ etat.questions.push({ q:'', corrige:'' }); redessiner(); }},'+ Ajouter une question')
     ];
@@ -2151,7 +2159,8 @@ async function vueEditeur(ex){
   const fiche = {
     id: ex ? ex.id : null, type: ex ? ex.type : 'quiz', niveau: ex ? (ex.niveau || 'tous') : 'tous', groupes: ex && Array.isArray(ex.groupes) ? ex.groupes.slice() : [],
     axe: ex ? (ex.axe || '') : '', titre: ex ? ex.titre : '', consigne: ex ? (ex.consigne || '') : '',
-    ordre: ex ? (ex.ordre || 0) : ordreSuivant, publie: ex ? !!ex.publie : false
+    ordre: ex ? (ex.ordre || 0) : ordreSuivant, publie: ex ? !!ex.publie : false,
+    image: ex ? (ex.image || '') : '', image_alt: ex ? (ex.image_alt || '') : ''
   };
   let ED = EDITEURS[fiche.type];
   let etat = ED.init(ex, corrige);
@@ -2159,6 +2168,52 @@ async function vueEditeur(ex){
   const zone = h('div',{});
   const zoneErreur = h('div',{});
   const bouton = h('button',{class:'btn',type:'button'},'Enregistrer');
+
+  /* Image facultative : réduite dans le navigateur (1600 px max), puis envoyée dans Supabase Storage. */
+  function reduireImage(fichier){
+    return new Promise((ok, ko)=>{
+      const url = URL.createObjectURL(fichier), im = new Image();
+      im.onload = ()=>{
+        const k = Math.min(1, 1600 / Math.max(im.naturalWidth, im.naturalHeight));
+        const c = document.createElement('canvas');
+        c.width = Math.round(im.naturalWidth * k); c.height = Math.round(im.naturalHeight * k);
+        const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height); g.drawImage(im, 0, 0, c.width, c.height);
+        URL.revokeObjectURL(url);
+        c.toBlob(b => b ? ok(b) : ko(new Error('conversion')), 'image/jpeg', 0.85);
+      };
+      im.onerror = ()=>{ URL.revokeObjectURL(url); ko(new Error('lecture')); };
+      im.src = url;
+    });
+  }
+  function champImage(){
+    const etatImg = h('p',{class:'sub'},'');
+    const input = h('input',{id:'e-image',type:'file',accept:'image/*',onchange: async (ev)=>{
+      const f = ev.target.files && ev.target.files[0];
+      if(!f) return;
+      etatImg.textContent = 'Envoi de l’image…'; bouton.disabled = true;
+      try{
+        const blob = await reduireImage(f);
+        const nom = (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2)) + '.jpg';
+        const { error } = await sb.storage.from('hlp-images').upload(nom, blob, { contentType:'image/jpeg' });
+        if(error) throw error;
+        fiche.image = sb.storage.from('hlp-images').getPublicUrl(nom).data.publicUrl;
+        dessiner();
+      }catch(e){
+        etatImg.textContent = 'L’envoi de l’image a échoué. Vérifie que le script supabase-images.sql a bien été exécuté dans Supabase.';
+      }
+      bouton.disabled = false;
+    }});
+    return h('div',{class:'field'},
+      h('label',{for:'e-image'},'Image (facultatif)'),
+      h('div',{class:'image-edit'},
+        fiche.image ? h('img',{src:fiche.image, alt:'Aperçu de l’image'}) : null,
+        input,
+        fiche.image ? h('button',{class:'linkbtn',type:'button',onclick:()=>{ fiche.image = ''; fiche.image_alt = ''; dessiner(); }},'Retirer l’image') : null,
+        etatImg),
+      fiche.image ? champ('Description de l’image, pour les élèves qui ne la voient pas (facultatif)','e-image-alt',
+        h('input',{id:'e-image-alt',value:fiche.image_alt,oninput:(ev)=>{ fiche.image_alt = ev.target.value; }})) : null,
+      h('p',{class:'sub'},'Elle s’affiche à la place d’un texte, ou en plus. Les images sont réduites automatiquement.'));
+  }
   const erreur = (texte)=> zoneErreur.replaceChildren(...(texte ? [h('div',{class:'msg err',role:'alert'}, texte)] : []));
 
   function dessiner(){
@@ -2187,6 +2242,7 @@ async function vueEditeur(ex){
         champ('Titre','e-titre', h('input',{id:'e-titre',value:fiche.titre,oninput:(ev)=>{ fiche.titre = ev.target.value; }})),
         champ('Axe ou séquence (facultatif)','e-axe', h('input',{id:'e-axe',value:fiche.axe,oninput:(ev)=>{ fiche.axe = ev.target.value; }}))),
       champ('Consigne (facultatif)','e-consigne', h('textarea',{id:'e-consigne',oninput:(ev)=>{ fiche.consigne = ev.target.value; }}, fiche.consigne)),
+      champImage(),
       ED.dessiner(etat, dessiner),
       h('h2',{},'Publication'),
       h('div',{class:'row2'},
@@ -2205,7 +2261,8 @@ async function vueEditeur(ex){
     const s = ED.serialiser(etat);
     const ligne = Object.assign({
       type: fiche.type, niveau: fiche.niveau, groupes: fiche.groupes, axe: fiche.axe.trim(), titre: fiche.titre.trim(), consigne: fiche.consigne.trim(),
-      extrait: '', source: '', ordre: Number(fiche.ordre) || 0, publie: fiche.publie, questions: s.questions
+      extrait: '', source: '', ordre: Number(fiche.ordre) || 0, publie: fiche.publie, questions: s.questions,
+      image: fiche.image || '', image_alt: (fiche.image ? fiche.image_alt.trim() : '')
     }, s.colonnes || {});
     try{
       if(!fiche.id){
@@ -2221,7 +2278,7 @@ async function vueEditeur(ex){
       flash = 'Exercice enregistré' + (fiche.publie ? ' et visible par les élèves concernés.' : ' en brouillon : les élèves ne le voient pas tant que tu ne le publies pas.');
       vueEnseignante('exercices');
     }catch(e){
-      erreur('L’enregistrement a échoué. Vérifie ta connexion, et que les scripts supabase-niveaux.sql, supabase-types.sql et supabase-groupes.sql ont bien été exécutés dans Supabase.');
+      erreur('L’enregistrement a échoué. Vérifie ta connexion, et que les scripts supabase-niveaux.sql, supabase-types.sql et supabase-groupes.sql ont bien été exécutés dans Supabase (et supabase-images.sql si tu ajoutes une image).');
       bouton.disabled = false;
     }
   });
