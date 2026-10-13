@@ -158,18 +158,19 @@
   .etoile{background:none;border:none;cursor:pointer;font-size:40px;line-height:1;padding:2px 4px;min-width:48px;min-height:48px;color:var(--border);}
   .etoile.on{color:#E0A100;}
   .etoile:hover{color:#E0A100;}
-  .colonnes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;align-items:start;}
+  .colonnes{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px;align-items:start;}
   .colonnes.une{grid-template-columns:minmax(0,1fr);max-width:760px;}
   .colonnes.deux{grid-template-columns:repeat(2,minmax(0,1fr));}
   .colonnes.trois{grid-template-columns:repeat(3,minmax(0,1fr));}
+  .colonnes.quatre{grid-template-columns:repeat(4,minmax(0,1fr));}
   .colonne h2{margin-top:6px;display:flex;justify-content:space-between;align-items:baseline;gap:8px;border-bottom:2px solid var(--slate);padding-bottom:6px;}
   .colonne h2 small{font-weight:400;color:var(--ink-soft);font-size:13px;}
   .colonne .exo{flex-direction:column;align-items:flex-start;}
   .colonne .groupe-titre,.groupe-titre{margin-top:38px;}
   table.res td.nb,table.res th.nb{text-align:center;white-space:nowrap;}
   .etoiles-lecture{color:#E0A100;letter-spacing:1px;white-space:nowrap;}
-  @media(max-width:1100px){ .colonnes,.colonnes.trois{grid-template-columns:repeat(2,minmax(0,1fr));} }
-  @media(max-width:700px){ .colonnes,.colonnes.trois,.colonnes.deux{grid-template-columns:minmax(0,1fr);} }
+  @media(max-width:1100px){ .colonnes,.colonnes.trois,.colonnes.quatre{grid-template-columns:repeat(2,minmax(0,1fr));} }
+  @media(max-width:700px){ .colonnes,.colonnes.trois,.colonnes.quatre,.colonnes.deux{grid-template-columns:minmax(0,1fr);} }
 
 
   /* --- résultats : cartes lisibles --- */
@@ -271,7 +272,11 @@ const SUPABASE_KEY = CONFIG.key || '';
 
 const MIN_CARACTERES_ANALYSE = 15;
 /* Groupes proposés à l'inscription (modifiables ici) */
-const GROUPES = { 'Première': ['1HLP1','1HLP2','1HLP3'], 'Terminale': ['THLP'] };
+const GROUPES = { 'Première': ['1HLP1','1HLP2','1HLP3'], 'Terminale': ['THLP'], 'Seconde': ['2F'] };
+const NIV_LIB = { '1re':'Première', 'tle':'Terminale', '2de':'Seconde' };
+const TOUS_GROUPES = [].concat(GROUPES['Première'], GROUPES['Terminale'], GROUPES['Seconde']);
+const groupesDuNiveau = (n) => GROUPES[NIV_LIB[n]] || [];
+const niveauDuGroupe = (g) => Object.keys(NIV_LIB).find(n => groupesDuNiveau(n).includes(g)) || 'tle';
 
 /* ---------- petits outils ---------- */
 function h(tag, props, ...kids){
@@ -1563,7 +1568,7 @@ async function vueResultat(ex, reponses, corrige, tentativeId){
 /* =====================================================================
    ESPACE ENSEIGNANTE : dépôt d'exercices et résultats
    ===================================================================== */
-const LIB_NIVEAU = { '1re':'Première', 'tle':'Terminale', 'tous':'Première et Terminale' };
+const LIB_NIVEAU = { '1re':'Première', 'tle':'Terminale', '2de':'Seconde', 'tous':'Première et Terminale' };
 let flash = null;
 
 function retourListe(){ return (profil && profil.role === 'prof') ? vueEnseignante() : vueTableauDeBord(); }
@@ -1606,11 +1611,11 @@ function exerciceConcerne(ex, filtre){
   const gr = Array.isArray(ex.groupes) ? ex.groupes : [];
   const niv = ex.niveau || 'tous';
   if(filtre.startsWith('niv:')){
-    const n = filtre.slice(4), liste = n === '1re' ? GROUPES['Première'] : GROUPES['Terminale'];
-    return (niv === 'tous' || niv === n) && (!gr.length || gr.some(g => liste.includes(g)));
+    const n = filtre.slice(4), liste = groupesDuNiveau(n);
+    return (niv === n || (niv === 'tous' && n !== '2de')) && (!gr.length || gr.some(g => liste.includes(g)));
   }
-  const g = filtre.slice(4), n = GROUPES['Première'].includes(g) ? '1re' : 'tle';
-  return gr.length ? gr.includes(g) : (niv === 'tous' || niv === n);
+  const g = filtre.slice(4), n = niveauDuGroupe(g);
+  return gr.length ? gr.includes(g) : (niv === n || (niv === 'tous' && n !== '2de'));
 }
 async function ongletExercices(){
   const { data, error } = await sb.from('hlp_exercices').select('*').order('ordre',{ascending:true});
@@ -1655,7 +1660,8 @@ async function ongletExercices(){
     { titre:'1HLP1', groupes:['1HLP1'] },
     { titre:'1HLP2', groupes:['1HLP2'] },
     { titre:'1HLP3', groupes:['1HLP3'] },
-    { titre:'THLP',  groupes:['THLP'] }
+    { titre:'THLP',  groupes:['THLP'] },
+    { titre:'2F',    groupes:['2F'] }
   ];
   const concerne = (e, col) => col.groupes.some(g => exerciceConcerne(e, 'grp:' + g));
   function dessiner(){
@@ -1666,7 +1672,7 @@ async function ongletExercices(){
         h('h2',{}, col.titre, h('small',{}, lignes.length + ' exercice' + (lignes.length > 1 ? 's' : ''))),
         lignes.length ? lignes.map(ligne) : h('p',{class:'empty'},'Aucun exercice.'));
     });
-    liste.className = 'colonnes' + (cols.length === 1 ? ' une' : cols.length === 2 ? ' deux' : cols.length === 3 ? ' trois' : '');
+    liste.className = 'colonnes' + (cols.length === 1 ? ' une' : cols.length === 2 ? ' deux' : cols.length === 3 ? ' trois' : cols.length === 4 ? ' quatre' : '');
     liste.replaceChildren(...(exos.length ? cols
       : [h('p',{class:'empty'},'Aucun exercice pour le moment. Crée le premier avec « Nouvel exercice ».')]));
   }
@@ -1677,7 +1683,8 @@ async function ongletExercices(){
         h('option',{value:''},'Tous les exercices'),
         h('option',{value:'niv:1re',selected: filtreExercices === 'niv:1re'},'Première (tous groupes)'),
         h('option',{value:'niv:tle',selected: filtreExercices === 'niv:tle'},'Terminale (THLP)'),
-        [].concat(GROUPES['Première'], GROUPES['Terminale']).map(g => h('option',{value:'grp:'+g,selected: filtreExercices === 'grp:'+g}, 'Groupe ' + g)))),
+        h('option',{value:'niv:2de',selected: filtreExercices === 'niv:2de'},'Seconde (2F)'),
+        TOUS_GROUPES.map(g => h('option',{value:'grp:'+g,selected: filtreExercices === 'grp:'+g}, 'Groupe ' + g)))),
     liste);
 }
 
@@ -1697,7 +1704,7 @@ async function ongletEleves(){
   const parEleveExo = {};
   tent.forEach(t => { const k = t.eleve_id + '|' + t.exercice_id; (parEleveExo[k] = parEleveExo[k] || []).push(t); });
 
-  const officiels = [].concat(GROUPES['Première'], GROUPES['Terminale']);
+  const officiels = TOUS_GROUPES;
   const autres = [...new Set(actifs.map(p => (p.classe || '').trim()).filter(c => !officiels.includes(c)))]
     .sort((a,b) => a.localeCompare(b, 'fr', {numeric:true}));
   const ordreGroupes = officiels.concat(autres);
@@ -2163,9 +2170,9 @@ async function vueEditeur(ex){
               ORDRE_TYPES.map(t => h('option',{value:t,selected: fiche.type === t}, TYPES[t].libelle)))),
         champ('Classes concernées','e-niveau',
           h('select',{id:'e-niveau',onchange:(ev)=>{ fiche.niveau = ev.target.value; dessiner(); }},
-            ['1re','tle','tous'].map(v=> h('option',{value:v,selected: fiche.niveau === v}, LIB_NIVEAU[v]))))),
+            ['1re','tle','2de','tous'].map(v=> h('option',{value:v,selected: fiche.niveau === v}, LIB_NIVEAU[v]))))),
       (()=>{
-        const dispo = fiche.niveau === '1re' ? GROUPES['Première'] : fiche.niveau === 'tle' ? GROUPES['Terminale'] : [].concat(GROUPES['Première'], GROUPES['Terminale']);
+        const dispo = fiche.niveau === 'tous' ? [].concat(GROUPES['Première'], GROUPES['Terminale']) : groupesDuNiveau(fiche.niveau);
         fiche.groupes = fiche.groupes.filter(g => dispo.includes(g));
         return h('div',{class:'field'},
           h('label',{},'Groupes concernés'),
@@ -2242,7 +2249,7 @@ async function ongletResultats(){
   const exoPar = {}; exos.forEach(e => exoPar[e.id] = e);
   const corPar = {}; cors.forEach(c => corPar[c.exercice_id] = c.corrige);
   const actifs = profs.filter(p => p.role === 'eleve' && p.hlp);
-  const officiels = [].concat(GROUPES['Première'], GROUPES['Terminale']);
+  const officiels = TOUS_GROUPES;
   const autres = [...new Set(actifs.map(p => (p.classe || '').trim()).filter(c => c && !officiels.includes(c)))]
     .sort((a,b) => a.localeCompare(b, 'fr', {numeric:true}));
   let fExo = '', fNiv = '', fGrp = '';
@@ -2253,7 +2260,7 @@ async function ongletResultats(){
   const garde = (p) => (!fNiv || p.niveau_hlp === fNiv) && (!fGrp || (p.classe || '').trim() === fGrp);
 
   function optionsGroupes(){
-    const base = fNiv === '1re' ? GROUPES['Première'] : fNiv === 'tle' ? GROUPES['Terminale'] : officiels;
+    const base = fNiv ? groupesDuNiveau(fNiv) : officiels;
     return [h('option',{value:''},'Tous les groupes')]
       .concat(base.map(g => h('option',{value:g,selected: fGrp === g}, g)))
       .concat(autres.map(g => h('option',{value:g,selected: fGrp === g}, g + ' (à renommer)')));
@@ -2343,7 +2350,7 @@ async function ongletResultats(){
       h('select',{id:'f-exo','aria-label':'Filtrer par exercice',onchange:(ev)=>{ fExo = ev.target.value; tout(); }},
         h('option',{value:''},'Tous les exercices'), exos.map(e => h('option',{value:e.id}, e.titre))),
       h('select',{id:'f-niv','aria-label':'Filtrer par niveau',onchange:(ev)=>{ fNiv = ev.target.value; majMenuGroupes(); tout(); }},
-        h('option',{value:''},'Première et Terminale'), h('option',{value:'1re'},'Première'), h('option',{value:'tle'},'Terminale')),
+        h('option',{value:''},'Tous les niveaux'), h('option',{value:'1re'},'Première'), h('option',{value:'tle'},'Terminale'), h('option',{value:'2de'},'Seconde')),
       selGrp),
     zoneQuestions,
     zoneTable);
